@@ -7,7 +7,6 @@ import com.example.carefully.domain.post.exception.PostEmptyException;
 import com.example.carefully.domain.post.repository.PostRepository;
 import com.example.carefully.global.dto.SliceDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -46,6 +45,12 @@ public class PostServiceImpl implements PostService {
         Slice<PostDto.SearchResponse> pageDtoList = postRepository.findAllByPostRoleOrderByCreatedAtDesc(
                 pageable, PostRole.valueOf(postRole)).map(this::searchResponseBuilder);
         return SliceDto.create(pageDtoList);
+    }
+
+    @Transactional
+    public void findPostAndDelete(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(PostEmptyException::new);
+        postRepository.delete(post);
     }
 
     private PostDto.SearchResponse searchResponseBuilder(Post post){
