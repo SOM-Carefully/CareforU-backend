@@ -22,4 +22,9 @@ public class PostController {
     public ResponseEntity<BaseResponse<CreateResponse>> createPost(@RequestParam("category") String postRole, @RequestBody CreateRequest createRequest){
         return ResponseEntity.ok(BaseResponse.create(CREATE_POST_SUCCESS.getMessage(), postService.createNewPost(createRequest, postRole)));
     }
+
+    @PatchMapping("/{postId}")
+    public ResponseEntity<BaseResponse<UpdateResponse>> updatePost(@PathVariable("postId") Long postId, @RequestBody UpdateRequest updateRequest){
+        return ResponseEntity.ok(BaseResponse.create(UPDATE_POST_SUCCESS.getMessage(), postService.updatePost(updateRequest, postId)));
+    }
 }
