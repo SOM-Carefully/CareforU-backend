@@ -1,10 +1,12 @@
 package com.example.carefully.domain.post.controller;
 
-import com.example.carefully.domain.post.dto.PostResponseMessage;
 import com.example.carefully.domain.post.service.PostServiceImpl;
-import com.example.carefully.global.error.dto.BaseResponse;
+import com.example.carefully.global.dto.SliceDto;
+import com.example.carefully.global.dto.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,5 +28,15 @@ public class PostController {
     @PatchMapping("/{postId}")
     public ResponseEntity<BaseResponse<UpdateResponse>> updatePost(@PathVariable("postId") Long postId, @RequestBody UpdateRequest updateRequest){
         return ResponseEntity.ok(BaseResponse.create(UPDATE_POST_SUCCESS.getMessage(), postService.updatePost(updateRequest, postId)));
+    }
+
+    @GetMapping("/{postId}")
+    public ResponseEntity<BaseResponse<SearchResponse>> searchPostDetail(@PathVariable("postId") Long postId){
+        return ResponseEntity.ok(BaseResponse.create(GET_POST_DETAIL_SUCCESS.getMessage(), postService.searchPostDetail(postId)));
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<SliceDto<SearchResponse>>> searchPostList(@RequestParam("category") String postRole, @PageableDefault(size = 10) Pageable pageable){
+        return ResponseEntity.ok(BaseResponse.create(GET_POST_LIST_SUCCESS.getMessage(), postService.searchPostList(postRole, pageable)));
     }
 }
