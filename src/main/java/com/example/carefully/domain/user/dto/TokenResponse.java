@@ -1,4 +1,4 @@
-package com.example.carefully.global.dto;
+package com.example.carefully.domain.user.dto;
 
 import lombok.*;
 
@@ -7,6 +7,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TokenDto {
+public class TokenResponse {
     private String token;
 }

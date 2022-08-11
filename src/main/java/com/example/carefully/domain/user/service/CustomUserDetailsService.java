@@ -1,7 +1,8 @@
-package com.example.carefully.global.service;
+package com.example.carefully.domain.user.service;
 
-import com.example.carefully.global.entity.User;
-import com.example.carefully.global.repository.UserRepository;
+import com.example.carefully.domain.user.entity.Role;
+import com.example.carefully.domain.user.entity.User;
+import com.example.carefully.domain.user.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component("userDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {
@@ -33,9 +33,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (!user.isActivated()) {
             throw new RuntimeException(username + " -> 활성화되어 있지 않습니다.");
         }
-        List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
-                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
-                .collect(Collectors.toList());
+
+        Role role = user.getRole();
+
+        List<GrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(role.getFullName()));
+
         return new org.springframework.security.core.userdetails.User(user.getUsername(),
                 user.getPassword(),
                 grantedAuthorities);

@@ -1,10 +1,12 @@
-package com.example.carefully.global.util;
+package com.example.carefully.global.security.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -13,6 +15,18 @@ public class SecurityUtil {
     private static final Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
 
     private SecurityUtil() {
+    }
+
+    public static PasswordEncoder getEncoder() {
+        return LazyHolder.ENCODER;
+    }
+
+    public static String encode(String rawPassword) {
+        return getEncoder().encode(rawPassword);
+    }
+
+    private static class LazyHolder {
+        private static final PasswordEncoder ENCODER = new BCryptPasswordEncoder();
     }
 
     public static Optional<String> getCurrentUsername() {

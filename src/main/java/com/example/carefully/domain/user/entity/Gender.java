@@ -1,4 +1,4 @@
-package com.example.carefully.global.entity;
+package com.example.carefully.domain.user.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

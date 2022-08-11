@@ -1,4 +1,4 @@
-package com.example.carefully.global.dto;
+package com.example.carefully.domain.user.dto;
 
 import lombok.*;
 
@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginDto {
+public class LoginRequest {
     @NotNull
     @Size(min = 3, max = 50)
     private String username;
