@@ -1,0 +1,3 @@
+[submodule "carefully-secret"]
+	path = carefully-secret
+	url = https://github.com/SOM-Carefully/carefully-secret.git

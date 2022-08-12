@@ -20,9 +20,13 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(4000, "요청 방식이 잘못되었습니다."),
     INVALID_SECRET_KEY(2007, "유효하지 않은 시크릿 키입니다."),
     USER_EXIST(400, "이미 존재하는 유저입니다."),
-    USER_NOT_FOUND(400, "유저를 찾을 수 없습니다.");
+    USER_NOT_FOUND(400, "유저를 찾을 수 없습니다."),
 
     //TODO 도메인 별로 분류해서 추가해주세요.
+
+
+    //POST
+    POST_NOT_FOUND(3010, "존재하지 않는 글입니다.");
 
     private final String message;
     private final int status;
