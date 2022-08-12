@@ -1,4 +1,4 @@
-package com.example.carefully.global.dto;
+package com.example.carefully.global.error.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
