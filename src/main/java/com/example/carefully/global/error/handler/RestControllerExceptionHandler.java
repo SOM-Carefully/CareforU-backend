@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,11 +45,11 @@ public class RestControllerExceptionHandler {
     /**
      * Authentication 객체가 필요한 권한을 보유하지 않은 예외
      */
-//    @ExceptionHandler(AccessDeniedException.class)
-//    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
-//        log.error("handleAccessDeniedException", ex);
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.create(ErrorCode.INVALID_USER_JWT));
-//    }
+    @ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
+        log.error("handleAccessDeniedException", ex);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.create(ErrorCode.INVALID_USER_JWT));
+    }
 
     /**
      * 커스텀 : 비즈니스 예외
