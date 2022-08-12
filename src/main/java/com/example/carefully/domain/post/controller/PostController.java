@@ -5,6 +5,7 @@ import com.example.carefully.global.dto.SliceDto;
 import com.example.carefully.global.dto.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,11 +38,5 @@ public class PostController {
     @GetMapping
     public ResponseEntity<BaseResponse<SliceDto<SearchResponse>>> searchPostList(@RequestParam("category") String postRole, @PageableDefault(size = 10) Pageable pageable){
         return ResponseEntity.ok(BaseResponse.create(GET_POST_LIST_SUCCESS.getMessage(), postService.searchPostList(postRole, pageable)));
-    }
-
-    @DeleteMapping("/{postId}")
-    public ResponseEntity<BaseResponse<String>> deletePost(@PathVariable("postId") Long postId){
-        postService.findPostAndDelete(postId);
-        return ResponseEntity.ok(BaseResponse.create(DELETE_POST_SUCCESS.getMessage()));
     }
 }

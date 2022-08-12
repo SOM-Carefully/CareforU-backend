@@ -11,6 +11,4 @@ public interface PostService {
     PostDto.SearchResponse searchPostDetail(Long postId);
 
     SliceDto<PostDto.SearchResponse> searchPostList(String postRole, Pageable pageable);
-
-    void findPostAndDelete(Long postId);
 }
