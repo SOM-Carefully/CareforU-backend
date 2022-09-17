@@ -1,10 +1,9 @@
 package com.example.carefully.domain.user.controller;
 
-import com.example.carefully.domain.user.dto.LoginResponseMessage;
-import com.example.carefully.global.error.dto.BaseResponse;
+import com.example.carefully.domain.user.dto.RegisterRequest;
+import com.example.carefully.global.dto.BaseResponse;
 import com.example.carefully.domain.user.dto.LoginRequest;
 import com.example.carefully.domain.user.dto.TokenResponse;
-import com.example.carefully.domain.user.dto.RegisterRequest;
 import com.example.carefully.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -21,6 +21,7 @@ public enum ErrorCode {
     INVALID_SECRET_KEY(2007, "유효하지 않은 시크릿 키입니다."),
     USER_EXIST(400, "이미 존재하는 유저입니다."),
     USER_NOT_FOUND(400, "유저를 찾을 수 없습니다."),
+    ROLE_NOT_VALIDATE(400, "유효하지 않은 역할입니다."),
 
     //TODO 도메인 별로 분류해서 추가해주세요.
 

@@ -3,11 +3,13 @@ package com.example.carefully.domain.user.service;
 import com.example.carefully.domain.user.dto.LoginRequest;
 import com.example.carefully.domain.user.dto.RegisterRequest;
 import com.example.carefully.domain.user.dto.TokenResponse;
+import com.example.carefully.domain.user.entity.Operation;
 import com.example.carefully.domain.user.entity.Role;
 import com.example.carefully.domain.user.exception.DuplicatedUsernameException;
+import com.example.carefully.domain.user.exception.NotValidationRoleException;
+import com.example.carefully.domain.user.repository.CommonUserRepository;
 import com.example.carefully.global.security.jwt.TokenProvider;
 import com.example.carefully.domain.user.entity.User;
-import com.example.carefully.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -22,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly=true)
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository userRepository;
+    private final CommonUserRepository commonUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -49,23 +51,46 @@ public class UserService {
             throw new DuplicatedUsernameException();
         }
 
-        User user = User.builder()
-                .username(registerRequest.getUsername())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .email(registerRequest.getEmail())
-                .name(registerRequest.getName())
-                .phoneNumber(registerRequest.getPhoneNumber())
-                .gender(registerRequest.getGender())
-                .address(registerRequest.getAddress())
-                .university(registerRequest.getUniversity())
-                .role(Role.valueOf(registerRequest.getRole().name()))
-                .activated(true)
-                .build();
+        String requestRole = String.valueOf(registerRequest.getRole());
 
-        return RegisterRequest.from(userRepository.save(user));
+        if (requestRole.equals("USER")) {
+            User user = User.builder()
+                    .username(registerRequest.getUsername())
+                    .name(registerRequest.getName())
+                    .password(passwordEncoder.encode(registerRequest.getPassword()))
+                    .foreignerNumber(registerRequest.getForeignerNumber())
+                    .phoneNumber(registerRequest.getPhoneNumber())
+                    .gender(registerRequest.getGender())
+                    .address(registerRequest.getAddress())
+                    .university(registerRequest.getUniversity())
+                    .major(registerRequest.getMajor())
+                    .role(Role.valueOf(registerRequest.getRole().name()))
+                    .activated(true)
+                    .build();
+            return RegisterRequest.fromUser(commonUserRepository.save(user));
+        }
+
+        else if (requestRole.equals("OPERATION")) {
+            Operation operation = Operation.builder()
+                    .username(registerRequest.getUsername())
+                    .name(registerRequest.getName())
+                    .password(passwordEncoder.encode(registerRequest.getPassword()))
+                    .phoneNumber(registerRequest.getPhoneNumber())
+                    .businessRegisterNumber(registerRequest.getBusinessRegisterNumber())
+                    .businessType(registerRequest.getBusinessType())
+                    .businessName(registerRequest.getBusinessName())
+                    .role(Role.valueOf(registerRequest.getRole().name()))
+                    .activated(true)
+                    .build();
+            return RegisterRequest.fromOperation(commonUserRepository.save(operation));
+        }
+
+        else {
+            throw new NotValidationRoleException();
+        }
     }
 
     private boolean isDuplicateUsername(String username) {
-        return userRepository.existsByUsername(username);
+        return commonUserRepository.existsByUsername(username);
     }
 }

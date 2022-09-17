@@ -1,4 +1,4 @@
-package com.example.carefully.domain.user.entity;
+package com.example.carefully.global.entity;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
