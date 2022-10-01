@@ -37,6 +37,14 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 }
 
+processResources.dependsOn('copySecret')
+
+task copySecret(type: Copy) {
+    from './carefully-secret'
+    include "*.yml"
+    into './src/main/resources'
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
