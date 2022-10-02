@@ -1,6 +1,6 @@
 package com.example.carefully.domain.post.domain;
 
-import com.example.carefully.global.entity.BaseEntity;
+import com.example.carefully.domain.user.entity.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
