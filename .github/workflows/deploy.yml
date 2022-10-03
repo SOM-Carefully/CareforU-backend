@@ -3,10 +3,7 @@ name: Java CI/CD with Docker
 on:
   push:
     branches:
-      - feature/cicd
-  pull_request:
-    branches:
-      - feature/cicd
+      - develop
 
 env:
   NAME: ${{ secrets.DOCKERHUB_USERNAME }}
