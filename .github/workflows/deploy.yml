@@ -20,7 +20,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
         with:
-          token: ${{secrets.TOKEN_GITHUB}}
+          token: ${{ secrets.TOKEN_GITHUB }}
           submodules: true
 
       - name: Set up JDK 11
@@ -42,12 +42,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: ${{ env.NAME }}/${{ env.REPO }}:latest
+      - name: Build and push to DockerHub
+        run: |
+          docker build -t ${{ env.REPO }} .
+          docker tag ${{ env.REPO }}:latest ${{ env.NAME }}/${{ env.REPO }}:latest
+          docker push ${{ env.NAME }}/${{ env.REPO }}:latest
 
   deploy:
     needs: build
@@ -64,9 +63,3 @@ jobs:
         run: |
           docker stop ${{ env.REPO }} && docker rm ${{ env.REPO }} && docker rmi ${{ env.NAME }}/${{ env.REPO }}:latest
           docker run -d -p 80:8080 --name ${{ env.REPO }} --restart always ${{ env.NAME }}/${{ env.REPO }}:latest
-
-
-
-
-
-
