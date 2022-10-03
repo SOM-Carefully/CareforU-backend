@@ -8,6 +8,10 @@ on:
     branches:
       - feature/cicd
 
+env:
+  NAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  REPO: carefully
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -43,4 +47,26 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: semi0108/carefully:latest
+          tags: ${{ env.NAME }}/${{ env.REPO }}:latest
+
+  deploy:
+    needs: build
+    name: deploy
+    runs-on: [ self-hosted, label-development ]
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Docker run
+        run: |
+          docker stop ${{ env.REPO }} && docker rm ${{ env.REPO }} && docker rmi ${{ env.NAME }}/${{ env.REPO }}:latest
+          docker run -d -p 80:8080 --name ${{ env.REPO }} --restart always ${{ env.NAME }}/${{ env.REPO }}:latest
+
+
+
+
+
+
