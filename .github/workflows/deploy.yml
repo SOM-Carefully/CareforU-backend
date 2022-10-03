@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@2
+        uses: actions/checkout@v2
         with:
           token: ${{secrets.TOKEN_GITHUB}}
           submodules: true
