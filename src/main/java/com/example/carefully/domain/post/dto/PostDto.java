@@ -14,6 +14,7 @@ public class PostDto {
     public static class CreateRequest{
         private String title;
         private String content;
+        private String imgUrl;
 
         public Post toEntity(PostRole role, Long userId){
             return Post.builder()
@@ -21,6 +22,7 @@ public class PostDto {
                     .userId(userId)
                     .title(title)
                     .content(content)
+                    .imgUrl(imgUrl)
                     .build();
         }
     }

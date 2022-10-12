@@ -36,6 +36,12 @@ public class PostServiceImpl implements PostService {
         return new PostDto.UpdateResponse(post.getId());
     }
 
+    @Transactional
+    public void findPostAndDelete(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(PostEmptyException::new);
+        postRepository.delete(post);
+    }
+
     public PostDto.SearchResponse searchPostDetail(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(PostEmptyException::new);
         return searchResponseBuilder(post);
@@ -45,12 +51,6 @@ public class PostServiceImpl implements PostService {
         Slice<PostDto.SearchResponse> pageDtoList = postRepository.findAllByPostRoleOrderByCreatedAtDesc(
                 pageable, PostRole.valueOf(postRole)).map(this::searchResponseBuilder);
         return SliceDto.create(pageDtoList);
-    }
-
-    @Transactional
-    public void findPostAndDelete(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(PostEmptyException::new);
-        postRepository.delete(post);
     }
 
     private PostDto.SearchResponse searchResponseBuilder(Post post){
