@@ -21,8 +21,6 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final Long tempUserId = 1L;
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
-
     @Transactional
     public PostDto.CreateResponse createNewPost(PostDto.CreateRequest request, String postRole) {
         Post savedPost = postRepository.save(request.toEntity(PostRole.valueOf(postRole), tempUserId));
@@ -44,20 +42,12 @@ public class PostServiceImpl implements PostService {
 
     public PostDto.SearchResponse searchPostDetail(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(PostEmptyException::new);
-        return searchResponseBuilder(post);
+        return PostDto.SearchResponse.create(post);
     }
 
     public SliceDto<PostDto.SearchResponse> searchPostList(String postRole, Pageable pageable) {
         Slice<PostDto.SearchResponse> pageDtoList = postRepository.findAllByPostRoleOrderByCreatedAtDesc(
-                pageable, PostRole.valueOf(postRole)).map(this::searchResponseBuilder);
+                pageable, PostRole.valueOf(postRole)).map(PostDto.SearchResponse::create);
         return SliceDto.create(pageDtoList);
-    }
-
-    private PostDto.SearchResponse searchResponseBuilder(Post post){
-        return PostDto.SearchResponse.builder()
-                .postId(post.getId())
-                .title(post.getTitle())
-                .writer(post.getUserId().toString())
-                .createdAt(post.getCreatedAt().format(formatter)).build();
     }
 }
