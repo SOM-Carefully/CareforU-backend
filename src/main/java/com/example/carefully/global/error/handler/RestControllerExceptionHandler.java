@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.stream.Collectors;
 
@@ -49,6 +50,15 @@ public class RestControllerExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
         log.error("handleAccessDeniedException", ex);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.create(ErrorCode.INVALID_USER_JWT));
+    }
+
+    /**
+     * 파일 업로드 용량 초과시 발생
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    protected ResponseEntity<ErrorResponse> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+        log.info("handleMaxUploadSizeExceededException", e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.create(ErrorCode.FILE_SIZE_EXCEED));
     }
 
     /**

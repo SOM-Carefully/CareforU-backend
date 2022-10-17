@@ -27,14 +27,17 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
+    private String imgUrl;
+
     @Enumerated(value = EnumType.STRING)
     private PostRole postRole;
 
     @Builder
-    public Post(Long userId, String title, String content, PostRole postRole){
+    public Post(Long userId, String title, String content, String imgUrl, PostRole postRole){
         this.userId = userId;
         this.title = title;
         this.content = content;
+        this.imgUrl = imgUrl;
         this.postRole = postRole;
     }
 

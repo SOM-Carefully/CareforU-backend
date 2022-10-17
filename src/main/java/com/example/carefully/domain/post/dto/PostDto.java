@@ -2,6 +2,7 @@ package com.example.carefully.domain.post.dto;
 
 import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.domain.post.domain.PostRole;
+import com.example.carefully.global.common.Constant;
 import lombok.*;
 
 @Getter
@@ -14,6 +15,7 @@ public class PostDto {
     public static class CreateRequest{
         private String title;
         private String content;
+        private String imgUrl;
 
         public Post toEntity(PostRole role, Long userId){
             return Post.builder()
@@ -21,6 +23,7 @@ public class PostDto {
                     .userId(userId)
                     .title(title)
                     .content(content)
+                    .imgUrl(imgUrl)
                     .build();
         }
     }
@@ -57,5 +60,13 @@ public class PostDto {
         private String title;
         private String writer;
         private String createdAt;
+
+        public static SearchResponse create(Post post){
+            return SearchResponse.builder()
+                    .postId(post.getId())
+                    .title(post.getTitle())
+                    .writer(post.getUserId().toString())
+                    .createdAt(post.getCreatedAt().format(Constant.formatter)).build();
+        }
     }
 }
