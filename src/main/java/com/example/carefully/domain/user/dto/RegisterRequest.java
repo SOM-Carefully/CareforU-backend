@@ -68,6 +68,7 @@ public class RegisterRequest {
 
         return RegisterRequest.builder()
                 .username(user.getUsername())
+                .password(user.getPassword())
                 .name(user.getName())
                 .phoneNumber(user.getPhoneNumber())
                 .foreignerNumber(user.getForeignerNumber())
@@ -84,12 +85,25 @@ public class RegisterRequest {
 
         return RegisterRequest.builder()
                 .username(operation.getUsername())
+                .password(operation.getPassword())
                 .name(operation.getName())
                 .phoneNumber(operation.getPhoneNumber())
                 .businessType(operation.getBusinessType())
                 .businessName(operation.getBusinessName())
                 .businessRegisterNumber(operation.getBusinessRegisterNumber())
                 .role(RoleRequest.valueOf(operation.getRole().name()))
+                .build();
+    }
+
+    public static RegisterRequest fromAdmin(Admin admin) {
+        if (admin == null) return null;
+
+        return RegisterRequest.builder()
+                .username(admin.getUsername())
+                .password(admin.getPassword())
+                .name(admin.getName())
+                .phoneNumber(admin.getPhoneNumber())
+                .role(RoleRequest.valueOf(admin.getRole().name()))
                 .build();
     }
 

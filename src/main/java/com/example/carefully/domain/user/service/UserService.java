@@ -53,35 +53,15 @@ public class UserService {
 
         String requestRole = String.valueOf(registerRequest.getRole());
 
+        registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+
         if (requestRole.equals("USER")) {
-            User user = User.builder()
-                    .username(registerRequest.getUsername())
-                    .name(registerRequest.getName())
-                    .password(passwordEncoder.encode(registerRequest.getPassword()))
-                    .foreignerNumber(registerRequest.getForeignerNumber())
-                    .phoneNumber(registerRequest.getPhoneNumber())
-                    .gender(registerRequest.getGender())
-                    .address(registerRequest.getAddress())
-                    .university(registerRequest.getUniversity())
-                    .major(registerRequest.getMajor())
-                    .role(Role.valueOf(registerRequest.getRole().name()))
-                    .activated(true)
-                    .build();
+            User user = User.registerUser(registerRequest);
             return RegisterRequest.fromUser(commonUserRepository.save(user));
         }
 
         else if (requestRole.equals("OPERATION")) {
-            Operation operation = Operation.builder()
-                    .username(registerRequest.getUsername())
-                    .name(registerRequest.getName())
-                    .password(passwordEncoder.encode(registerRequest.getPassword()))
-                    .phoneNumber(registerRequest.getPhoneNumber())
-                    .businessRegisterNumber(registerRequest.getBusinessRegisterNumber())
-                    .businessType(registerRequest.getBusinessType())
-                    .businessName(registerRequest.getBusinessName())
-                    .role(Role.valueOf(registerRequest.getRole().name()))
-                    .activated(true)
-                    .build();
+            Operation operation = Operation.registerOperation(registerRequest);
             return RegisterRequest.fromOperation(commonUserRepository.save(operation));
         }
 
@@ -93,4 +73,5 @@ public class UserService {
     private boolean isDuplicateUsername(String username) {
         return commonUserRepository.existsByUsername(username);
     }
+
 }

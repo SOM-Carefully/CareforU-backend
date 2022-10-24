@@ -50,4 +50,5 @@ public abstract class CommonUser extends BaseEntity {
         this.role = role;
         this.activated = activated;
     }
+
 }

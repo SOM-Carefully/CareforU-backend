@@ -1,5 +1,6 @@
 package com.example.carefully.domain.user.entity;
 
+import com.example.carefully.domain.user.dto.RegisterRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,5 +37,20 @@ public class Operation extends CommonUser{
         this.businessType = businessType;
         this.businessName = businessName;
         this.businessRegisterNumber = businessRegisterNumber;
+    }
+
+    public static Operation registerOperation(RegisterRequest registerRequest) {
+
+        return Operation.builder()
+                .username(registerRequest.getUsername())
+                .name(registerRequest.getName())
+                .password(registerRequest.getPassword())
+                .phoneNumber(registerRequest.getPhoneNumber())
+                .businessRegisterNumber(registerRequest.getBusinessRegisterNumber())
+                .businessType(registerRequest.getBusinessType())
+                .businessName(registerRequest.getBusinessName())
+                .role(Role.valueOf(registerRequest.getRole().name()))
+                .activated(true)
+                .build();
     }
 }
