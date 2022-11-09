@@ -1,7 +1,6 @@
 package com.example.carefully.domain.user.entity;
 
-import com.example.carefully.domain.user.dto.RegisterRequest;
-import com.example.carefully.domain.user.dto.RoleRequest;
+import com.example.carefully.domain.user.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,7 +44,7 @@ public class User extends CommonUser {
         this.address = address;
     }
 
-    public static User registerUser(RegisterRequest registerRequest) {
+    public static User registerUser(UserDto.RegisterRequest registerRequest) {
         return User.builder()
                 .username(registerRequest.getUsername())
                 .password(registerRequest.getPassword())

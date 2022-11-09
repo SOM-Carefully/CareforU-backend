@@ -1,10 +1,8 @@
 package com.example.carefully.domain.user.service;
 
-import com.example.carefully.domain.user.dto.LoginRequest;
-import com.example.carefully.domain.user.dto.RegisterRequest;
 import com.example.carefully.domain.user.dto.TokenResponse;
+import com.example.carefully.domain.user.dto.UserDto;
 import com.example.carefully.domain.user.entity.Operation;
-import com.example.carefully.domain.user.entity.Role;
 import com.example.carefully.domain.user.exception.DuplicatedUsernameException;
 import com.example.carefully.domain.user.exception.NotValidationRoleException;
 import com.example.carefully.domain.user.repository.CommonUserRepository;
@@ -30,7 +28,7 @@ public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @Transactional
-    public TokenResponse login(LoginRequest loginRequest) {
+    public TokenResponse login(UserDto.LoginRequest loginRequest) {
         UsernamePasswordAuthenticationToken unauthenticated = UsernamePasswordAuthenticationToken.unauthenticated(
             loginRequest.getUsername(),
             loginRequest.getPassword()
@@ -46,7 +44,7 @@ public class UserService {
     }
 
     @Transactional
-    public RegisterRequest signup(RegisterRequest registerRequest) {
+    public UserDto.RegisterRequest signup(UserDto.RegisterRequest registerRequest) {
         if (isDuplicateUsername(registerRequest.getUsername())) {
             throw new DuplicatedUsernameException();
         }
@@ -57,12 +55,12 @@ public class UserService {
 
         if (requestRole.equals("USER")) {
             User user = User.registerUser(registerRequest);
-            return RegisterRequest.fromUser(commonUserRepository.save(user));
+            return UserDto.RegisterRequest.fromUser(commonUserRepository.save(user));
         }
 
         else if (requestRole.equals("OPERATION")) {
             Operation operation = Operation.registerOperation(registerRequest);
-            return RegisterRequest.fromOperation(commonUserRepository.save(operation));
+            return UserDto.RegisterRequest.fromOperation(commonUserRepository.save(operation));
         }
 
         else {
