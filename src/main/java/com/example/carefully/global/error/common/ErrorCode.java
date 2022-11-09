@@ -16,6 +16,7 @@ public enum ErrorCode {
     FAIL_UPLOAD_FILE( 2004, "파일 업로드에 실패하셨습니다."),
     EMPTY_FILE(2005, "파일을 확인해 주세요."),
     FILE_SIZE_EXCEED(2006, "파일 사이즈를 확인해 주세요."),
+    FILE_WRONG_EXTENSION(2007, "파일 확장자가 잘못되었습니다."),
     INTERNAL_SERVER_ERROR(5000, "서버 오류입니다. "),
     METHOD_NOT_ALLOWED(4000, "요청 방식이 잘못되었습니다."),
     INVALID_SECRET_KEY(2007, "유효하지 않은 시크릿 키입니다."),
@@ -24,7 +25,6 @@ public enum ErrorCode {
     ROLE_NOT_VALIDATE(400, "유효하지 않은 역할입니다."),
 
     //TODO 도메인 별로 분류해서 추가해주세요.
-
 
     //POST
     POST_NOT_FOUND(3010, "존재하지 않는 글입니다.");

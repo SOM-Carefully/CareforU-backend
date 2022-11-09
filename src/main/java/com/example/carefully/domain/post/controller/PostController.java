@@ -20,27 +20,30 @@ public class PostController {
     private final PostServiceImpl postService;
 
     @PostMapping
-    public ResponseEntity<BaseResponse<CreateResponse>> createPost(@RequestParam("category") String postRole, @RequestBody CreateRequest createRequest){
+    public ResponseEntity<BaseResponse<CreateResponse>> createPost(@RequestParam("category") String postRole,
+                                                                   @RequestBody CreateRequest createRequest) {
         return ResponseEntity.ok(BaseResponse.create(CREATE_POST_SUCCESS.getMessage(), postService.createNewPost(createRequest, postRole)));
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<BaseResponse<UpdateResponse>> updatePost(@PathVariable("postId") Long postId, @RequestBody UpdateRequest updateRequest){
+    public ResponseEntity<BaseResponse<UpdateResponse>> updatePost(@PathVariable("postId") Long postId,
+                                                                   @RequestBody UpdateRequest updateRequest) {
         return ResponseEntity.ok(BaseResponse.create(UPDATE_POST_SUCCESS.getMessage(), postService.updatePost(updateRequest, postId)));
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<BaseResponse<SearchResponse>> searchPostDetail(@PathVariable("postId") Long postId){
+    public ResponseEntity<BaseResponse<SearchResponse>> searchPostDetail(@PathVariable("postId") Long postId) {
         return ResponseEntity.ok(BaseResponse.create(GET_POST_DETAIL_SUCCESS.getMessage(), postService.searchPostDetail(postId)));
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<SliceDto<SearchResponse>>> searchPostList(@RequestParam("category") String postRole, @PageableDefault(size = 10) Pageable pageable){
+    public ResponseEntity<BaseResponse<SliceDto<SearchResponse>>> searchPostList(@RequestParam("category") String postRole,
+                                                                                 @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(BaseResponse.create(GET_POST_LIST_SUCCESS.getMessage(), postService.searchPostList(postRole, pageable)));
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<BaseResponse<String>> deletePost(@PathVariable("postId") Long postId){
+    public ResponseEntity<BaseResponse<String>> deletePost(@PathVariable("postId") Long postId) {
         postService.findPostAndDelete(postId);
         return ResponseEntity.ok(BaseResponse.create(DELETE_POST_SUCCESS.getMessage()));
     }
