@@ -1,4 +1,4 @@
-package com.example.carefully.domain.user.service;
+package com.example.carefully.domain.user.service.impl;
 
 import com.example.carefully.domain.user.entity.CommonUser;
 import com.example.carefully.domain.user.entity.Role;
@@ -14,10 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Component("userDetailsService")
-public class CustomUserDetailsService implements UserDetailsService {
+public class CustomUserDetailsServiceImpl implements UserDetailsService {
     private final CommonUserRepository commonUserRepository;
 
-    public CustomUserDetailsService(CommonUserRepository commonUserRepository) {
+    public CustomUserDetailsServiceImpl(CommonUserRepository commonUserRepository) {
         this.commonUserRepository = commonUserRepository;
     }
 
