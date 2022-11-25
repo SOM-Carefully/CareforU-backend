@@ -27,50 +27,49 @@ public class UserDto {
 
         @NotNull
         @Size(min = 3, max = 50)
-        @ApiModelProperty(example = "유저 이메일")
+        @ApiModelProperty(example = "test@test.com")
         private String username;
 
         @NotNull
-        @ApiModelProperty(example = "유저 이름")
+        @ApiModelProperty(example = "홍길동")
         private String name;
 
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         @NotNull
         @Size(min = 3, max = 100)
-        @ApiModelProperty(example = "유저 비밀번호")
+        @ApiModelProperty(example = "test1234")
         private String password;
 
         @NotNull
         @Size(min = 3, max = 50)
-        @ApiModelProperty(example = "일반 유저 전화번호")
+        @ApiModelProperty(example = "01012345678")
         private String phoneNumber;
 
-        @ApiModelProperty(example = "일반 유저 외국인등록번호")
+        @ApiModelProperty(example = "123456-1234567")
         private String foreignerNumber;
 
-        @ApiModelProperty(example = "일반 유저 성별")
+        @ApiModelProperty(example = "WOMAN/MAN/NA")
         private Gender gender;
 
-        @ApiModelProperty(example = "일반 유저 주소")
         private Address address;
 
-        @ApiModelProperty(example = "일반 유저 대학")
+        @ApiModelProperty(example = "상명대학교")
         private String university;
 
-        @ApiModelProperty(example = "일반 유저 전공")
+        @ApiModelProperty(example = "컴퓨터과학과")
         private String major;
 
-        @ApiModelProperty(example = "운영팀 유저 사업자 종류")
+        @ApiModelProperty(example = "TRANSLATE/DWELLING/TRAFFIC")
         private BusinessType businessType;
 
-        @ApiModelProperty(example = "운영팀 유저 상호명")
+        @ApiModelProperty(example = "케어풀리")
         private String businessName;
 
-        @ApiModelProperty(example = "운영팀 유저 사업자 등록 번호")
+        @ApiModelProperty(example = "123-12-12345")
         private String businessRegisterNumber;
 
         @NotNull
-        @ApiModelProperty(example = "유저 권한")
+        @ApiModelProperty(example = "USER/OPERATION/ADMIN")
         private RoleRequest role;
 
         public static RegisterRequest fromUser(User user) {
@@ -118,9 +117,6 @@ public class UserDto {
         }
     }
 
-    /*
-    user, operation dto 분리 예정
-     */
     @Getter
     @Setter
     @Builder
@@ -129,51 +125,45 @@ public class UserDto {
     public static class UpdateRequest {
 
         @NotNull
-        @Size(min = 3, max = 50)
-        @ApiModelProperty(example = "유저 이메일")
-        private String username;
-
-        @NotNull
-        @ApiModelProperty(example = "유저 이름")
+        @ApiModelProperty(example = "홍길동")
         private String name;
 
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         @NotNull
         @Size(min = 3, max = 100)
-        @ApiModelProperty(example = "유저 비밀번호")
+        @ApiModelProperty(example = "test1234")
         private String password;
 
         @NotNull
         @Size(min = 3, max = 50)
-        @ApiModelProperty(example = "일반 유저 전화번호")
+        @ApiModelProperty(example = "01012345678")
         private String phoneNumber;
 
-        @ApiModelProperty(example = "일반 유저 외국인등록번호")
+        @ApiModelProperty(example = "123456-1234567")
         private String foreignerNumber;
 
-        @ApiModelProperty(example = "일반 유저 성별")
+        @ApiModelProperty(example = "WOMAN/MAN/NA")
         private Gender gender;
 
-        @ApiModelProperty(example = "일반 유저 주소")
         private Address address;
 
-        @ApiModelProperty(example = "일반 유저 대학")
+        @ApiModelProperty(example = "상명대학교")
         private String university;
 
-        @ApiModelProperty(example = "일반 유저 전공")
+        @ApiModelProperty(example = "컴퓨터과학과")
         private String major;
 
-        @ApiModelProperty(example = "운영팀 유저 사업자 종류")
+        @ApiModelProperty(example = "TRANSLATE/DWELLING/TRAFFIC")
         private BusinessType businessType;
 
-        @ApiModelProperty(example = "운영팀 유저 상호명")
+        @ApiModelProperty(example = "케어풀리")
         private String businessName;
 
-        @ApiModelProperty(example = "운영팀 유저 사업자 등록 번호")
+        @ApiModelProperty(example = "123-12-12345")
         private String businessRegisterNumber;
 
         @NotNull
-        @ApiModelProperty(example = "유저 권한")
+        @ApiModelProperty(example = "USER/OPERATION/ADMIN")
         private RoleRequest role;
 
         public static UpdateRequest fromUser(User user) {
@@ -214,12 +204,12 @@ public class UserDto {
 
         @NotNull
         @Size(min = 3, max = 50)
-        @ApiModelProperty(example = "유저 이메일")
+        @ApiModelProperty(example = "test@test.com")
         private String username;
 
         @NotNull
         @Size(min = 3, max = 100)
-        @ApiModelProperty(example = "유저 비밀번호")
+        @ApiModelProperty(example = "test1234")
         private String password;
     }
 
@@ -232,90 +222,7 @@ public class UserDto {
 
         @NotNull
         @Size(min = 3, max = 100)
-        @ApiModelProperty(example = "유저 비밀번호")
+        @ApiModelProperty(example = "test1234")
         private String password;
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class UserResponse {
-
-        @NotNull
-        @Size(min = 3, max = 50)
-        @ApiModelProperty(example = "유저 이메일")
-        private String username;
-
-        @NotNull
-        @ApiModelProperty(example = "유저 이름")
-        private String name;
-
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        @NotNull
-        @Size(min = 3, max = 100)
-        @ApiModelProperty(example = "유저 비밀번호")
-        private String password;
-
-        @NotNull
-        @Size(min = 3, max = 50)
-        @ApiModelProperty(example = "일반 유저 전화번호")
-        private String phoneNumber;
-
-        @ApiModelProperty(example = "일반 유저 외국인등록번호")
-        private String foreignerNumber;
-
-        @ApiModelProperty(example = "일반 유저 성별")
-        private Gender gender;
-
-        @ApiModelProperty(example = "일반 유저 주소")
-        private Address address;
-
-        @ApiModelProperty(example = "일반 유저 대학")
-        private String university;
-
-        @ApiModelProperty(example = "일반 유저 전공")
-        private String major;
-
-        @NotNull
-        @ApiModelProperty(example = "유저 권한")
-        private RoleRequest role;
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class OperationResponse {
-
-        @NotNull
-        @Size(min = 3, max = 50)
-        @ApiModelProperty(example = "유저 이메일")
-        private String username;
-
-        @NotNull
-        @ApiModelProperty(example = "유저 이름")
-        private String name;
-
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        @NotNull
-        @Size(min = 3, max = 100)
-        @ApiModelProperty(example = "유저 비밀번호")
-        private String password;
-
-        @ApiModelProperty(example = "운영팀 유저 사업자 종류")
-        private BusinessType businessType;
-
-        @ApiModelProperty(example = "운영팀 유저 상호명")
-        private String businessName;
-
-        @ApiModelProperty(example = "운영팀 유저 사업자 등록 번호")
-        private String businessRegisterNumber;
-
-        @NotNull
-        @ApiModelProperty(example = "유저 권한")
-        private RoleRequest role;
     }
 }

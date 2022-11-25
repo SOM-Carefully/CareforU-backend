@@ -34,22 +34,27 @@ public class UserController {
 
     @ApiOperation(value = "회원가입", notes = "회원가입 API")
     @PostMapping("/signup")
-    public ResponseEntity<BaseResponse<UserDto.RegisterRequest>> signup(@RequestBody UserDto.RegisterRequest registerRequest) {
-        return ResponseEntity.ok(BaseResponse.create(REGISTER_SUCCESS.getMessage(), userService.signup(registerRequest)));
+    public ResponseEntity signup(@RequestBody UserDto.RegisterRequest registerRequest) {
+        userService.signup(registerRequest);
+        return ResponseEntity.ok(BaseResponse.create(REGISTER_SUCCESS.getMessage()));
     }
 
+    @ApiOperation(value = "내 정보 조회", notes = "회원 조회 API")
     @GetMapping("/my")
     @PreAuthorize("hasAnyRole('USER','OPERATION', 'ADMIN')")
     public ResponseEntity<BaseResponse<UserDto.RegisterRequest>> getMyUserInfo(HttpServletRequest request) {
         return ResponseEntity.ok(BaseResponse.create(MY_LOOKUP_SUCCESS.getMessage(), userService.getMyUserWithAuthorities()));
     }
 
+    @ApiOperation(value = "내 정보 수정", notes = "회원 수정 API")
     @PutMapping("/my")
     @PreAuthorize("hasAnyRole('USER','OPERATION', 'ADMIN')")
-    public ResponseEntity<BaseResponse<UserDto.UpdateRequest>> update(@RequestBody UserDto.UpdateRequest updateRequest) {
-        return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage(), userService.update(updateRequest)));
+    public ResponseEntity update(@RequestBody UserDto.UpdateRequest updateRequest) {
+        userService.update(updateRequest);
+        return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
     }
 
+    @ApiOperation(value = "회원 탈퇴", notes = "회원 탈퇴 API")
     @PostMapping("/signout")
     @PreAuthorize("hasAnyRole('USER','OPERATION', 'ADMIN')")
     public ResponseEntity signout(@RequestBody UserDto.SignoutRequest signoutRequest) {
