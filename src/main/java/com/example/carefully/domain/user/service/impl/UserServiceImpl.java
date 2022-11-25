@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public UserDto.RegisterRequest signup(UserDto.RegisterRequest registerRequest) {
+    public void signup(UserDto.RegisterRequest registerRequest) {
         if (isDuplicateUsername(registerRequest.getUsername())) {
             throw new DuplicatedUsernameException();
         }
@@ -67,11 +67,11 @@ public class UserServiceImpl implements UserService {
 
         if (requestRole.equals("USER")) {
             User user = User.registerUser(registerRequest);
-            return UserDto.RegisterRequest.fromUser(commonUserRepository.save(user));
+            commonUserRepository.save(user);
         }
         else if (requestRole.equals("OPERATION")) {
             Operation operation = Operation.registerOperation(registerRequest);
-            return UserDto.RegisterRequest.fromOperation(commonUserRepository.save(operation));
+            commonUserRepository.save(operation);
         }
         else {
             throw new NotValidationRoleException();
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public UserDto.UpdateRequest update(UserDto.UpdateRequest updateRequest) {
+    public void update(UserDto.UpdateRequest updateRequest) {
 
         CommonUser commonUser = getCurrentUser();
 
@@ -91,13 +91,13 @@ public class UserServiceImpl implements UserService {
             User user = (User) commonUser;
             User result = User.updateUser(user, updateRequest);
             user.update(result);
-            return UserDto.UpdateRequest.fromUser(commonUserRepository.save(result));
+            commonUserRepository.save(result);
         }
         else if (commonUser.getRole().name().equals("OPERATION")) {
             Operation operation = (Operation) commonUser;
             Operation result = Operation.updateOperation(operation, updateRequest);
             operation.update(result);
-            return UserDto.UpdateRequest.fromOperation(commonUserRepository.save(operation));
+            commonUserRepository.save(operation);
         }
         else {
             throw new NotValidationRoleException();
@@ -135,15 +135,15 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public UserDto.RegisterRequest getMyUserWithAuthorities() {
+    public UserDto.UserResponse getMyUserWithAuthorities() {
 
         CommonUser commonUser =  getCurrentUser();
         String requestRole = commonUser.getRole().name();
 
         if (requestRole.equals("USER")) {
-            return UserDto.RegisterRequest.fromUser((User) commonUser);
+            return UserDto.UserResponse.fromUser((User) commonUser);
         } else if (requestRole.equals("OPERATION")) {
-            return UserDto.RegisterRequest.fromOperation((Operation) commonUser);
+            return UserDto.UserResponse.fromOperation((Operation) commonUser);
         } else {
             throw new NotValidationRoleException();
         }

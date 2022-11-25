@@ -7,13 +7,13 @@ import com.example.carefully.domain.user.dto.UserDto;
 public interface UserService {
     TokenResponse login(UserDto.LoginRequest loginRequest);
 
-    UserDto.RegisterRequest signup(UserDto.RegisterRequest registerRequest);
-    UserDto.UpdateRequest update(UserDto.UpdateRequest updateRequest);
+    void signup(UserDto.RegisterRequest registerRequest);
+    void update(UserDto.UpdateRequest updateRequest);
     void signout(UserDto.SignoutRequest signoutRequest);
 
     boolean isDuplicateUsername(String username);
 
-    UserDto.RegisterRequest getMyUserWithAuthorities();
+    UserDto.UserResponse getMyUserWithAuthorities();
 
 //    UserDto.RegisterRequest getUserWithAuthorities(String username);
 }
