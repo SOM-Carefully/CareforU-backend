@@ -68,6 +68,7 @@ public class User extends CommonUser {
     public void update(User user) {
         User.builder().user(user);
     }
+
     public static User registerUser(UserDto.RegisterRequest registerRequest) {
         return User.builder()
                 .username(registerRequest.getUsername())
@@ -97,5 +98,4 @@ public class User extends CommonUser {
                 .major(updateRequest.getMajor())
                 .build();
     }
-
 }

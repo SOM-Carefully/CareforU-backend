@@ -9,9 +9,11 @@ public interface UserService {
 
     UserDto.RegisterRequest signup(UserDto.RegisterRequest registerRequest);
     UserDto.UpdateRequest update(UserDto.UpdateRequest updateRequest);
+    void signout(UserDto.SignoutRequest signoutRequest);
 
     boolean isDuplicateUsername(String username);
 
     UserDto.RegisterRequest getMyUserWithAuthorities();
-    UserDto.RegisterRequest getUserWithAuthorities(String username);
+
+//    UserDto.RegisterRequest getUserWithAuthorities(String username);
 }

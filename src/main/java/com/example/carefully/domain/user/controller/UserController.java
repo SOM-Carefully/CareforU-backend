@@ -50,9 +50,17 @@ public class UserController {
         return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage(), userService.update(updateRequest)));
     }
 
-    @GetMapping("/users/{username}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<BaseResponse<UserDto.RegisterRequest>> getUserInfo(@PathVariable String username) {
-        return ResponseEntity.ok(BaseResponse.create(USER_LOOKUP_SUCCESS.getMessage(), userService.getUserWithAuthorities(username)));
+    @PostMapping("/signout")
+    @PreAuthorize("hasAnyRole('USER','OPERATION', 'ADMIN')")
+    public ResponseEntity signout(@RequestBody UserDto.SignoutRequest signoutRequest) {
+        userService.signout(signoutRequest);
+        return ResponseEntity.ok(BaseResponse.create(SIGNOUT_SUCCESS.getMessage()));
     }
+
+
+//    @GetMapping("/users/{username}")
+//    @PreAuthorize("hasAnyRole('ADMIN')")
+//    public ResponseEntity<BaseResponse<UserDto.RegisterRequest>> getUserInfo(@PathVariable String username) {
+//        return ResponseEntity.ok(BaseResponse.create(USER_LOOKUP_SUCCESS.getMessage(), userService.getUserWithAuthorities(username)));
+//    }
 }

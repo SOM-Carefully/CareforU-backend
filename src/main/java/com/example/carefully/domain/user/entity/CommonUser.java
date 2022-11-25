@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.aop.framework.AdvisedSupportListener;
 
 import javax.persistence.*;
 
@@ -51,5 +52,9 @@ public abstract class CommonUser extends BaseEntity {
         this.password = password;
         this.role = role;
         this.activated = activated;
+    }
+    
+    public void signout() {
+        this.activated = false; 
     }
 }
