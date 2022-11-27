@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,15 +33,29 @@ public class Comment extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
-    private int hierarchy;
+    @Enumerated(value = EnumType.STRING)
+    private Hierarchy hierarchy;
 
-    @Column(nullable = false)
-    private int group;
+    public enum Hierarchy {
+        PARENT, CHILD
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
+
+    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    private List<Comment> child = new ArrayList<>();
 
     @Builder
-    public Comment(String content, int hierarchy, int group) {
+    public Comment(Post post, String content, Comment parent, Hierarchy hierarchy) {
+        this.post = post;
         this.content = content;
+        this.parent = parent;
         this.hierarchy = hierarchy;
-        this.group = group;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
