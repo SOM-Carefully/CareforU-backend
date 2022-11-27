@@ -1,6 +1,7 @@
 package com.example.carefully.domain.comment.dto;
 
 import com.example.carefully.domain.comment.domain.Comment;
+import com.example.carefully.domain.comment.domain.Comment.CommentStatus;
 import com.example.carefully.domain.post.domain.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -20,11 +21,10 @@ public class CommentDto {
         private String content;
         private String hierarchy;
 
-        public Comment toEntity(Post post, Comment parent) {
+        public Comment toEntity(Post post) {
             return Comment.builder()
                     .userId(1L)
                     .post(post)
-                    .parent(parent)
                     .content(content)
                     .hierarchy(Comment.Hierarchy.valueOf(hierarchy))
                     .build();
@@ -60,6 +60,7 @@ public class CommentDto {
             public static class CommentResponse {
                 private Long commentId;
                 private String content;
+                private CommentStatus status;
                 @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm", timezone = "Asia/Seoul")
                 private LocalDateTime createdAt;
 
@@ -67,6 +68,7 @@ public class CommentDto {
                     return CommentResponse.builder()
                             .commentId(comment.getId())
                             .content(comment.getContent())
+                            .status(comment.getCommentStatus())
                             .createdAt(comment.getCreatedAt())
                             .build();
                 }

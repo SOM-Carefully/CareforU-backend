@@ -47,18 +47,41 @@ public class Comment extends BaseEntity {
     private Comment parent;
 
     @OneToMany(mappedBy = "parent", orphanRemoval = true)
-    private List<Comment> child = new ArrayList<>();
+    private final List<Comment> child = new ArrayList<>();
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private CommentStatus commentStatus;
+
+    public enum CommentStatus {
+        ALIVE, DELETED
+    }
 
     @Builder
-    public Comment(Long userId, Post post, String content, Comment parent, Hierarchy hierarchy) {
+    public Comment(Long userId, Post post, String content,  Hierarchy hierarchy) {
         this.userId = userId;
         this.post = post;
         this.content = content;
-        this.parent = parent;
         this.hierarchy = hierarchy;
+        this.commentStatus = CommentStatus.ALIVE;
+    }
+
+    public void addParent(Comment parent) {
+        this.parent = parent;
+        if (parent != null) {
+            parent.getChild().add(this);
+        }
     }
 
     public boolean isParent() {
         return hierarchy == Hierarchy.PARENT;
+    }
+
+    public boolean canDeleteComment() {
+        return isParent() && child.size() == 0 || hierarchy == Hierarchy.CHILD;
+    }
+
+    public void changeStatusToDeleted() {
+        this.commentStatus = CommentStatus.DELETED;
     }
 }

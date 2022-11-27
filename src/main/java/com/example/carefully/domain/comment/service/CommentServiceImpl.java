@@ -31,8 +31,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto.CreateResponse addComment(CommentDto.CreateRequest request) {
         Post post = postRepository.findById(request.getPostId()).orElseThrow(PostEmptyException::new);
-        Comment comment = commentRepository.save(
-                request.toEntity(post, getParentOrChild(request)));
+        Comment comment = commentRepository.save(request.toEntity(post));
+        comment.addParent(getParentOrChild(request));
 
         return new CommentDto.CreateResponse(comment.getId());
     }
@@ -63,5 +63,17 @@ public class CommentServiceImpl implements CommentService {
             }
         });
         return map;
+    }
+
+    @Transactional
+    @Override
+    public void deleteComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentEmptyException::new);
+
+        if (comment.canDeleteComment()) {
+            commentRepository.delete(comment);
+        } else {
+            comment.changeStatusToDeleted();
+        }
     }
 }

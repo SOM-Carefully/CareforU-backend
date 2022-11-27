@@ -7,8 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.carefully.domain.comment.dto.CommentResponseMessage.CREATE_COMMENT_SUCCESS;
-import static com.example.carefully.domain.comment.dto.CommentResponseMessage.SEARCH_COMMENTS_SUCCESS;
+import static com.example.carefully.domain.comment.dto.CommentResponseMessage.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,5 +26,11 @@ public class CommentController {
     public ResponseEntity<BaseResponse<CommentDto.SearchResponse>> findComments(@PathVariable("postId") Long postId) {
         return ResponseEntity.ok(BaseResponse.create(
                 SEARCH_COMMENTS_SUCCESS.getMessage(), commentService.findAllCommentsByPost(postId)));
+    }
+
+    @DeleteMapping("/{commentId}")
+    public  ResponseEntity<BaseResponse<String>> deleteComment(@PathVariable("commentId") Long commentId) {
+        commentService.deleteComment(commentId);
+        return ResponseEntity.ok(BaseResponse.create(DELETE_COMMENTS_SUCCESS.getMessage()));
     }
 }
