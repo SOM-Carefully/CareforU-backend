@@ -48,7 +48,8 @@ public class Comment extends BaseEntity {
     private List<Comment> child = new ArrayList<>();
 
     @Builder
-    public Comment(Post post, String content, Comment parent, Hierarchy hierarchy) {
+    public Comment(Long userId, Post post, String content, Comment parent, Hierarchy hierarchy) {
+        this.userId = userId;
         this.post = post;
         this.content = content;
         this.parent = parent;

@@ -27,7 +27,10 @@ public enum ErrorCode {
     //TODO 도메인 별로 분류해서 추가해주세요.
 
     //POST
-    POST_NOT_FOUND(3010, "존재하지 않는 글입니다.");
+    POST_NOT_FOUND(3010, "존재하지 않는 글입니다."),
+
+    //COMMENT
+    COMMENT_NOT_FOUND(4010, "존재하지 않는 댓글입니다.");
 
     private final String message;
     private final int status;
