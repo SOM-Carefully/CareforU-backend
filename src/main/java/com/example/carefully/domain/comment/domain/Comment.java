@@ -4,6 +4,7 @@ import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
@@ -56,7 +58,7 @@ public class Comment extends BaseEntity {
         this.hierarchy = hierarchy;
     }
 
-    public Long getId() {
-        return id;
+    public boolean isParent() {
+        return hierarchy == Hierarchy.PARENT;
     }
 }
