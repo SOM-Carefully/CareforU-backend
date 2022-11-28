@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.aop.framework.AdvisedSupportListener;
 
 import javax.persistence.*;
+
+import java.util.Set;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -22,7 +25,7 @@ public abstract class CommonUser extends BaseEntity {
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(name ="username", nullable = false, unique = true)
     String username;
@@ -37,10 +40,10 @@ public abstract class CommonUser extends BaseEntity {
     String password;
 
     @Column(name = "activated")
-    private boolean activated;
+    boolean activated;
 
     @Enumerated(value = STRING)
-    private Role role;
+    Role role;
 
     public CommonUser(String username, String name, String phoneNumber, String password, Role role, boolean activated) {
         this.username = username;
@@ -50,5 +53,8 @@ public abstract class CommonUser extends BaseEntity {
         this.role = role;
         this.activated = activated;
     }
-
+    
+    public void signout() {
+        this.activated = false; 
+    }
 }
