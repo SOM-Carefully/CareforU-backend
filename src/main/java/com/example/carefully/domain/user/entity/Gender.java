@@ -1,6 +1,5 @@
 package com.example.carefully.domain.user.entity;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

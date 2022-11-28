@@ -78,7 +78,7 @@ public class UserDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class UserResponse {
+    public static class CommonUserResponse {
 
         @NotNull
         @Size(min = 3, max = 50)
@@ -127,10 +127,10 @@ public class UserDto {
         @ApiModelProperty(example = "USER/OPERATION/ADMIN")
         private RoleRequest role;
 
-        public static UserResponse fromUser(User user) {
+        public static CommonUserResponse fromUser(User user) {
             if(user == null) return null;
 
-            return UserResponse.builder()
+            return CommonUserResponse.builder()
                     .username(user.getUsername())
                     .password(user.getPassword())
                     .name(user.getName())
@@ -144,10 +144,10 @@ public class UserDto {
                     .build();
         }
 
-        public static UserResponse fromOperation(Operation operation) {
+        public static CommonUserResponse fromOperation(Operation operation) {
             if (operation == null) return null;
 
-            return UserResponse.builder()
+            return CommonUserResponse.builder()
                     .username(operation.getUsername())
                     .password(operation.getPassword())
                     .name(operation.getName())
@@ -159,10 +159,10 @@ public class UserDto {
                     .build();
         }
 
-        public static UserResponse fromAdmin(Admin admin) {
+        public static CommonUserResponse fromAdmin(Admin admin) {
             if (admin == null) return null;
 
-            return UserResponse.builder()
+            return CommonUserResponse.builder()
                     .username(admin.getUsername())
                     .password(admin.getPassword())
                     .name(admin.getName())
@@ -220,34 +220,6 @@ public class UserDto {
         @NotNull
         @ApiModelProperty(example = "USER/OPERATION/ADMIN")
         private RoleRequest role;
-
-        public static UpdateRequest fromUser(User user) {
-            if(user == null) return null;
-
-            return UpdateRequest.builder()
-                    .password(user.getPassword())
-                    .name(user.getName())
-                    .phoneNumber(user.getPhoneNumber())
-                    .foreignerNumber(user.getForeignerNumber())
-                    .gender(user.getGender())
-                    .address(user.getAddress())
-                    .university(user.getUniversity())
-                    .major(user.getMajor())
-                    .build();
-        }
-
-        public static UpdateRequest fromOperation(Operation operation) {
-            if (operation == null) return null;
-
-            return UpdateRequest.builder()
-                    .password(operation.getPassword())
-                    .name(operation.getName())
-                    .phoneNumber(operation.getPhoneNumber())
-                    .businessType(operation.getBusinessType())
-                    .businessName(operation.getBusinessName())
-                    .businessRegisterNumber(operation.getBusinessRegisterNumber())
-                    .build();
-        }
     }
 
     @Getter

@@ -42,7 +42,7 @@ public class UserController {
     @ApiOperation(value = "내 정보 조회", notes = "회원 조회 API")
     @GetMapping("/my")
     @PreAuthorize("hasAnyRole('USER','OPERATION', 'ADMIN')")
-    public ResponseEntity<BaseResponse<UserDto.RegisterRequest>> getMyUserInfo(HttpServletRequest request) {
+    public ResponseEntity<BaseResponse<UserDto.CommonUserResponse>> getMyUserInfo(HttpServletRequest request) {
         return ResponseEntity.ok(BaseResponse.create(MY_LOOKUP_SUCCESS.getMessage(), userService.getMyUserWithAuthorities()));
     }
 

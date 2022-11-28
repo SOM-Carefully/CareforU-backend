@@ -13,7 +13,7 @@ public interface UserService {
 
     boolean isDuplicateUsername(String username);
 
-    UserDto.UserResponse getMyUserWithAuthorities();
+    UserDto.CommonUserResponse getMyUserWithAuthorities();
 
 //    UserDto.RegisterRequest getUserWithAuthorities(String username);
 }

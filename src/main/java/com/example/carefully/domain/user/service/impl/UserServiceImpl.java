@@ -11,7 +11,6 @@ import com.example.carefully.domain.user.exception.NotValidationRoleException;
 import com.example.carefully.domain.user.repository.CommonUserRepository;
 import com.example.carefully.domain.user.service.UserService;
 import com.example.carefully.global.security.jwt.TokenProvider;
-import com.example.carefully.global.security.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,6 +19,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 
 @Service
 @Transactional(readOnly=true)
@@ -85,7 +86,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void update(UserDto.UpdateRequest updateRequest) {
 
-        CommonUser commonUser = getCurrentUser();
+        CommonUser commonUser = getCurrentUser(commonUserRepository);
 
         if (commonUser.getRole().name().equals("USER")) {
             User user = (User) commonUser;
@@ -111,7 +112,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void signout(UserDto.SignoutRequest signoutRequest) {
 
-        CommonUser currentUser = getCurrentUser();
+        CommonUser currentUser = getCurrentUser(commonUserRepository);
 
         UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, signoutRequest.getPassword());
 
@@ -135,25 +136,18 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public UserDto.UserResponse getMyUserWithAuthorities() {
+    public UserDto.CommonUserResponse getMyUserWithAuthorities() {
 
-        CommonUser commonUser =  getCurrentUser();
+        CommonUser commonUser =  getCurrentUser(commonUserRepository);
         String requestRole = commonUser.getRole().name();
 
         if (requestRole.equals("USER")) {
-            return UserDto.UserResponse.fromUser((User) commonUser);
+            return UserDto.CommonUserResponse.fromUser((User) commonUser);
         } else if (requestRole.equals("OPERATION")) {
-            return UserDto.UserResponse.fromOperation((Operation) commonUser);
+            return UserDto.CommonUserResponse.fromOperation((Operation) commonUser);
         } else {
             throw new NotValidationRoleException();
         }
-    }
-
-    @Transactional(readOnly = true)
-    public CommonUser getCurrentUser() {
-        return SecurityUtil.getCurrentUsername()
-                .flatMap(commonUserRepository::findOneWithAuthoritiesByUsername)
-                .orElseThrow(() -> new NotValidationRoleException());
     }
 
     @Transactional(readOnly = true)
