@@ -2,16 +2,15 @@ package com.example.carefully.domain.user.service.impl;
 
 import com.example.carefully.domain.user.dto.TokenResponse;
 import com.example.carefully.domain.user.dto.UserDto;
-import com.example.carefully.domain.user.entity.CommonUser;
-import com.example.carefully.domain.user.entity.Operation;
 import com.example.carefully.domain.user.entity.User;
+import com.example.carefully.domain.user.entity.Operation;
+import com.example.carefully.domain.user.entity.General;
 import com.example.carefully.domain.user.exception.DuplicatedUsernameException;
 import com.example.carefully.domain.user.exception.NotValidationPasswordException;
 import com.example.carefully.domain.user.exception.NotValidationRoleException;
-import com.example.carefully.domain.user.repository.CommonUserRepository;
+import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.domain.user.service.UserService;
 import com.example.carefully.global.security.jwt.TokenProvider;
-import com.example.carefully.global.security.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,12 +20,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
+
 @Service
 @Transactional(readOnly=true)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final CommonUserRepository commonUserRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -66,12 +67,12 @@ public class UserServiceImpl implements UserService {
         registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
         if (requestRole.equals("USER")) {
-            User user = User.registerUser(registerRequest);
-            commonUserRepository.save(user);
+            General general = General.registerUser(registerRequest);
+            userRepository.save(general);
         }
         else if (requestRole.equals("OPERATION")) {
             Operation operation = Operation.registerOperation(registerRequest);
-            commonUserRepository.save(operation);
+            userRepository.save(operation);
         }
         else {
             throw new NotValidationRoleException();
@@ -85,19 +86,19 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void update(UserDto.UpdateRequest updateRequest) {
 
-        CommonUser commonUser = getCurrentUser();
+        User user = getCurrentUser(userRepository);
 
-        if (commonUser.getRole().name().equals("USER")) {
-            User user = (User) commonUser;
-            User result = User.updateUser(user, updateRequest);
-            user.update(result);
-            commonUserRepository.save(result);
+        if (user.getRole().name().equals("USER")) {
+            General general = (General) user;
+            General result = General.updateUser(general, updateRequest);
+            general.update(result);
+            userRepository.save(result);
         }
-        else if (commonUser.getRole().name().equals("OPERATION")) {
-            Operation operation = (Operation) commonUser;
+        else if (user.getRole().name().equals("OPERATION")) {
+            Operation operation = (Operation) user;
             Operation result = Operation.updateOperation(operation, updateRequest);
             operation.update(result);
-            commonUserRepository.save(operation);
+            userRepository.save(operation);
         }
         else {
             throw new NotValidationRoleException();
@@ -111,12 +112,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void signout(UserDto.SignoutRequest signoutRequest) {
 
-        CommonUser currentUser = getCurrentUser();
+        User currentUser = getCurrentUser(userRepository);
 
         UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, signoutRequest.getPassword());
 
         if (unauthenticated != null) {
-            commonUserRepository.delete(currentUser);
+            userRepository.delete(currentUser);
         } else {
             throw new NotValidationPasswordException();
         }
@@ -127,7 +128,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public boolean isDuplicateUsername(String username) {
-        return commonUserRepository.existsByUsername(username);
+        return userRepository.existsByUsername(username);
     }
 
     /*
@@ -136,30 +137,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserDto.UserResponse getMyUserWithAuthorities() {
-
-        CommonUser commonUser =  getCurrentUser();
-        String requestRole = commonUser.getRole().name();
-
-        if (requestRole.equals("USER")) {
-            return UserDto.UserResponse.fromUser((User) commonUser);
-        } else if (requestRole.equals("OPERATION")) {
-            return UserDto.UserResponse.fromOperation((Operation) commonUser);
-        } else {
-            throw new NotValidationRoleException();
-        }
+        User user =  getCurrentUser(userRepository);
+        return UserDto.UserResponse.create(user);
     }
 
     @Transactional(readOnly = true)
-    public CommonUser getCurrentUser() {
-        return SecurityUtil.getCurrentUsername()
-                .flatMap(commonUserRepository::findOneWithAuthoritiesByUsername)
-                .orElseThrow(() -> new NotValidationRoleException());
-    }
-
-    @Transactional(readOnly = true)
-    public UsernamePasswordAuthenticationToken passwordCheckLogic(CommonUser commonUser, String password) {
+    public UsernamePasswordAuthenticationToken passwordCheckLogic(User user, String password) {
         UsernamePasswordAuthenticationToken unauthenticated = UsernamePasswordAuthenticationToken.unauthenticated(
-                commonUser.getUsername(),
+                user.getUsername(),
                 password
         );
         return unauthenticated;

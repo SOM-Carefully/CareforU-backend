@@ -19,7 +19,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class Operation extends CommonUser{
+public class Operation extends User {
     @Column(name ="businessType")
     @Enumerated(value = STRING)
     private BusinessType businessType;

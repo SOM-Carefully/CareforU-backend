@@ -3,7 +3,7 @@ package com.example.carefully.domain.booking.entity;
 import com.example.carefully.domain.booking.dto.BookingDto;
 import com.example.carefully.domain.user.entity.BusinessType;
 import com.example.carefully.domain.user.entity.Operation;
-import com.example.carefully.domain.user.entity.User;
+import com.example.carefully.domain.user.entity.General;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,16 +48,16 @@ public class Booking extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private General general;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "operation_id")
     private Operation operation;
 
     @Builder
-    public Booking(Long id, LocalDate requestDate, LocalTime requestTime, String content, BusinessType businessType, User user, Operation operation, BookingStatus bookingStatus) {
+    public Booking(Long id, LocalDate requestDate, LocalTime requestTime, String content, BusinessType businessType, General general, Operation operation, BookingStatus bookingStatus) {
         this.id = id;
-        this.user = user;
+        this.general = general;
         this.requestDate = requestDate;
         this.requestTime = requestTime;
         this.operation = operation;
@@ -66,9 +66,9 @@ public class Booking extends BaseEntity {
         this.bookingStatus = bookingStatus;
     }
 
-    public static Booking request(User user, BookingDto.ReceiveRequest receiveRequest) {
+    public static Booking request(General general, BookingDto.ReceiveRequest receiveRequest) {
         return Booking.builder()
-                .user(user)
+                .user(general)
                 .requestDate(receiveRequest.getRequestDate())
                 .requestTime(receiveRequest.getRequestTime())
                 .content(receiveRequest.getContent())
