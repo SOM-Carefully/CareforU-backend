@@ -7,8 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.carefully.domain.post.dto.PostResponseMessage.UPDATE_QUESTION_SUCCESS;
-import static com.example.carefully.domain.post.dto.PostResponseMessage.UPLOAD_QUESTION_SUCCESS;
+import static com.example.carefully.domain.post.dto.PostResponseMessage.*;
 
 @RestController
 @RequestMapping("/api/v1/questions")
@@ -19,7 +18,8 @@ public class QuestionController {
 
     @PostMapping
     public ResponseEntity<BaseResponse<QuestionDto.CreateResponse>> createQuestion(@RequestBody QuestionDto.CreateRequest createRequest) {
-        return ResponseEntity.ok(BaseResponse.create(UPLOAD_QUESTION_SUCCESS.getMessage(), questionService.createNewQuestion(createRequest)));
+        return ResponseEntity.ok(BaseResponse.create(
+                UPLOAD_QUESTION_SUCCESS.getMessage(), questionService.createNewQuestion(createRequest)));
     }
 
     @PatchMapping("/{questionId}")
@@ -27,5 +27,11 @@ public class QuestionController {
                                                                @RequestBody QuestionDto.UpdateRequest updateRequest) {
         questionService.updateQuestion(updateRequest, questionId);
         return ResponseEntity.ok(BaseResponse.create(UPDATE_QUESTION_SUCCESS.getMessage()));
+    }
+
+    @GetMapping("/{questionId}")
+    public ResponseEntity<BaseResponse<QuestionDto.SearchResponse>> searchQuestionDetails(@PathVariable("questionId") Long questionId) {
+        return ResponseEntity.ok(BaseResponse.create(
+                GET_QUESTION_DETAIL_SUCCESS.getMessage(), questionService.searchQuestionDetail(questionId)));
     }
 }

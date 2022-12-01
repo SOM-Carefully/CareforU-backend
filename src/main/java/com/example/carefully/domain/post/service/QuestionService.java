@@ -6,4 +6,5 @@ public interface QuestionService {
 
     QuestionDto.CreateResponse createNewQuestion(QuestionDto.CreateRequest request);
     void updateQuestion(QuestionDto.UpdateRequest request, Long questionId);
+    QuestionDto.SearchResponse searchQuestionDetail(Long questionId);
 }

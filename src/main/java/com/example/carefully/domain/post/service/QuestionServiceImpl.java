@@ -30,4 +30,10 @@ public class QuestionServiceImpl implements QuestionService {
         Post question = postRepository.findById(questionId).orElseThrow(PostEmptyException::new);
         question.updateQuest(request.getTitle(), request.getContent(), request.isLocked());
     }
+
+    @Override
+    public QuestionDto.SearchResponse searchQuestionDetail(Long questionId) {
+        Post question = postRepository.findById(questionId).orElseThrow(PostEmptyException::new);
+        return QuestionDto.SearchResponse.create(question);
+    }
 }
