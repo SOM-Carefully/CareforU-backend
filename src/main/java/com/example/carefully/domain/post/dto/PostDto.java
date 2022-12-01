@@ -12,12 +12,12 @@ public class PostDto {
     @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
-    public static class CreateRequest{
+    public static class CreateRequest {
         private String title;
         private String content;
         private String imgUrl;
 
-        public Post toEntity(PostRole role, Long userId){
+        public Post toEntity(PostRole role, Long userId) {
             return Post.builder()
                     .postRole(role)
                     .userId(userId)
@@ -31,7 +31,7 @@ public class PostDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
-    public static class CreateResponse{
+    public static class CreateResponse {
         private Long postId;
     }
 
@@ -39,15 +39,16 @@ public class PostDto {
     @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
-    public static class UpdateRequest{
+    public static class UpdateRequest {
         private String title;
         private String content;
+        private String imgUrl;
     }
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
-    public static class UpdateResponse{
+    public static class UpdateResponse {
         private Long postId;
     }
 
@@ -59,13 +60,15 @@ public class PostDto {
         private Long postId;
         private String title;
         private String writer;
+        private String imgUrl;
         private String createdAt;
 
-        public static SearchResponse create(Post post){
+        public static SearchResponse create(Post post) {
             return SearchResponse.builder()
                     .postId(post.getId())
                     .title(post.getTitle())
                     .writer(post.getUserId().toString())
+                    .imgUrl(post.getImgUrl())
                     .createdAt(post.getCreatedAt().format(Constant.formatter)).build();
         }
     }

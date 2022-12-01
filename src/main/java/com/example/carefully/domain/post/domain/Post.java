@@ -33,7 +33,7 @@ public class Post extends BaseEntity {
     private PostRole postRole;
 
     @Builder
-    public Post(Long userId, String title, String content, String imgUrl, PostRole postRole){
+    public Post(Long userId, String title, String content, String imgUrl, PostRole postRole) {
         this.userId = userId;
         this.title = title;
         this.content = content;
@@ -41,8 +41,9 @@ public class Post extends BaseEntity {
         this.postRole = postRole;
     }
 
-    public void update(String title, String content){
+    public void update(String title, String content, String imgUrl) {
         this.title = title;
         this.content = content;
+        this.imgUrl = imgUrl;
     }
 }
