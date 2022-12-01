@@ -12,7 +12,7 @@ import static javax.persistence.EnumType.STRING;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@DiscriminatorValue("User")
+@DiscriminatorValue("General")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
