@@ -30,7 +30,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostDto.UpdateResponse updatePost(PostDto.UpdateRequest request, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(PostEmptyException::new);
-        post.update(request.getTitle(), request.getTitle());
+        post.update(request.getTitle(), request.getTitle(), request.getImgUrl());
         return new PostDto.UpdateResponse(post.getId());
     }
 

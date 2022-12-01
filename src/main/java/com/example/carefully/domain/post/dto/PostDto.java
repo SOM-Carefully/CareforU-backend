@@ -42,6 +42,7 @@ public class PostDto {
     public static class UpdateRequest{
         private String title;
         private String content;
+        private String imgUrl;
     }
 
     @Getter
@@ -59,6 +60,7 @@ public class PostDto {
         private Long postId;
         private String title;
         private String writer;
+        private String imgUrl;
         private String createdAt;
 
         public static SearchResponse create(Post post){
@@ -66,6 +68,7 @@ public class PostDto {
                     .postId(post.getId())
                     .title(post.getTitle())
                     .writer(post.getUserId().toString())
+                    .imgUrl(post.getImgUrl())
                     .createdAt(post.getCreatedAt().format(Constant.formatter)).build();
         }
     }
