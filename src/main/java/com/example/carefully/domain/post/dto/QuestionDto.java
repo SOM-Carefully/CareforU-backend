@@ -32,4 +32,15 @@ public class QuestionDto {
     public static class CreateResponse {
         private Long questionId;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public static class UpdateRequest {
+        private String title;
+        private String content;
+        private boolean locked;
+    }
+
 }

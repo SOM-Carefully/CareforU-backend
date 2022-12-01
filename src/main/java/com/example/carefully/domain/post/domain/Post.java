@@ -53,9 +53,16 @@ public class Post extends BaseEntity {
     }
 
 
-    public void update(String title, String content, String imgUrl) {
+    public void updatePost(String title, String content, String imgUrl) {
         this.title = title;
         this.content = content;
         this.imgUrl = imgUrl;
     }
+
+    public void updateQuest(String title, String content, boolean locked) {
+        this.title = title;
+        this.content = content;
+        this.locked = locked;
+    }
+
 }
