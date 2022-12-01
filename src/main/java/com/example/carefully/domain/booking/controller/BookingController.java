@@ -3,14 +3,11 @@ package com.example.carefully.domain.booking.controller;
 import com.example.carefully.domain.booking.dto.BookingDto;
 import com.example.carefully.domain.booking.service.BookingService;
 import com.example.carefully.global.dto.BaseResponse;
-import com.example.carefully.global.entity.BaseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import static com.example.carefully.domain.booking.dto.BookingResponseMessage.LOOKUP_SUCCESS;
 import static com.example.carefully.domain.booking.dto.BookingResponseMessage.REQUEST_SUCCESS;
 
 @RestController
@@ -23,5 +20,10 @@ public class BookingController {
     public ResponseEntity requestService(@RequestBody BookingDto.ReceiveRequest receiveRequest) {
         bookingService.request(receiveRequest);
         return ResponseEntity.ok(BaseResponse.create(REQUEST_SUCCESS.getMessage()));
+    }
+
+    @GetMapping("/service/{bookingId}")
+    public ResponseEntity<BaseResponse<BookingDto.ServiceResponse>> lookupService(@PathVariable("bookingId") Long bookingId) {
+        return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), bookingService.lookup(bookingId)));
     }
 }

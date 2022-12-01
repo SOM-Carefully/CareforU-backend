@@ -68,7 +68,7 @@ public class Booking extends BaseEntity {
 
     public static Booking request(General general, BookingDto.ReceiveRequest receiveRequest) {
         return Booking.builder()
-                .user(general)
+                .general(general)
                 .requestDate(receiveRequest.getRequestDate())
                 .requestTime(receiveRequest.getRequestTime())
                 .content(receiveRequest.getContent())

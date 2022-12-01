@@ -27,4 +27,11 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = Booking.request(general, receiveRequest);
         bookingRepository.save(booking);
     }
+
+    @Override
+    @Transactional
+    public BookingDto.ServiceResponse lookup(Long bookingId) {
+        Booking booking = bookingRepository.getReferenceById(bookingId);
+        return BookingDto.ServiceResponse.create(booking);
+    }
 }
