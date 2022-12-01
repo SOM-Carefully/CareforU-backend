@@ -16,7 +16,7 @@ public class QuestionDto {
         private boolean locked;
 
         public Post toEntity(PostRole role, Long userId) {
-            return Post.questionBuild()
+            return Post.builder()
                     .postRole(role)
                     .userId(userId)
                     .title(title)

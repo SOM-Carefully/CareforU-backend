@@ -32,26 +32,17 @@ public class Post extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private PostRole postRole;
 
-    private Boolean locked;
+    private String locked;
 
     @Builder
-    public Post(Long userId, String title, String content, String imgUrl, PostRole postRole) {
+    public Post(Long userId, String title, String content, boolean locked, String imgUrl, PostRole postRole) {
         this.userId = userId;
         this.title = title;
         this.content = content;
         this.imgUrl = imgUrl;
+        this.locked = mapString(locked);
         this.postRole = postRole;
     }
-
-    @Builder(builderMethodName = "questionBuild")
-    public Post(Long userId, String title, String content, boolean locked, PostRole postRole) {
-        this.userId = userId;
-        this.title = title;
-        this.content = content;
-        this.locked = locked;
-        this.postRole = postRole;
-    }
-
 
     public void updatePost(String title, String content, String imgUrl) {
         this.title = title;
@@ -62,7 +53,10 @@ public class Post extends BaseEntity {
     public void updateQuest(String title, String content, boolean locked) {
         this.title = title;
         this.content = content;
-        this.locked = locked;
+        this.locked = mapString(locked);
     }
 
+    private String mapString(boolean locked) {
+        return locked ? "Y" : "N";
+    }
 }
