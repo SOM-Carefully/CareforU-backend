@@ -13,7 +13,7 @@ public enum PostResponseMessage {
 
     private final String message;
 
-    PostResponseMessage(String message){
+    PostResponseMessage(final String message){
         this.message = message;
     }
 }
