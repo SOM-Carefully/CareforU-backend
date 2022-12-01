@@ -32,6 +32,8 @@ public class Post extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private PostRole postRole;
 
+    private Boolean locked;
+
     @Builder
     public Post(Long userId, String title, String content, String imgUrl, PostRole postRole) {
         this.userId = userId;
@@ -40,6 +42,16 @@ public class Post extends BaseEntity {
         this.imgUrl = imgUrl;
         this.postRole = postRole;
     }
+
+    @Builder(builderMethodName = "questionBuild")
+    public Post(Long userId, String title, String content, boolean locked, PostRole postRole) {
+        this.userId = userId;
+        this.title = title;
+        this.content = content;
+        this.locked = locked;
+        this.postRole = postRole;
+    }
+
 
     public void update(String title, String content, String imgUrl) {
         this.title = title;
