@@ -8,12 +8,12 @@ import com.example.carefully.domain.user.entity.General;
 import com.example.carefully.domain.user.entity.Operation;
 import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.domain.user.repository.UserRepository;
+import com.example.carefully.global.dto.SliceDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 
@@ -42,19 +42,18 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDto.ServiceResponse> userLookup() {
+    public SliceDto<BookingDto.ServiceResponse> userLookup() {
         User user = getCurrentUser(userRepository);
-        List<BookingDto.ServiceResponse> bookingList = bookingRepository.getBookingsByGeneralOrderByByCreatedAtDest((General) user);
-        return bookingList;
+        Slice<BookingDto.ServiceResponse> bookingList = bookingRepository.findAllByGeneral((General) user).map(BookingDto.ServiceResponse::create);
+        return SliceDto.create(bookingList);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDto.ServiceResponse> operationLookup() {
+    public SliceDto<BookingDto.ServiceResponse> operationLookup() {
         User user = getCurrentUser(userRepository);
-        List<BookingDto.ServiceResponse> bookingList = bookingRepository.getBookingsByOperationOrderByByCreatedAtDest((Operation) user);
-        return bookingList;
+        Slice<BookingDto.ServiceResponse> bookingList = bookingRepository.findAllByOperation((Operation) user).map(BookingDto.ServiceResponse::create);
+        return SliceDto.create(bookingList);
     }
-
 
 }

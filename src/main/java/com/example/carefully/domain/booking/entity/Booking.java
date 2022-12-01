@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static javax.persistence.EnumType.STRING;
@@ -31,10 +32,7 @@ public class Booking extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate requestDate;
-
-    @Column(nullable = false)
-    private LocalTime requestTime;
+    private LocalDateTime requestTime;
 
     @Column(nullable = false)
     private String content;
@@ -55,10 +53,9 @@ public class Booking extends BaseEntity {
     private Operation operation;
 
     @Builder
-    public Booking(Long id, LocalDate requestDate, LocalTime requestTime, String content, BusinessType businessType, General general, Operation operation, BookingStatus bookingStatus) {
+    public Booking(Long id, LocalDateTime requestTime, String content, BusinessType businessType, General general, Operation operation, BookingStatus bookingStatus) {
         this.id = id;
         this.general = general;
-        this.requestDate = requestDate;
         this.requestTime = requestTime;
         this.operation = operation;
         this.content = content;
@@ -69,7 +66,6 @@ public class Booking extends BaseEntity {
     public static Booking request(General general, BookingDto.ReceiveRequest receiveRequest) {
         return Booking.builder()
                 .general(general)
-                .requestDate(receiveRequest.getRequestDate())
                 .requestTime(receiveRequest.getRequestTime())
                 .content(receiveRequest.getContent())
                 .businessType(receiveRequest.getBusinessType())

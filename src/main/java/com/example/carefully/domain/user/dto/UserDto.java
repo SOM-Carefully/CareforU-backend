@@ -1,6 +1,7 @@
 package com.example.carefully.domain.user.dto;
 
 import com.example.carefully.domain.user.entity.*;
+import com.example.carefully.domain.user.exception.NotValidationRoleException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -127,20 +128,36 @@ public class UserDto {
         private Role role;
 
         public static UserResponse create(User user) {
-            return UserResponse.builder()
-                    .username(user.getUsername())
-                    .name(user.getName())
-                    .phoneNumber(user.getPhoneNumber())
-                    .address(((General)user).getAddress())
-                    .gender(((General) user).getGender())
-                    .businessName(((Operation) user).getBusinessName())
-                    .businessRegisterNumber(((Operation) user).getBusinessRegisterNumber())
-                    .major(((General) user).getMajor())
-                    .university(((General) user).getUniversity())
-                    .role(user.getRole())
-                    .build();
+
+            if (String.valueOf(user.getRole()).equals("USER")) {
+                General general = (General) user;
+                return UserResponse.builder()
+                        .username(user.getUsername())
+                        .name(user.getName())
+                        .phoneNumber(user.getPhoneNumber())
+                        .address(general.getAddress())
+                        .gender(general.getGender())
+                        .major(general.getMajor())
+                        .university(general.getUniversity())
+                        .role(user.getRole())
+                        .build();
+            } else if (String.valueOf(user.getRole()).equals("OPERATION")) {
+                Operation operation = (Operation) user;
+                return UserResponse.builder()
+                        .username(user.getUsername())
+                        .name(user.getName())
+                        .phoneNumber(user.getPhoneNumber())
+                        .businessName(operation.getBusinessName())
+                        .businessRegisterNumber(operation.getBusinessRegisterNumber())
+                        .role(user.getRole())
+                        .build();
+            } else {
+                throw new NotValidationRoleException();
+            }
         }
     }
+
+
 
     @Getter
     @Setter

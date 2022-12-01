@@ -16,6 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="User_Type")
+@Table( name = "USER_TABLE")
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public abstract class User extends BaseEntity {
@@ -41,7 +42,7 @@ public abstract class User extends BaseEntity {
 
     @Enumerated(value = STRING)
     Role role;
-    @Builder
+
     public User(String username, String name, String phoneNumber, String password, Role role, boolean activated) {
         this.username = username;
         this.name = name;
