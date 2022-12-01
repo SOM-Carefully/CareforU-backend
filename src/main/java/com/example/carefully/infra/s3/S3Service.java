@@ -2,6 +2,7 @@ package com.example.carefully.infra.s3;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.carefully.domain.post.exception.FileEmptyException;
@@ -43,8 +44,9 @@ public class S3Service {
 
     private void uploadToS3(MultipartFile file, String fileName, ObjectMetadata objectMetaData) {
         try (InputStream inputStream = file.getInputStream()) {
-            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetaData)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            amazonS3Client.putObject(
+                    new PutObjectRequest(bucket, fileName, inputStream, objectMetaData)
+                            .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch(IOException e) {
             log.info(e.getMessage());
             throw new FileUploadFailException();
@@ -62,5 +64,10 @@ public class S3Service {
         if (multipartFile.isEmpty()) {
             throw new FileEmptyException();
         }
+    }
+
+    public void deleteFile(String key) {
+        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(this.bucket, key);
+        amazonS3Client.deleteObject(deleteObjectRequest);
     }
 }

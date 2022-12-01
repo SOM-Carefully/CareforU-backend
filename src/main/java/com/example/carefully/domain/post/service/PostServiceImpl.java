@@ -6,6 +6,7 @@ import com.example.carefully.domain.post.dto.PostDto;
 import com.example.carefully.domain.post.exception.PostEmptyException;
 import com.example.carefully.domain.post.repository.PostRepository;
 import com.example.carefully.global.dto.SliceDto;
+import com.example.carefully.infra.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
+    private final S3Service s3Service;
     private final PostRepository postRepository;
     private final Long tempUserId = 1L;
 
@@ -38,6 +40,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void findPostAndDelete(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(PostEmptyException::new);
+        s3Service.deleteFile(post.getImgUrl());
         postRepository.delete(post);
     }
 
@@ -49,8 +52,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public SliceDto<PostDto.SearchResponse> searchPostList(String postRole, Pageable pageable) {
-        Slice<PostDto.SearchResponse> pageDtoList = postRepository.findAllByPostRoleOrderByCreatedAtDesc(
-                pageable, PostRole.valueOf(postRole)).map(PostDto.SearchResponse::create);
+        Slice<PostDto.SearchResponse> pageDtoList =
+                postRepository.findAllByPostRoleOrderByCreatedAtDesc(pageable, PostRole.valueOf(postRole))
+                        .map(PostDto.SearchResponse::create);
+
         return SliceDto.create(pageDtoList);
     }
 }
