@@ -5,7 +5,10 @@ import com.example.carefully.domain.post.domain.PostRole;
 import com.example.carefully.domain.post.dto.QuestionDto;
 import com.example.carefully.domain.post.exception.PostEmptyException;
 import com.example.carefully.domain.post.repository.PostRepository;
+import com.example.carefully.global.dto.SliceDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,5 +38,13 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionDto.SearchResponse searchQuestionDetail(Long questionId) {
         Post question = postRepository.findById(questionId).orElseThrow(PostEmptyException::new);
         return QuestionDto.SearchResponse.create(question);
+    }
+
+    @Override
+    public SliceDto<QuestionDto.SearchResponse> searchQuestionList(Pageable pageable) {
+        Slice<QuestionDto.SearchResponse> sliceDto = postRepository.findAllByPostRoleOrderByCreatedAtDesc(pageable, PostRole.QUEST)
+                .map(QuestionDto.SearchResponse::create);
+
+        return SliceDto.create(sliceDto);
     }
 }

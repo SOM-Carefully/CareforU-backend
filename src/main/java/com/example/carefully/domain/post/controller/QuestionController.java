@@ -3,7 +3,10 @@ package com.example.carefully.domain.post.controller;
 import com.example.carefully.domain.post.dto.QuestionDto;
 import com.example.carefully.domain.post.service.QuestionServiceImpl;
 import com.example.carefully.global.dto.BaseResponse;
+import com.example.carefully.global.dto.SliceDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,5 +36,11 @@ public class QuestionController {
     public ResponseEntity<BaseResponse<QuestionDto.SearchResponse>> searchQuestionDetails(@PathVariable("questionId") Long questionId) {
         return ResponseEntity.ok(BaseResponse.create(
                 GET_QUESTION_DETAIL_SUCCESS.getMessage(), questionService.searchQuestionDetail(questionId)));
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<SliceDto<QuestionDto.SearchResponse>>> searchQuestionList(@PageableDefault(size = 20) Pageable pageable) {
+        return ResponseEntity.ok(BaseResponse.create(
+                GET_QUESTION_LIST_SUCCESS.getMessage(), questionService.searchQuestionList(pageable)));
     }
 }
