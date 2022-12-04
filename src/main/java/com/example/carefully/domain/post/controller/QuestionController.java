@@ -43,4 +43,10 @@ public class QuestionController {
         return ResponseEntity.ok(BaseResponse.create(
                 GET_QUESTION_LIST_SUCCESS.getMessage(), questionService.searchQuestionList(pageable)));
     }
+
+    @DeleteMapping("/{questionId}")
+    public ResponseEntity<BaseResponse<String>> deleteQuestion(@PathVariable("questionId") Long questionId) {
+        questionService.deleteQuestion(questionId);
+        return ResponseEntity.ok(BaseResponse.create(GET_QUESTION_LIST_SUCCESS.getMessage()));
+    }
 }

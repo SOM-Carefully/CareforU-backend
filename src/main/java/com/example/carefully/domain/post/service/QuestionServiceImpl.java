@@ -47,4 +47,10 @@ public class QuestionServiceImpl implements QuestionService {
 
         return SliceDto.create(sliceDto);
     }
+
+    @Override
+    public void deleteQuestion(Long questionId) {
+        Post question = postRepository.findById(questionId).orElseThrow(PostEmptyException::new);
+        postRepository.delete(question);
+    }
 }

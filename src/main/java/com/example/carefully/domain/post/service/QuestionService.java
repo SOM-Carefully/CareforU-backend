@@ -10,4 +10,5 @@ public interface QuestionService {
     void updateQuestion(QuestionDto.UpdateRequest request, Long questionId);
     QuestionDto.SearchResponse searchQuestionDetail(Long questionId);
     SliceDto<QuestionDto.SearchResponse> searchQuestionList(Pageable pageable);
+    void deleteQuestion(Long questionId);
 }
