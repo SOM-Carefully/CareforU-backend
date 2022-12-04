@@ -1,5 +1,6 @@
 package com.example.carefully.domain.user.repository;
 
+import com.example.carefully.domain.booking.entity.Booking;
 import com.example.carefully.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

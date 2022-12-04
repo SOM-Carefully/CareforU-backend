@@ -4,6 +4,7 @@ import com.example.carefully.domain.booking.dto.BookingDto;
 import com.example.carefully.domain.user.entity.BusinessType;
 import com.example.carefully.domain.user.entity.Operation;
 import com.example.carefully.domain.user.entity.General;
+import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +13,10 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
+import static com.example.carefully.domain.booking.entity.BookingStatus.*;
+import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -73,12 +74,30 @@ public class Booking extends BaseEntity {
                 .build();
     }
 
-//    //== 비지니스 메서드 ==//
-//    public void accept() {
-//        this.status = ACCEPT;
-//    }
-//
-//    public void cancel() {
-//        this.status = CANCEL;
-//    }
+    //== 비지니스 메서드 ==//
+
+    public void update(LocalDateTime requestTime, BusinessType businessType, String content) {
+        this.requestTime = requestTime;
+        this.businessType = businessType;
+        this.content = content;
+    }
+
+    public void operating(UserRepository userRepository) {
+        Operation operation = (Operation) getCurrentUser(userRepository);
+        this.operation = operation;
+    }
+
+    public void accept() {
+        this.bookingStatus = ACCEPT;
+    }
+
+    public void cancel() {
+        this.bookingStatus = CANCEL;
+    }
+
+    public void complete() {
+        this.bookingStatus = COMPLETE;
+    }
+
+    public void setNullOperation() { this.operation = null; }
 }

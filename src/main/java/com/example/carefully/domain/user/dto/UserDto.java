@@ -16,7 +16,7 @@ public class UserDto {
     @Getter
     @RequiredArgsConstructor
     public enum RoleRequest {
-        USER, OPERATION
+        GENERAL, OPERATION
     }
 
     @Getter
@@ -70,7 +70,7 @@ public class UserDto {
         private String businessRegisterNumber;
 
         @NotNull
-        @ApiModelProperty(example = "USER/OPERATION/ADMIN")
+        @ApiModelProperty(example = "GENERAL/OPERATION/ADMIN")
         private RoleRequest role;
     }
 
@@ -124,12 +124,12 @@ public class UserDto {
         @ApiModelProperty(example = "123-12-12345")
         private String businessRegisterNumber;
 
-        @ApiModelProperty(example = "USER/OPERATION/ADMIN")
+        @ApiModelProperty(example = "GENERAL/OPERATION/ADMIN")
         private Role role;
 
         public static UserResponse create(User user) {
 
-            if (String.valueOf(user.getRole()).equals("USER")) {
+            if (String.valueOf(user.getRole()).equals("GENERAL")) {
                 General general = (General) user;
                 return UserResponse.builder()
                         .username(user.getUsername())

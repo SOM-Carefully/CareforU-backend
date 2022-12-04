@@ -44,16 +44,14 @@ public class UserServiceImpl implements UserService {
         );
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(unauthenticated);
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         String jwt = tokenProvider.createToken(authentication);
 
         return new TokenResponse(jwt);
     }
 
     /*
-    회원가입
+    회원가입 (리팩토링해라 김현빈)
      */
     @Override
     @Transactional
@@ -66,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
         registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
-        if (requestRole.equals("USER")) {
+        if (requestRole.equals("GENERAL")) {
             General general = General.registerUser(registerRequest);
             userRepository.save(general);
         }
@@ -80,7 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /*
-    회원 정보 수정
+    회원 정보 수정 (리팩토링해라 감현빈2)
      */
     @Override
     @Transactional
@@ -88,7 +86,7 @@ public class UserServiceImpl implements UserService {
 
         User user = getCurrentUser(userRepository);
 
-        if (user.getRole().name().equals("USER")) {
+        if (user.getRole().name().equals("GENERAL")) {
             General general = (General) user;
             General result = General.updateUser(general, updateRequest);
             general.update(result);

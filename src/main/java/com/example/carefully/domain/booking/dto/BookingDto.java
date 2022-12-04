@@ -91,4 +91,27 @@ public class BookingDto {
                     .build();
         }
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UpdateRequest {
+        @NotNull
+        @ApiModelProperty(example = "2018-07-26T01:20:00")
+        private LocalDateTime requestTime;
+
+        @NotNull
+        @ApiModelProperty(example = "TRANSLATE/DWELLING/TRAFFIC")
+        private BusinessType businessType;
+
+        @NotNull
+        @Size(min = 3, max = 500)
+        @ApiModelProperty(example = "안녕하세요. \n" +
+                "저는 컴퓨터과학과 20학번 이혜린입니다.\n" +
+                "다름이 아니라 케어풀리라는 팀은\n" +
+                "어떤 사람들로 구성되어 있고, 어느 곳에서 이런 팀이 만들어진 것이 궁금하여 문의를 드리게 되었습니다!")
+        private String content;
+    }
 }

@@ -12,7 +12,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
+    Booking findByIdAndGeneral(Long bookingId, General general);
+
     Slice<Booking> findAllByGeneral(General general);
+
     Slice<Booking> findAllByOperation(Operation operation);
+
     Slice<Booking> findAllByBusinessType(BusinessType businessType);
+
+    boolean existsBookingByIdAndOperationId(Long bookingId, Long operationId);
 }
