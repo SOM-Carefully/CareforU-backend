@@ -47,6 +47,6 @@ public class QuestionController {
     @DeleteMapping("/{questionId}")
     public ResponseEntity<BaseResponse<String>> deleteQuestion(@PathVariable("questionId") Long questionId) {
         questionService.deleteQuestion(questionId);
-        return ResponseEntity.ok(BaseResponse.create(GET_QUESTION_LIST_SUCCESS.getMessage()));
+        return ResponseEntity.ok(BaseResponse.create(DELETE_QUESTION_SUCCESS.getMessage()));
     }
 }
