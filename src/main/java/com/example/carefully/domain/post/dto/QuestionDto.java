@@ -2,20 +2,20 @@ package com.example.carefully.domain.post.dto;
 
 import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.domain.post.domain.PostRole;
-import com.example.carefully.global.common.Constant;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-@Getter
-public class PostDto {
+import java.time.LocalDateTime;
+
+public class QuestionDto {
 
     @Getter
-    @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class CreateRequest {
         private String title;
         private String content;
-        private String imgUrl;
+        private boolean locked;
 
         public Post toEntity(PostRole role, Long userId) {
             return Post.builder()
@@ -23,7 +23,7 @@ public class PostDto {
                     .userId(userId)
                     .title(title)
                     .content(content)
-                    .imgUrl(imgUrl)
+                    .locked(locked)
                     .build();
         }
     }
@@ -32,46 +32,39 @@ public class PostDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class CreateResponse {
-        private Long postId;
+        private Long questionId;
     }
 
     @Getter
-    @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class UpdateRequest {
         private String title;
         private String content;
-        private String imgUrl;
+        private boolean locked;
     }
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
-    public static class UpdateResponse {
-        private Long postId;
-    }
-
-    @Getter
     @Builder
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @AllArgsConstructor
-    public static class SearchResponse{
-        private Long postId;
+    public static class SearchResponse {
+        private Long questionId;
         private String title;
         private String content;
         private String writer;
-        private String imgUrl;
-        private String createdAt;
+        private String locked;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm", timezone = "Asia/Seoul")
+        private LocalDateTime createdAt;
 
-        public static SearchResponse create(Post post) {
+        public static QuestionDto.SearchResponse create(Post post) {
             return SearchResponse.builder()
-                    .postId(post.getId())
+                    .questionId(post.getId())
                     .title(post.getTitle())
                     .content(post.getContent())
                     .writer(post.getUserId().toString())
-                    .imgUrl(post.getImgUrl())
-                    .createdAt(post.getCreatedAt().format(Constant.formatter)).build();
+                    .locked(post.getLocked())
+                    .createdAt(post.getCreatedAt()).build();
         }
     }
 }

@@ -9,7 +9,12 @@ public enum PostResponseMessage {
     GET_POST_DETAIL_SUCCESS("글 상세정보를 가져오는데 성공하였습니다."),
     GET_POST_LIST_SUCCESS("글 리스트를 가져오는데 성공하였습니다."),
     DELETE_POST_SUCCESS("글을 삭제하는데 성공하였습니다."),
-    FILE_UPLOAD_SUCCESS("파일 업로드에 성공하였습니다.");
+    FILE_UPLOAD_SUCCESS("파일 업로드에 성공하였습니다."),
+    UPLOAD_QUESTION_SUCCESS("문의 사항 등록에 성공하였습니다."),
+    UPDATE_QUESTION_SUCCESS("문의 사항 수정에 성공하였습니다."),
+    GET_QUESTION_DETAIL_SUCCESS("문의 사항 상세정보를 가져오는데 성공하였습니다."),
+    GET_QUESTION_LIST_SUCCESS("문의 사항 리스트를 가져오는데 성공하였습니다."),
+    DELETE_QUESTION_SUCCESS("문의 사항을 삭제하는데 성공하였습니다.");
 
     private final String message;
 
