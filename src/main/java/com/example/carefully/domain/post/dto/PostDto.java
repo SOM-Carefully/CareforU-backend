@@ -59,6 +59,7 @@ public class PostDto {
     public static class SearchResponse{
         private Long postId;
         private String title;
+        private String content;
         private String writer;
         private String imgUrl;
         private String createdAt;
@@ -67,6 +68,7 @@ public class PostDto {
             return SearchResponse.builder()
                     .postId(post.getId())
                     .title(post.getTitle())
+                    .content(post.getContent())
                     .writer(post.getUserId().toString())
                     .imgUrl(post.getImgUrl())
                     .createdAt(post.getCreatedAt().format(Constant.formatter)).build();
