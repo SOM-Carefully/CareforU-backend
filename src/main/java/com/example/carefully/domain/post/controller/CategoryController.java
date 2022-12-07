@@ -5,12 +5,10 @@ import com.example.carefully.domain.post.service.CategoryService;
 import com.example.carefully.global.dto.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.example.carefully.domain.post.dto.PostResponseMessage.CREATE_CATEGORY_SUCCESS;
+import static com.example.carefully.domain.post.dto.PostResponseMessage.GET_CATEGORY_LIST_SUCCESS;
 
 @RestController
 @RequestMapping("/api/v1/category")
@@ -21,7 +19,13 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<BaseResponse<CategoryDto.CreateResponse>> createCategory(@RequestBody CategoryDto.CreateRequest request) {
-        CategoryDto.CreateResponse category = categoryService.createCategory(request);
-        return ResponseEntity.ok(BaseResponse.create(CREATE_CATEGORY_SUCCESS.getMessage(), category));
+        return ResponseEntity.ok(BaseResponse.create(
+                CREATE_CATEGORY_SUCCESS.getMessage(), categoryService.createCategory(request)));
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<CategoryDto.SearchResponse>> createCategory() {
+        return ResponseEntity.ok(BaseResponse.create(
+                GET_CATEGORY_LIST_SUCCESS.getMessage(), categoryService.searchCategoryList()));
     }
 }
