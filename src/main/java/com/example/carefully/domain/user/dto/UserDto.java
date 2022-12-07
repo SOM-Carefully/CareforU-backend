@@ -1,6 +1,7 @@
 package com.example.carefully.domain.user.dto;
 
 import com.example.carefully.domain.user.entity.*;
+import com.example.carefully.domain.user.exception.NotValidationRoleException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -15,7 +16,7 @@ public class UserDto {
     @Getter
     @RequiredArgsConstructor
     public enum RoleRequest {
-        USER, OPERATION
+        GENERAL, OPERATION
     }
 
     @Getter
@@ -69,7 +70,7 @@ public class UserDto {
         private String businessRegisterNumber;
 
         @NotNull
-        @ApiModelProperty(example = "USER/OPERATION/ADMIN")
+        @ApiModelProperty(example = "GENERAL/OPERATION/ADMIN")
         private RoleRequest role;
     }
 
@@ -123,54 +124,40 @@ public class UserDto {
         @ApiModelProperty(example = "123-12-12345")
         private String businessRegisterNumber;
 
-        @NotNull
-        @ApiModelProperty(example = "USER/OPERATION/ADMIN")
-        private RoleRequest role;
+        @ApiModelProperty(example = "GENERAL/OPERATION/ADMIN")
+        private Role role;
 
-        public static UserResponse fromUser(User user) {
-            if(user == null) return null;
+        public static UserResponse create(User user) {
 
-            return UserResponse.builder()
-                    .username(user.getUsername())
-                    .password(user.getPassword())
-                    .name(user.getName())
-                    .phoneNumber(user.getPhoneNumber())
-                    .foreignerNumber(user.getForeignerNumber())
-                    .gender(user.getGender())
-                    .address(user.getAddress())
-                    .university(user.getUniversity())
-                    .major(user.getMajor())
-                    .role(RoleRequest.valueOf(user.getRole().name()))
-                    .build();
-        }
-
-        public static UserResponse fromOperation(Operation operation) {
-            if (operation == null) return null;
-
-            return UserResponse.builder()
-                    .username(operation.getUsername())
-                    .password(operation.getPassword())
-                    .name(operation.getName())
-                    .phoneNumber(operation.getPhoneNumber())
-                    .businessType(operation.getBusinessType())
-                    .businessName(operation.getBusinessName())
-                    .businessRegisterNumber(operation.getBusinessRegisterNumber())
-                    .role(RoleRequest.valueOf(operation.getRole().name()))
-                    .build();
-        }
-
-        public static UserResponse fromAdmin(Admin admin) {
-            if (admin == null) return null;
-
-            return UserResponse.builder()
-                    .username(admin.getUsername())
-                    .password(admin.getPassword())
-                    .name(admin.getName())
-                    .phoneNumber(admin.getPhoneNumber())
-                    .role(RoleRequest.valueOf(admin.getRole().name()))
-                    .build();
+            if (String.valueOf(user.getRole()).equals("GENERAL")) {
+                General general = (General) user;
+                return UserResponse.builder()
+                        .username(user.getUsername())
+                        .name(user.getName())
+                        .phoneNumber(user.getPhoneNumber())
+                        .address(general.getAddress())
+                        .gender(general.getGender())
+                        .major(general.getMajor())
+                        .university(general.getUniversity())
+                        .role(user.getRole())
+                        .build();
+            } else if (String.valueOf(user.getRole()).equals("OPERATION")) {
+                Operation operation = (Operation) user;
+                return UserResponse.builder()
+                        .username(user.getUsername())
+                        .name(user.getName())
+                        .phoneNumber(user.getPhoneNumber())
+                        .businessName(operation.getBusinessName())
+                        .businessRegisterNumber(operation.getBusinessRegisterNumber())
+                        .role(user.getRole())
+                        .build();
+            } else {
+                throw new NotValidationRoleException();
+            }
         }
     }
+
+
 
     @Getter
     @Setter
@@ -220,34 +207,6 @@ public class UserDto {
         @NotNull
         @ApiModelProperty(example = "USER/OPERATION/ADMIN")
         private RoleRequest role;
-
-        public static UpdateRequest fromUser(User user) {
-            if(user == null) return null;
-
-            return UpdateRequest.builder()
-                    .password(user.getPassword())
-                    .name(user.getName())
-                    .phoneNumber(user.getPhoneNumber())
-                    .foreignerNumber(user.getForeignerNumber())
-                    .gender(user.getGender())
-                    .address(user.getAddress())
-                    .university(user.getUniversity())
-                    .major(user.getMajor())
-                    .build();
-        }
-
-        public static UpdateRequest fromOperation(Operation operation) {
-            if (operation == null) return null;
-
-            return UpdateRequest.builder()
-                    .password(operation.getPassword())
-                    .name(operation.getName())
-                    .phoneNumber(operation.getPhoneNumber())
-                    .businessType(operation.getBusinessType())
-                    .businessName(operation.getBusinessName())
-                    .businessRegisterNumber(operation.getBusinessRegisterNumber())
-                    .build();
-        }
     }
 
     @Getter

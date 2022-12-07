@@ -7,7 +7,7 @@ import lombok.Getter;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ErrorCode {
 
-    // Common
+    // USER
     REQUEST_ERROR(2000, "입력값을 확인해주세요."),
     EMPTY_JWT(2001, "JWT를 입력해주세요."),
     INVALID_JWT(2002, "유효하지 않은 JWT입니다."),
@@ -31,7 +31,13 @@ public enum ErrorCode {
     POST_NOT_FOUND(3010, "존재하지 않는 글입니다."),
 
     //COMMENT
-    COMMENT_NOT_FOUND(4010, "존재하지 않는 댓글입니다.");
+    COMMENT_NOT_FOUND(4010, "존재하지 않는 댓글입니다."),
+
+    //BOOKING
+    BOOKING_NOT_FOUND(5010, "서비스 신청이 존재하지 않습니다."),
+    BOOKING_ALREADY_PROCESSED(2000, "이미 처리된 서비스입니다."),
+    BOOKING_ANOTHER_PROCESSED(2000, "다른 운영팀 회원이 이미 처리한 서비스입니다.")
+    ;
 
     private final String message;
     private final int status;

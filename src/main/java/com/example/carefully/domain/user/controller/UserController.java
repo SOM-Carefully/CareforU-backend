@@ -41,14 +41,14 @@ public class UserController {
 
     @ApiOperation(value = "내 정보 조회", notes = "회원 조회 API")
     @GetMapping("/my")
-    @PreAuthorize("hasAnyRole('USER','OPERATION', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GENERAL','OPERATION', 'ADMIN')")
     public ResponseEntity<BaseResponse<UserDto.UserResponse>> getMyUserInfo(HttpServletRequest request) {
         return ResponseEntity.ok(BaseResponse.create(MY_LOOKUP_SUCCESS.getMessage(), userService.getMyUserWithAuthorities()));
     }
 
     @ApiOperation(value = "내 정보 수정", notes = "회원 수정 API")
     @PutMapping("/my")
-    @PreAuthorize("hasAnyRole('USER','OPERATION', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GENERAL','OPERATION', 'ADMIN')")
     public ResponseEntity update(@RequestBody UserDto.UpdateRequest updateRequest) {
         userService.update(updateRequest);
         return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
@@ -56,7 +56,7 @@ public class UserController {
 
     @ApiOperation(value = "회원 탈퇴", notes = "회원 탈퇴 API")
     @PostMapping("/signout")
-    @PreAuthorize("hasAnyRole('USER','OPERATION', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GENERAL','OPERATION', 'ADMIN')")
     public ResponseEntity signout(@RequestBody UserDto.SignoutRequest signoutRequest) {
         userService.signout(signoutRequest);
         return ResponseEntity.ok(BaseResponse.create(SIGNOUT_SUCCESS.getMessage()));
