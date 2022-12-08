@@ -43,7 +43,7 @@ public class PostController {
     @GetMapping
     public ResponseEntity<BaseResponse<SliceDto<SearchResponse>>> searchPostList(@RequestParam("role") String postRole,
                                                                                  @RequestParam(value = "category", required = false) Long categoryId,
-                                                                                 @PageableDefault(size = 2) Pageable pageable) {
+                                                                                 @PageableDefault(size = 100) Pageable pageable) {
         return ResponseEntity.ok(BaseResponse.create(
                 GET_POST_LIST_SUCCESS.getMessage(), postService.searchPostList(postRole, categoryId, pageable)));
     }
