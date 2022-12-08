@@ -1,6 +1,6 @@
 package com.example.carefully.domain.post.dto;
 
-import com.example.carefully.domain.post.domain.Category;
+import com.example.carefully.domain.category.domain.Category;
 import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.domain.post.domain.PostRole;
 import com.example.carefully.global.common.Constant;

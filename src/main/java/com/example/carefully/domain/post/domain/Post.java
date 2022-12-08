@@ -1,5 +1,6 @@
 package com.example.carefully.domain.post.domain;
 
+import com.example.carefully.domain.category.domain.Category;
 import com.example.carefully.global.entity.*;
 import lombok.*;
 
@@ -19,7 +20,7 @@ public class Post extends BaseEntity {
 //    private User user;
 
     @Column(nullable = false)
-    private Long userId;      // 임시 유저
+    private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")

@@ -1,5 +1,6 @@
-package com.example.carefully.domain.post.domain;
+package com.example.carefully.domain.category.domain;
 
+import com.example.carefully.domain.post.domain.Post;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

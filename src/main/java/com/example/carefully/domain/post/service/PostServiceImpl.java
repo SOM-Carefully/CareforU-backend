@@ -1,12 +1,12 @@
 package com.example.carefully.domain.post.service;
 
-import com.example.carefully.domain.post.domain.Category;
+import com.example.carefully.domain.category.domain.Category;
 import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.domain.post.domain.PostRole;
 import com.example.carefully.domain.post.dto.PostDto;
-import com.example.carefully.domain.post.exception.CategoryEmptyException;
+import com.example.carefully.domain.category.exception.CategoryEmptyException;
 import com.example.carefully.domain.post.exception.PostEmptyException;
-import com.example.carefully.domain.post.repository.CategoryRepository;
+import com.example.carefully.domain.category.repository.CategoryRepository;
 import com.example.carefully.domain.post.repository.PostRepository;
 import com.example.carefully.global.dto.SliceDto;
 import com.example.carefully.infra.s3.S3Service;

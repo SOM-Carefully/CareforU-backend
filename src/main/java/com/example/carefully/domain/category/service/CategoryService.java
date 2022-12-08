@@ -1,6 +1,6 @@
-package com.example.carefully.domain.post.service;
+package com.example.carefully.domain.category.service;
 
-import com.example.carefully.domain.post.dto.CategoryDto;
+import com.example.carefully.domain.category.dto.CategoryDto;
 
 public interface CategoryService {
     CategoryDto.CreateResponse createCategory(CategoryDto.CreateRequest request);

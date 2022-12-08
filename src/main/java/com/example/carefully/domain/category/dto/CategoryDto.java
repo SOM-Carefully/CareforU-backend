@@ -1,6 +1,6 @@
-package com.example.carefully.domain.post.dto;
+package com.example.carefully.domain.category.dto;
 
-import com.example.carefully.domain.post.domain.Category;
+import com.example.carefully.domain.category.domain.Category;
 import lombok.*;
 
 import java.util.List;

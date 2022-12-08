@@ -1,7 +1,7 @@
-package com.example.carefully.domain.post.controller;
+package com.example.carefully.domain.category.controller;
 
-import com.example.carefully.domain.post.dto.CategoryDto;
-import com.example.carefully.domain.post.service.CategoryService;
+import com.example.carefully.domain.category.dto.CategoryDto;
+import com.example.carefully.domain.category.service.CategoryService;
 import com.example.carefully.global.dto.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
