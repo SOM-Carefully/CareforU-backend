@@ -1,9 +1,6 @@
 package com.example.carefully.domain.membership.entity;
 
-import com.example.carefully.domain.booking.dto.BookingDto;
-import com.example.carefully.domain.booking.entity.Booking;
 import com.example.carefully.domain.booking.entity.BookingStatus;
-import com.example.carefully.domain.user.dto.UserDto;
 import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -13,6 +10,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static com.example.carefully.domain.membership.entity.MembershipStatus.ACCEPT;
+import static com.example.carefully.domain.membership.entity.MembershipStatus.REJECT;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -51,8 +50,14 @@ public class Membership extends BaseEntity {
         return Membership.builder()
                 .user(user)
                 .content(content)
+                .membershipStatus(MembershipStatus.valueOf("WAITING"))
                 .build();
     }
 
+    public void accept() {
+        this.membershipStatus = ACCEPT;
+    }
+
+    public void reject() { this.membershipStatus = REJECT; }
 
 }
