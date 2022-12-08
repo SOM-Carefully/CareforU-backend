@@ -22,9 +22,7 @@ import static com.example.carefully.domain.user.dto.UserResponseMessage.*;
 @RequestMapping("/api/v1")
 @Api(tags = {"유저 관련 API"})
 public class UserController {
-    private final UserService userService;
-
-    private final UserServiceImpl usersService;
+    private final UserServiceImpl userService;
 
     @ApiOperation(value = "로그인", notes = "로그인 API")
     @PostMapping("/login")
@@ -32,27 +30,34 @@ public class UserController {
         return ResponseEntity.ok(BaseResponse.create(LOGIN_SUCCESS.getMessage(), userService.login(request)));
     }
 
-    @ApiOperation(value = "일반회원 회원가입", notes = "회원가입 API")
-    @PostMapping("/signup/user")
+    @ApiOperation(value = "일반회원 회원가입 신청", notes = "회원가입 API")
+    @PostMapping("/user/signup")
     public ResponseEntity signup(@RequestBody UserDto.UserRegisterRequest registerRequest) {
         userService.userSignup(registerRequest);
-        return ResponseEntity.ok(BaseResponse.create(REGISTER_SUCCESS.getMessage()));
+        return ResponseEntity.ok(BaseResponse.create(REGISTER_REQUEST_SUCCESS.getMessage()));
     }
 
-    @ApiOperation(value = "어드민 회원가입", notes = "회원가입 API")
-    @PostMapping("/signup/admin")
+    @ApiOperation(value = "어드민 회원가입 신청", notes = "회원가입 API")
+    @PostMapping("/admin/signup")
     public ResponseEntity signup(@RequestBody UserDto.AdminRegisterRequest registerRequest) {
         userService.adminSignup(registerRequest);
-        return ResponseEntity.ok(BaseResponse.create(REGISTER_SUCCESS.getMessage()));
+        return ResponseEntity.ok(BaseResponse.create(REGISTER_REQUEST_SUCCESS.getMessage()));
     }
 
-//    @ApiOperation(value = "내 정보 조회", notes = "회원 조회 API")
-//    @GetMapping("/my")
-//    @PreAuthorize("hasAnyRole('GENERAL','OPERATION', 'ADMIN')")
-//    public ResponseEntity<BaseResponse<UserDto.UserResponse>> getMyUserInfo(HttpServletRequest request) {
-//        return ResponseEntity.ok(BaseResponse.create(MY_LOOKUP_SUCCESS.getMessage(), userService.getMyUserWithAuthorities()));
-//    }
-//
+    @ApiOperation(value = "일반 유저 내 정보 조회", notes = "회원 조회 API")
+    @GetMapping("/user/my")
+    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
+    public ResponseEntity<BaseResponse<UserDto.UserResponse>> getMyUserInfo(HttpServletRequest request) {
+        return ResponseEntity.ok(BaseResponse.create(MY_LOOKUP_SUCCESS.getMessage(), userService.getMyUserWithAuthorities()));
+    }
+    @ApiOperation(value = "어드민 내 정보 조회", notes = "회원 조회 API")
+    @GetMapping("/admin/my")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<BaseResponse<UserDto.AdminResponse>> getMyAdminInfo(HttpServletRequest request) {
+        return ResponseEntity.ok(BaseResponse.create(MY_LOOKUP_SUCCESS.getMessage(), userService.getMyAdminWithAuthorities()));
+    }
+
+
 //    @ApiOperation(value = "내 정보 수정", notes = "회원 수정 API")
 //    @PutMapping("/my")
 //    @PreAuthorize("hasAnyRole('GENERAL','OPERATION', 'ADMIN')")

@@ -11,7 +11,9 @@ public interface UserService {
     void adminSignup(UserDto.AdminRegisterRequest registerRequest);
     void signout(UserDto.SignoutRequest signoutRequest);
 
-//    UserDto.UserResponse getMyUserWithAuthorities();
+    UserDto.UserResponse getMyUserWithAuthorities();
+
+    UserDto.AdminResponse getMyAdminWithAuthorities();
 
 //    UserDto.RegisterRequest getUserWithAuthorities(String username);
 }

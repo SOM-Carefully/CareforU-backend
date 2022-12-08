@@ -77,14 +77,14 @@ public class BookingDto {
         public static ServiceResponse create(Booking booking) {
             String operationUsername = null;
 
-            if (booking.getOperation() != null) {
-                operationUsername = booking.getOperation().getUsername();
+            if (booking.getAdmin() != null) {
+                operationUsername = booking.getAdmin().getUsername();
             }
 
             return ServiceResponse.builder()
                     .requestTime(booking.getRequestTime())
                     .businessType(booking.getBusinessType())
-                    .userUsername(booking.getGeneral().getUsername())
+                    .userUsername(booking.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .content(booking.getContent())
                     .bookingStatus(booking.getBookingStatus())

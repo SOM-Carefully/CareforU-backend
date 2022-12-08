@@ -116,15 +116,25 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-//    /*
-//    로그인한 사용자 정보 조회
-//     */
-//    @Override
-//    @Transactional(readOnly = true)
-//    public UserDto.UserResponse getMyUserWithAuthorities() {
-//        User user = getCurrentUser(userRepository);
-//        return UserDto.UserResponse.create(user);
-//    }
+    /*
+    로그인한 일반 사용자 정보 조회
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public UserDto.UserResponse getMyUserWithAuthorities() {
+        User user = getCurrentUser(userRepository);
+        return UserDto.UserResponse.create(user);
+    }
+
+    /*
+    로그인한 일반 사용자 정보 조회
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public UserDto.AdminResponse getMyAdminWithAuthorities() {
+        User user = getCurrentUser(userRepository);
+        return UserDto.AdminResponse.create(user);
+    }
 
     @Transactional(readOnly = true)
     public UsernamePasswordAuthenticationToken passwordCheckLogic(User user, String password) {
