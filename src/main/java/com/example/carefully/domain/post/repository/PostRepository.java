@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     Slice<Post> findAllByPostRoleOrderByCreatedAtDesc(Pageable pageable, PostRole postRole);
+    Slice<Post> findAllByPostRoleAndCategoryIdOrderByCreatedAtDesc(Pageable pageable, PostRole postRole, Long CategoryId);
 }

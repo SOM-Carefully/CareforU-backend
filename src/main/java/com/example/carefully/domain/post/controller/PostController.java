@@ -20,10 +20,11 @@ public class PostController {
     private final PostServiceImpl postService;
 
     @PostMapping
-    public ResponseEntity<BaseResponse<CreateResponse>> createPost(@RequestParam("category") String postRole,
+    public ResponseEntity<BaseResponse<CreateResponse>> createPost(@RequestParam("role") String postRole,
+                                                                   @RequestParam(value = "category", required = false) Long categoryId,
                                                                    @RequestBody CreateRequest createRequest) {
         return ResponseEntity.ok(BaseResponse.create(
-                CREATE_POST_SUCCESS.getMessage(), postService.createNewPost(createRequest, postRole)));
+                CREATE_POST_SUCCESS.getMessage(), postService.createNewPost(createRequest, postRole, categoryId)));
     }
 
     @PatchMapping("/{postId}")
@@ -40,10 +41,11 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<SliceDto<SearchResponse>>> searchPostList(@RequestParam("category") String postRole,
-                                                                                 @PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<BaseResponse<SliceDto<SearchResponse>>> searchPostList(@RequestParam("role") String postRole,
+                                                                                 @RequestParam(value = "category", required = false) Long categoryId,
+                                                                                 @PageableDefault(size = 100) Pageable pageable) {
         return ResponseEntity.ok(BaseResponse.create(
-                GET_POST_LIST_SUCCESS.getMessage(), postService.searchPostList(postRole, pageable)));
+                GET_POST_LIST_SUCCESS.getMessage(), postService.searchPostList(postRole, categoryId, pageable)));
     }
 
     @DeleteMapping("/{postId}")

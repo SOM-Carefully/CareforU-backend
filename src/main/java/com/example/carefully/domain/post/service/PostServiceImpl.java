@@ -1,9 +1,12 @@
 package com.example.carefully.domain.post.service;
 
+import com.example.carefully.domain.post.domain.Category;
 import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.domain.post.domain.PostRole;
 import com.example.carefully.domain.post.dto.PostDto;
+import com.example.carefully.domain.post.exception.CategoryEmptyException;
 import com.example.carefully.domain.post.exception.PostEmptyException;
+import com.example.carefully.domain.post.repository.CategoryRepository;
 import com.example.carefully.domain.post.repository.PostRepository;
 import com.example.carefully.global.dto.SliceDto;
 import com.example.carefully.infra.s3.S3Service;
@@ -19,13 +22,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostServiceImpl implements PostService {
     private final S3Service s3Service;
     private final PostRepository postRepository;
+    private final CategoryRepository categoryRepository;
     private final Long tempUserId = 1L;
 
     @Override
     @Transactional
-    public PostDto.CreateResponse createNewPost(PostDto.CreateRequest request, String postRole) {
-        Post savedPost = postRepository.save(request.toEntity(PostRole.valueOf(postRole), tempUserId));
-        return new PostDto.CreateResponse(savedPost.getId());
+    public PostDto.CreateResponse createNewPost(PostDto.CreateRequest request,
+                                                String postRole,
+                                                Long categoryId) {
+        Category category = null;
+        if (PostRole.isFree(postRole)) {
+            category = categoryRepository.findById(categoryId).orElseThrow(CategoryEmptyException::new);
+        }
+
+        Post post = request.toEntity(PostRole.valueOf(postRole), category, tempUserId);
+        Post persistPost = postRepository.save(post);
+        return new PostDto.CreateResponse(persistPost.getId());
     }
 
     @Override
@@ -51,11 +63,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public SliceDto<PostDto.SearchResponse> searchPostList(String postRole, Pageable pageable) {
-        Slice<PostDto.SearchResponse> pageDtoList =
-                postRepository.findAllByPostRoleOrderByCreatedAtDesc(pageable, PostRole.valueOf(postRole))
-                        .map(PostDto.SearchResponse::create);
+    public SliceDto<PostDto.SearchResponse> searchPostList(String postRole,
+                                                           Long categoryId,
+                                                           Pageable pageable) {
+        Slice<PostDto.SearchResponse> searchListByPostRole = getSearchListByPostRole(postRole, categoryId, pageable);
+        return SliceDto.create(searchListByPostRole);
+    }
 
-        return SliceDto.create(pageDtoList);
+    private Slice<PostDto.SearchResponse> getSearchListByPostRole(String postRole, Long categoryId, Pageable pageable) {
+        if (PostRole.isFree(postRole)) {
+            return postRepository.findAllByPostRoleAndCategoryIdOrderByCreatedAtDesc(
+                    pageable,
+                    PostRole.valueOf(postRole),
+                    categoryId).map(PostDto.SearchResponse::create);
+        }
+        return postRepository.findAllByPostRoleOrderByCreatedAtDesc(pageable, PostRole.valueOf(postRole))
+                .map(PostDto.SearchResponse::create);
     }
 }
