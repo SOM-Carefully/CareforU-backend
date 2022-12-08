@@ -2,8 +2,7 @@ package com.example.carefully.domain.booking.entity;
 
 import com.example.carefully.domain.booking.dto.BookingDto;
 import com.example.carefully.domain.user.entity.BusinessType;
-import com.example.carefully.domain.user.entity.Operation;
-import com.example.carefully.domain.user.entity.General;
+import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -47,26 +46,26 @@ public class Booking extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private General general;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "operation_id")
-    private Operation operation;
+    @JoinColumn(name = "admin_id")
+    private User admin;
 
     @Builder
-    public Booking(Long id, LocalDateTime requestTime, String content, BusinessType businessType, General general, Operation operation, BookingStatus bookingStatus) {
+    public Booking(Long id, LocalDateTime requestTime, String content, BusinessType businessType, User user, User admin, BookingStatus bookingStatus) {
         this.id = id;
-        this.general = general;
+        this.user = user;
         this.requestTime = requestTime;
-        this.operation = operation;
+        this.admin = admin;
         this.content = content;
         this.businessType = businessType;
         this.bookingStatus = bookingStatus;
     }
 
-    public static Booking request(General general, BookingDto.ReceiveRequest receiveRequest) {
+    public static Booking request(User user, BookingDto.ReceiveRequest receiveRequest) {
         return Booking.builder()
-                .general(general)
+                .user(user)
                 .requestTime(receiveRequest.getRequestTime())
                 .content(receiveRequest.getContent())
                 .businessType(receiveRequest.getBusinessType())
@@ -82,9 +81,9 @@ public class Booking extends BaseEntity {
         this.content = content;
     }
 
-    public void operating(UserRepository userRepository) {
-        Operation operation = (Operation) getCurrentUser(userRepository);
-        this.operation = operation;
+    public void setAdmin(UserRepository userRepository) {
+        User admin = getCurrentUser(userRepository);
+        this.admin = admin;
     }
 
     public void accept() {
@@ -99,5 +98,5 @@ public class Booking extends BaseEntity {
         this.bookingStatus = COMPLETE;
     }
 
-    public void setNullOperation() { this.operation = null; }
+    public void setNullAdmin() { this.admin = null; }
 }
