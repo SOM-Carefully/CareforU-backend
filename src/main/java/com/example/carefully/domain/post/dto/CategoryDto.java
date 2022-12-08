@@ -28,6 +28,13 @@ public class CategoryDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
+    public static class UpdateRequest {
+        private String categoryName;
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
     @Builder
     public static class CategoryResponse {
         private Long categoryId;

@@ -29,6 +29,7 @@ public enum ErrorCode {
 
     //POST
     POST_NOT_FOUND(3010, "존재하지 않는 글입니다."),
+    CATEGORY_NOT_FOUND(3011, "존재하지 않는 카테고리입니다."),
 
     //COMMENT
     COMMENT_NOT_FOUND(4010, "존재하지 않는 댓글입니다."),
@@ -36,8 +37,7 @@ public enum ErrorCode {
     //BOOKING
     BOOKING_NOT_FOUND(5010, "서비스 신청이 존재하지 않습니다."),
     BOOKING_ALREADY_PROCESSED(2000, "이미 처리된 서비스입니다."),
-    BOOKING_ANOTHER_PROCESSED(2000, "다른 운영팀 회원이 이미 처리한 서비스입니다.")
-    ;
+    BOOKING_ANOTHER_PROCESSED(2000, "다른 운영팀 회원이 이미 처리한 서비스입니다.");
 
     private final String message;
     private final int status;

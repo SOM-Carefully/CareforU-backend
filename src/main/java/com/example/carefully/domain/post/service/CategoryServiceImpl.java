@@ -2,6 +2,7 @@ package com.example.carefully.domain.post.service;
 
 import com.example.carefully.domain.post.domain.Category;
 import com.example.carefully.domain.post.dto.CategoryDto;
+import com.example.carefully.domain.post.exception.CategoryEmptyException;
 import com.example.carefully.domain.post.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,5 +35,12 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
 
         return new CategoryDto.SearchResponse(mappedResponse);
+    }
+
+    @Override
+    @Transactional
+    public void updateCategory(Long categoryId, CategoryDto.UpdateRequest request) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(CategoryEmptyException::new);
+        category.updateName(request.getCategoryName());
     }
 }

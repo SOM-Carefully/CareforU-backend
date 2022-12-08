@@ -7,8 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.carefully.domain.post.dto.PostResponseMessage.CREATE_CATEGORY_SUCCESS;
-import static com.example.carefully.domain.post.dto.PostResponseMessage.GET_CATEGORY_LIST_SUCCESS;
+import static com.example.carefully.domain.post.dto.PostResponseMessage.*;
 
 @RestController
 @RequestMapping("/api/v1/category")
@@ -24,8 +23,15 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<CategoryDto.SearchResponse>> createCategory() {
+    public ResponseEntity<BaseResponse<CategoryDto.SearchResponse>> getCategoryList() {
         return ResponseEntity.ok(BaseResponse.create(
                 GET_CATEGORY_LIST_SUCCESS.getMessage(), categoryService.searchCategoryList()));
+    }
+
+    @PatchMapping("/{categoryId}")
+    public ResponseEntity<BaseResponse<String>> updateCategory(@PathVariable(name = "categoryId") Long categoryId,
+                                                               @RequestBody CategoryDto.UpdateRequest request) {
+        categoryService.updateCategory(categoryId, request);
+        return ResponseEntity.ok(BaseResponse.create(UPDATE_CATEGORY_SUCCESS.getMessage()));
     }
 }
