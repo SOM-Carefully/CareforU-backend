@@ -49,6 +49,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    @Transactional
     public void deleteQuestion(Long questionId) {
         Post question = postRepository.findById(questionId).orElseThrow(PostEmptyException::new);
         postRepository.delete(question);

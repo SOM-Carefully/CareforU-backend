@@ -27,8 +27,8 @@ public class CommentServiceImpl implements CommentService {
     private final CustomCommentRepository customCommentRepository;
     private final PostRepository postRepository;
 
-    @Transactional
     @Override
+    @Transactional
     public CommentDto.CreateResponse addComment(CommentDto.CreateRequest request) {
         Post post = postRepository.findById(request.getPostId()).orElseThrow(PostEmptyException::new);
         Comment comment = commentRepository.save(request.toEntity(post));
@@ -65,8 +65,8 @@ public class CommentServiceImpl implements CommentService {
         return map;
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void deleteComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentEmptyException::new);
 
