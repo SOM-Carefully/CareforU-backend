@@ -6,4 +6,5 @@ public interface CategoryService {
     CategoryDto.CreateResponse createCategory(CategoryDto.CreateRequest request);
     CategoryDto.SearchResponse searchCategoryList();
     void updateCategory(Long categoryId, CategoryDto.UpdateRequest request);
+    void deleteCategory(Long categoryId);
 }

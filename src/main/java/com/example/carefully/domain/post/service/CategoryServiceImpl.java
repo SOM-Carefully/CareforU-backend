@@ -43,4 +43,10 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(categoryId).orElseThrow(CategoryEmptyException::new);
         category.updateName(request.getCategoryName());
     }
+
+    @Override
+    @Transactional
+    public void deleteCategory(Long categoryId) {
+        categoryRepository.deleteById(categoryId);
+    }
 }

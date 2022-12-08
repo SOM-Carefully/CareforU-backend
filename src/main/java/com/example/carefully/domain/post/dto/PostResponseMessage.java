@@ -17,7 +17,8 @@ public enum PostResponseMessage {
     DELETE_QUESTION_SUCCESS("문의 사항을 삭제하는데 성공하였습니다."),
     CREATE_CATEGORY_SUCCESS("카테고리를 생성하는데 성공하였습니다."),
     GET_CATEGORY_LIST_SUCCESS("카테고리 리스트를 가져오는데 성공하였습니다."),
-    UPDATE_CATEGORY_SUCCESS("카테고리 이름을 수정하는데 성공하였습니다.");
+    UPDATE_CATEGORY_SUCCESS("카테고리 이름을 수정하는데 성공하였습니다."),
+    DELETE_CATEGORY_SUCCESS("카테고리를 삭제하는데 성공하였습니다.");
 
     private final String message;
 

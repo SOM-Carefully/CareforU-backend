@@ -17,7 +17,7 @@ public class PostCategory {
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("postId")
     @JoinColumn(name = "post_id")
-    private Post postId;
+    private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("categoryId")
