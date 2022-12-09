@@ -53,7 +53,7 @@ public class BookingServiceImpl implements BookingService {
     public SliceDto<BookingDto.ServiceResponse> userLookup() {
         User user = getCurrentUser(userRepository);
         Slice<BookingDto.ServiceResponse> bookingList = null;
-        if (user.getRole().toString().equals("OPERATION")) {
+        if (user.getRole().toString().equals("ADMIN")) {
             bookingList = bookingRepository.findAllByAdmin(user).map(BookingDto.ServiceResponse::create);
         } else {
             bookingList = bookingRepository.findAllByUser(user).map(BookingDto.ServiceResponse::create);
@@ -85,7 +85,7 @@ public class BookingServiceImpl implements BookingService {
             booking.accept();
             bookingRepository.save(booking);
         } else if (checkCurrentOperation(booking)) {
-            complete(bookingId);
+            accept(bookingId);
         } else {
             throw new AlreadyProcessedService();
         }
@@ -103,7 +103,7 @@ public class BookingServiceImpl implements BookingService {
             booking.cancel();
             bookingRepository.save(booking);
         } else if (checkCurrentOperation(booking)) {
-            complete(bookingId);
+            cancel(bookingId);
         } else {
             throw new AlreadyProcessedService();
         }

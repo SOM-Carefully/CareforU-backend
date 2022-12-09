@@ -15,8 +15,8 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
-@Table( name = "USER_TABLE")
 @AllArgsConstructor
+@Table(name = "user_table")
 @NoArgsConstructor(access = PROTECTED)
 public class User extends BaseEntity {
     @Id
@@ -45,6 +45,9 @@ public class User extends BaseEntity {
     @Enumerated(value = STRING)
     Education education;
 
+    @Enumerated(value = STRING)
+    Gender gender;
+
     @Column
     boolean activated;
 
@@ -53,7 +56,8 @@ public class User extends BaseEntity {
 
     @Builder
     public User(String username, String password, String name, String phoneNumber, String identificationNumber,
-                String businessRegistrationNumber, String universityName, Education education, Role role, boolean activated) {
+                String businessRegistrationNumber, String universityName, Education education, Role role,
+                Gender gender, boolean activated) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -62,6 +66,7 @@ public class User extends BaseEntity {
         this.businessRegistrationNumber = businessRegistrationNumber;
         this.universityName = universityName;
         this.education = education;
+        this.gender = gender;
         this.role = role;
         this.activated = activated;
     }

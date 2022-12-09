@@ -1,7 +1,7 @@
 package com.example.carefully.domain.membership.entity;
 
-import com.example.carefully.domain.booking.entity.BookingStatus;
 import com.example.carefully.domain.user.entity.User;
+import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +12,7 @@ import javax.persistence.*;
 
 import static com.example.carefully.domain.membership.entity.MembershipStatus.ACCEPT;
 import static com.example.carefully.domain.membership.entity.MembershipStatus.REJECT;
+import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -42,6 +43,7 @@ public class Membership extends BaseEntity {
 
     @Builder
     public Membership(User user, String content, MembershipStatus membershipStatus) {
+        this.user = user;
         this.content = content;
         this.membershipStatus = membershipStatus;
     }
@@ -54,10 +56,17 @@ public class Membership extends BaseEntity {
                 .build();
     }
 
+    public void setAdmin(UserRepository userRepository) {
+        User admin = getCurrentUser(userRepository);
+        this.admin = admin;
+    }
+
     public void accept() {
+        this.user.signup();
         this.membershipStatus = ACCEPT;
     }
 
     public void reject() { this.membershipStatus = REJECT; }
 
+    public void setNullAdmin() { this.admin = null; }
 }

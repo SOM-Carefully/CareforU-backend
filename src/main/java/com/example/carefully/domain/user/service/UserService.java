@@ -15,5 +15,7 @@ public interface UserService {
 
     UserDto.AdminResponse getMyAdminWithAuthorities();
 
+    void adminSignupTest(UserDto.AdminRegisterRequest registerRequest);
+
 //    UserDto.RegisterRequest getUserWithAuthorities(String username);
 }

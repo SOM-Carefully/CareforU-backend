@@ -32,6 +32,12 @@ public class UserDto {
     }
 
     @Getter
+    @RequiredArgsConstructor
+    public enum GenderRequest {
+        MAN, WOMAN, NA;
+    }
+
+    @Getter
     @Setter
     @Builder
     @AllArgsConstructor
@@ -68,6 +74,10 @@ public class UserDto {
         @NotNull
         @ApiModelProperty(example = "UNDERGRADUATE/BACHELOR/MASTER/DOCTOR")
         private EducationRequest educationRequest;
+
+        @NotNull
+        @ApiModelProperty(example = "MAN/WOMAN/NA")
+        private GenderRequest genderRequest;
 
         @NotNull
         @ApiModelProperty(example = "CLASSIC/SILVER/GOLD/PLATINUM")
@@ -108,6 +118,10 @@ public class UserDto {
         private String phoneNumber;
 
         @NotNull
+        @ApiModelProperty(example = "MAN/WOMAN/NA")
+        private GenderRequest genderRequest;
+
+        @NotNull
         @ApiModelProperty(example = "123-12-12345")
         String businessRegistrationNumber;
 
@@ -125,12 +139,6 @@ public class UserDto {
         @Size(min = 3, max = 50)
         @ApiModelProperty(example = "test@test.com")
         private String username;
-
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        @NotNull
-        @Size(min = 3, max = 100)
-        @ApiModelProperty(example = "test1234")
-        private String password;
 
         @NotNull
         @ApiModelProperty(example = "홍길동")
@@ -150,7 +158,11 @@ public class UserDto {
 
         @NotNull
         @ApiModelProperty(example = "UNDERGRADUATE/BACHELOR/MASTER/DOCTOR")
-        private EducationRequest educationRequest;
+        private EducationRequest education;
+
+        @NotNull
+        @ApiModelProperty(example = "MAN/WOMAN/NA")
+        private GenderRequest gender;
 
         @NotNull
         @ApiModelProperty(example = "CLASSIC/SILVER/GOLD/PLATINUM")
@@ -163,7 +175,8 @@ public class UserDto {
                     .identificationNumber(user.getIdentificationNumber())
                     .phoneNumber(user.getPhoneNumber())
                     .universityName(user.getUniversityName())
-                    .educationRequest(EducationRequest.valueOf(user.getEducation().name()))
+                    .education(EducationRequest.valueOf(user.getEducation().name()))
+                    .gender(GenderRequest.valueOf(user.getGender().name()))
                     .role(RoleRequest.valueOf(user.getRole().name()))
                     .build();
         }
@@ -179,12 +192,6 @@ public class UserDto {
         @Size(min = 3, max = 50)
         @ApiModelProperty(example = "test@test.com")
         private String username;
-
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        @NotNull
-        @Size(min = 3, max = 100)
-        @ApiModelProperty(example = "test1234")
-        private String password;
 
         @NotNull
         @ApiModelProperty(example = "홍길동")
@@ -202,6 +209,10 @@ public class UserDto {
         @ApiModelProperty(example = "123-12-12345")
         String businessRegistrationNumber;
 
+        @NotNull
+        @ApiModelProperty(example = "MAN/WOMAN/NA")
+        private GenderRequest gender;
+
         String role;
 
         public static AdminResponse create(User user) {
@@ -211,6 +222,7 @@ public class UserDto {
                     .identificationNumber(user.getIdentificationNumber())
                     .phoneNumber(user.getPhoneNumber())
                     .businessRegistrationNumber(user.getBusinessRegistrationNumber())
+                    .gender(GenderRequest.valueOf(user.getGender().name()))
                     .role(user.getRole().name())
                     .build();
         }

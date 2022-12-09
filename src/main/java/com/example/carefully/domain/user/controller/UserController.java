@@ -30,18 +30,25 @@ public class UserController {
         return ResponseEntity.ok(BaseResponse.create(LOGIN_SUCCESS.getMessage(), userService.login(request)));
     }
 
-    @ApiOperation(value = "일반회원 회원가입 신청", notes = "회원가입 API")
+    @ApiOperation(value = "일반 유저 회원가입 신청", notes = "회원가입 API")
     @PostMapping("/user/signup")
-    public ResponseEntity signup(@RequestBody UserDto.UserRegisterRequest registerRequest) {
+    public ResponseEntity userSignup(@RequestBody UserDto.UserRegisterRequest registerRequest) {
         userService.userSignup(registerRequest);
         return ResponseEntity.ok(BaseResponse.create(REGISTER_REQUEST_SUCCESS.getMessage()));
     }
 
     @ApiOperation(value = "어드민 회원가입 신청", notes = "회원가입 API")
     @PostMapping("/admin/signup")
-    public ResponseEntity signup(@RequestBody UserDto.AdminRegisterRequest registerRequest) {
+    public ResponseEntity adminSignup(@RequestBody UserDto.AdminRegisterRequest registerRequest) {
         userService.adminSignup(registerRequest);
         return ResponseEntity.ok(BaseResponse.create(REGISTER_REQUEST_SUCCESS.getMessage()));
+    }
+
+    @ApiOperation(value = "어드민 회원가입", notes = "회원가입 API")
+    @PostMapping("/admin/signup/test")
+    public ResponseEntity adminTestSignup(@RequestBody UserDto.AdminRegisterRequest registerRequest) {
+        userService.adminSignupTest(registerRequest);
+        return ResponseEntity.ok(BaseResponse.create(REGISTER_SUCCESS.getMessage()));
     }
 
     @ApiOperation(value = "일반 유저 내 정보 조회", notes = "회원 조회 API")

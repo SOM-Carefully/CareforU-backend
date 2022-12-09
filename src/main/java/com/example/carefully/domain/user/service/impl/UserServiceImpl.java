@@ -61,9 +61,10 @@ public class UserServiceImpl implements UserService {
         registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
         User user = User.userRequest(registerRequest);
-        Membership membership = Membership.request(user, registerRequest.getContent());
+        userRepository.save(user);
 
-        saveUserAndMembership(user, membership);
+        Membership membership = Membership.request(user, registerRequest.getContent());
+        membershipRepository.save(membership);
     }
 
     @Override
@@ -73,15 +74,25 @@ public class UserServiceImpl implements UserService {
         registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
         User user = User.adminRequest(registerRequest);
-        Membership membership = Membership.request(user, registerRequest.getContent());
+        userRepository.save(user);
 
-        saveUserAndMembership(user, membership);
+        Membership membership = Membership.request(user, registerRequest.getContent());
+        membershipRepository.save(membership);
     }
 
+
+
+
+    @Override
     @Transactional
-    public void saveUserAndMembership(User user, Membership membership) {
+    public void adminSignupTest(UserDto.AdminRegisterRequest registerRequest) {
+        isDuplicateUsername(registerRequest.getUsername());
+        registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+
+        User user = User.adminRequest(registerRequest);
+        user.signup();
+
         userRepository.save(user);
-        membershipRepository.save(membership);
     }
 
     /*
