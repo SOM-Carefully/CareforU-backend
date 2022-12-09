@@ -63,6 +63,21 @@ public class MembershipServiceImpl implements MembershipService {
      }
     }
 
+    @Override
+    @Transactional
+    public void reject(Long membershipId) {
+        Membership membership = membershipRepository.findById(membershipId).orElseThrow();
+        if (membership.getAdmin() == null) {
+            membership.setAdmin(userRepository);
+            membership.reject();
+            membershipRepository.save(membership);
+        } else if (checkCurrentAdmin(membership)) {
+            reject(membershipId);
+        } else {
+            throw new AlreadyProcessedMembership();
+        }
+    }
+
     public boolean checkCurrentAdmin(Membership membership) {
         if (membership.getAdmin() == getCurrentUser(userRepository)) {
             membership.setNullAdmin();

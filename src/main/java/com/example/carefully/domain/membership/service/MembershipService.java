@@ -8,5 +8,5 @@ public interface MembershipService {
     SliceDto<MembershipDto.MembershipResponse> membershipLookup(String membershipStatus, Pageable pageable);
     MembershipDto.MembershipResponse lookup(Long membershipId);
     void accept(Long membershipId);
-    // void reject(Long membershipId);
+    void reject(Long membershipId);
 }

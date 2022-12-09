@@ -12,8 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.carefully.domain.membership.dto.MembershipResponseMessage.LOOKUP_SUCCESS;
-import static com.example.carefully.domain.membership.dto.MembershipResponseMessage.SIGNUP_SUCCESS;
+import static com.example.carefully.domain.membership.dto.MembershipResponseMessage.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,14 +30,15 @@ public class MembershipController {
 
     @PutMapping("/accept/{membershipId}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity acceptService(@PathVariable("membershipId") Long membershipId) {
+    public ResponseEntity acceptMembership(@PathVariable("membershipId") Long membershipId) {
         membershipService.accept(membershipId);
         return ResponseEntity.ok(BaseResponse.create(SIGNUP_SUCCESS.getMessage()));
     }
 
-//    @PutMapping("/cancel/{membershipId}")
-//    public ResponseEntity cancelService(@PathVariable("membershipId") Long membershipId) {
-//        membershipService.reject(membershipId);
-//        return ResponseEntity.ok(BaseResponse.create(CANCEL_SUCCESS.getMessage()));
-//    }
+    @PutMapping("/reject/{membershipId}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity rejectMembership(@PathVariable("membershipId") Long membershipId) {
+        membershipService.reject(membershipId);
+        return ResponseEntity.ok(BaseResponse.create(SIGNUP_REJECT_SUCCESS.getMessage()));
+    }
 }
