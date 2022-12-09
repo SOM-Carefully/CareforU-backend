@@ -33,7 +33,7 @@ public class BookingController {
     }
 
     @ApiOperation(value = "내 서비스 신청 리스트 조회", notes = "서비스 조회 API")
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<BaseResponse<SliceDto<BookingDto.ServiceResponse>>> lookupMyService() {
         return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), bookingService.userLookup()));
     }
@@ -53,14 +53,14 @@ public class BookingController {
     }
 
     @ApiOperation(value = "서비스 취소", notes = "서비스 취소 API")
-    @PutMapping("/cancel/{bookingId}")
+    @PatchMapping("/cancel/{bookingId}")
     public ResponseEntity cancelService(@PathVariable("bookingId") Long bookingId) {
         bookingService.cancel(bookingId);
         return ResponseEntity.ok(BaseResponse.create(CANCEL_SUCCESS.getMessage()));
     }
 
     @ApiOperation(value = "서비스 완료", notes = "서비스 완료 API")
-    @PutMapping("/complete/{bookingId}")
+    @PatchMapping("/complete/{bookingId}")
     public ResponseEntity completeService(@PathVariable("bookingId") Long bookingId) {
         bookingService.complete(bookingId);
         return ResponseEntity.ok(BaseResponse.create(COMPLETE_SUCCESS.getMessage()));

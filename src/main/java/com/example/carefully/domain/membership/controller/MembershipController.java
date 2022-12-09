@@ -22,14 +22,14 @@ import static com.example.carefully.domain.membership.dto.MembershipResponseMess
 public class MembershipController {
     private final MembershipServiceImpl membershipService;
 
-    @GetMapping("all")
+    @GetMapping("/all")
     @ApiOperation(value = "회원가입 신청 전체 리스트 조회", notes = "회원가입 조회 API - 어드민 회원만 가능")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse<SliceDto<MembershipDto.MembershipResponse>>> membershipAllookup() {
         return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), membershipService.membershipAllLookup()));
     }
 
-    @GetMapping("")
+    @GetMapping
     @ApiOperation(value = "회원가입 신청 상태별 리스트 조회", notes = "회원가입 조회 API - 어드민 회원만 가능")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse<SliceDto<MembershipDto.MembershipResponse>>> membershipLookup(@RequestParam("state") String membershipStatus,
@@ -37,7 +37,7 @@ public class MembershipController {
         return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), membershipService.membershipLookup(membershipStatus, pageable)));
     }
 
-    @PutMapping("/accept/{membershipId}")
+    @PatchMapping("/accept/{membershipId}")
     @ApiOperation(value = "회원가입 신청 승인", notes = "회원가입 승인 API - 어드민 회원만 가능")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity acceptMembership(@PathVariable("membershipId") Long membershipId) {
@@ -45,7 +45,7 @@ public class MembershipController {
         return ResponseEntity.ok(BaseResponse.create(SIGNUP_SUCCESS.getMessage()));
     }
 
-    @PutMapping("/reject/{membershipId}")
+    @PatchMapping("/reject/{membershipId}")
     @ApiOperation(value = "회원가입 신청 거절", notes = "회원가입 거절 API - 어드민 회원만 가능")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity rejectMembership(@PathVariable("membershipId") Long membershipId) {
