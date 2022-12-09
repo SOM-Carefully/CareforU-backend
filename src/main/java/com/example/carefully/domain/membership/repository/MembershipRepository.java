@@ -9,5 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MembershipRepository extends JpaRepository<Membership, Long> {
     Slice<Membership> findAllByMembershipStatusOrderByCreatedAtDesc(Pageable pageable, MembershipStatus membershipStatus);
+    Slice<Membership> findAllByOrderByCreatedAtDesc();
     Slice<Membership> findAllByUser(User user);
 }

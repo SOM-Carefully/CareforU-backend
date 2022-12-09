@@ -21,6 +21,12 @@ import static com.example.carefully.domain.membership.dto.MembershipResponseMess
 public class MembershipController {
     private final MembershipServiceImpl membershipService;
 
+    @GetMapping("all")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse<SliceDto<MembershipDto.MembershipResponse>>> membershipAllookup() {
+        return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), membershipService.membershipAllLookup()));
+    }
+
     @GetMapping("")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse<SliceDto<MembershipDto.MembershipResponse>>> membershipLookup(@RequestParam("state") String membershipStatus,

@@ -24,9 +24,19 @@ public class MembershipServiceImpl implements MembershipService {
     private final UserRepository userRepository;
     private final MembershipRepository membershipRepository;
 
+    /*
+    회원가입 신청 전체 리스트 조회
+    */
+    @Override
+    @Transactional(readOnly = true)
+    public SliceDto<MembershipDto.MembershipResponse> membershipAllLookup() {
+        Slice<Membership> membershipList = membershipRepository.findAllByOrderByCreatedAtDesc();
+        return SliceDto.create(membershipList.map(MembershipDto.MembershipResponse::create));
+    }
+
 
     /*
-    회원가입 신청 리스트 조회
+    회원가입 신청 상태별 리스트 조회
     */
     @Override
     @Transactional(readOnly = true)
