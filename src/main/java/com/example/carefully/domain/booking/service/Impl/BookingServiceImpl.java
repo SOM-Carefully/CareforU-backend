@@ -4,7 +4,7 @@ import com.example.carefully.domain.booking.entity.Booking;
 import com.example.carefully.domain.booking.dto.BookingDto;
 import com.example.carefully.domain.booking.exception.AlreadyProcessedService;
 import com.example.carefully.domain.booking.exception.NotValidationBookingId;
-import com.example.carefully.domain.booking.exception.NotValidationServiceOperation;
+import com.example.carefully.domain.booking.exception.NotValidationServiceAdmin;
 import com.example.carefully.domain.booking.repository.BookingRepository;
 import com.example.carefully.domain.booking.service.BookingService;
 import com.example.carefully.domain.user.entity.User;
@@ -84,7 +84,7 @@ public class BookingServiceImpl implements BookingService {
             booking.setAdmin(userRepository);
             booking.accept();
             bookingRepository.save(booking);
-        } else if (checkCurrentOperation(booking)) {
+        } else if (checkCurrentAdmin(booking)) {
             accept(bookingId);
         } else {
             throw new AlreadyProcessedService();
@@ -102,7 +102,7 @@ public class BookingServiceImpl implements BookingService {
             booking.setAdmin(userRepository);
             booking.cancel();
             bookingRepository.save(booking);
-        } else if (checkCurrentOperation(booking)) {
+        } else if (checkCurrentAdmin(booking)) {
             cancel(bookingId);
         } else {
             throw new AlreadyProcessedService();
@@ -120,19 +120,19 @@ public class BookingServiceImpl implements BookingService {
             booking.setAdmin(userRepository);
             booking.complete();
             bookingRepository.save(booking);
-        } else if (checkCurrentOperation(booking)) {
+        } else if (checkCurrentAdmin(booking)) {
             complete(bookingId);
         } else {
             throw new AlreadyProcessedService();
         }
     }
 
-    public boolean checkCurrentOperation(Booking booking) {
+    public boolean checkCurrentAdmin(Booking booking) {
         if (booking.getAdmin() == getCurrentUser(userRepository)) {
             booking.setNullAdmin();
             return true;
         } else {
-            throw new NotValidationServiceOperation();
+            throw new NotValidationServiceAdmin();
         }
     }
 }
