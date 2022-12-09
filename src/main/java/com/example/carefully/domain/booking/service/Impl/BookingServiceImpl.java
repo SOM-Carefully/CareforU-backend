@@ -21,8 +21,6 @@ import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
-
-    private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
 
     /*
@@ -31,7 +29,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public void request(BookingDto.ReceiveRequest receiveRequest) {
-        User user = getCurrentUser(userRepository);
+        User user = getCurrentUser();
         Booking booking = Booking.request(user, receiveRequest);
         bookingRepository.save(booking);
     }
@@ -51,7 +49,7 @@ public class BookingServiceImpl implements BookingService {
      */
     @Override
     public SliceDto<BookingDto.ServiceResponse> userLookup() {
-        User user = getCurrentUser(userRepository);
+        User user = getCurrentUser();
         Slice<BookingDto.ServiceResponse> bookingList = null;
         if (user.getRole().toString().equals("ADMIN")) {
             bookingList = bookingRepository.findAllByAdmin(user).map(BookingDto.ServiceResponse::create);
@@ -67,7 +65,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public void update(Long bookingId, BookingDto.UpdateRequest updateRequest) {
-        User user = getCurrentUser(userRepository);
+        User user = getCurrentUser();
         Booking booking = bookingRepository.findByIdAndUser(bookingId, user);
         booking.update(updateRequest.getRequestTime(), updateRequest.getBusinessType(), updateRequest.getContent());
         bookingRepository.save(booking);
@@ -81,7 +79,7 @@ public class BookingServiceImpl implements BookingService {
     public void accept(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
         if (booking.getAdmin() == null) {
-            booking.setAdmin(userRepository);
+            booking.setAdmin();
             booking.accept();
             bookingRepository.save(booking);
         } else if (checkCurrentAdmin(booking)) {
@@ -99,7 +97,7 @@ public class BookingServiceImpl implements BookingService {
     public void cancel(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
         if (booking.getAdmin() == null) {
-            booking.setAdmin(userRepository);
+            booking.setAdmin();
             booking.cancel();
             bookingRepository.save(booking);
         } else if (checkCurrentAdmin(booking)) {
@@ -117,7 +115,7 @@ public class BookingServiceImpl implements BookingService {
     public void complete(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
         if (booking.getAdmin() == null) {
-            booking.setAdmin(userRepository);
+            booking.setAdmin();
             booking.complete();
             bookingRepository.save(booking);
         } else if (checkCurrentAdmin(booking)) {
@@ -128,7 +126,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     public boolean checkCurrentAdmin(Booking booking) {
-        if (booking.getAdmin() == getCurrentUser(userRepository)) {
+        if (booking.getAdmin() == getCurrentUser()) {
             booking.setNullAdmin();
             return true;
         } else {

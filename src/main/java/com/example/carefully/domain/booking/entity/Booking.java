@@ -81,8 +81,8 @@ public class Booking extends BaseEntity {
         this.content = content;
     }
 
-    public void setAdmin(UserRepository userRepository) {
-        User admin = getCurrentUser(userRepository);
+    public void setAdmin() {
+        User admin = getCurrentUser();
         this.admin = admin;
     }
 

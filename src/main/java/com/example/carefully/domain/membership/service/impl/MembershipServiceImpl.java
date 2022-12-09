@@ -21,7 +21,6 @@ import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MembershipServiceImpl implements MembershipService {
-    private final UserRepository userRepository;
     private final MembershipRepository membershipRepository;
 
     /*
@@ -63,7 +62,7 @@ public class MembershipServiceImpl implements MembershipService {
     public void accept(Long membershipId) {
      Membership membership = membershipRepository.findById(membershipId).orElseThrow();
      if (membership.getAdmin() == null) {
-         membership.setAdmin(userRepository);
+         membership.setAdmin();
          membership.accept();
          membershipRepository.save(membership);
      } else if (checkCurrentAdmin(membership)) {
@@ -78,7 +77,7 @@ public class MembershipServiceImpl implements MembershipService {
     public void reject(Long membershipId) {
         Membership membership = membershipRepository.findById(membershipId).orElseThrow();
         if (membership.getAdmin() == null) {
-            membership.setAdmin(userRepository);
+            membership.setAdmin();
             membership.reject();
             membershipRepository.save(membership);
         } else if (checkCurrentAdmin(membership)) {
@@ -89,7 +88,7 @@ public class MembershipServiceImpl implements MembershipService {
     }
 
     public boolean checkCurrentAdmin(Membership membership) {
-        if (membership.getAdmin() == getCurrentUser(userRepository)) {
+        if (membership.getAdmin() == getCurrentUser()) {
             membership.setNullAdmin();
             return true;
         } else {

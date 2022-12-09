@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void signout(UserDto.SignoutRequest signoutRequest) {
 
-        User currentUser = getCurrentUser(userRepository);
+        User currentUser = getCurrentUser();
 
         UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, signoutRequest.getPassword());
 
@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserDto.UserResponse getMyUserWithAuthorities() {
-        User user = getCurrentUser(userRepository);
+        User user = getCurrentUser();
         return UserDto.UserResponse.create(user);
     }
 
@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserDto.AdminResponse getMyAdminWithAuthorities() {
-        User user = getCurrentUser(userRepository);
+        User user = getCurrentUser();
         return UserDto.AdminResponse.create(user);
     }
 
