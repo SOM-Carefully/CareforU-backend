@@ -44,7 +44,6 @@ public enum ErrorCode {
     MEMBERSHIP_ANOTHER_PROCESSED(2000, "다른 운영팀 회원이 이미 처리한 회원가입 신청입니다.")
     ;
 
-
     private final String message;
     private final int status;
 

@@ -1,9 +1,12 @@
 package com.example.carefully.domain.post.dto;
 
+import com.example.carefully.domain.category.domain.Category;
 import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.domain.post.domain.PostRole;
 import com.example.carefully.global.common.Constant;
 import lombok.*;
+
+import javax.validation.constraints.NotNull;
 
 @Getter
 public class PostDto {
@@ -13,14 +16,17 @@ public class PostDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class CreateRequest {
+        @NotNull
         private String title;
+        @NotNull
         private String content;
         private String imgUrl;
 
-        public Post toEntity(PostRole role, Long userId) {
+        public Post toEntity(PostRole role, Category category, Long userId) {
             return Post.builder()
                     .postRole(role)
                     .userId(userId)
+                    .category(category)
                     .title(title)
                     .content(content)
                     .imgUrl(imgUrl)

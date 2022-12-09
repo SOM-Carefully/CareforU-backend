@@ -1,5 +1,6 @@
 package com.example.carefully.domain.post.domain;
 
+import com.example.carefully.domain.category.domain.Category;
 import com.example.carefully.global.entity.*;
 import lombok.*;
 
@@ -19,7 +20,11 @@ public class Post extends BaseEntity {
 //    private User user;
 
     @Column(nullable = false)
-    private Long userId;      // 임시 유저
+    private Long userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Column(nullable = false)
     private String title;
@@ -35,8 +40,10 @@ public class Post extends BaseEntity {
     private String locked;
 
     @Builder
-    public Post(Long userId, String title, String content, boolean locked, String imgUrl, PostRole postRole) {
+    public Post(Long userId, Category category, String title, String content,
+                boolean locked, String imgUrl, PostRole postRole) {
         this.userId = userId;
+        this.category = category;
         this.title = title;
         this.content = content;
         this.imgUrl = imgUrl;

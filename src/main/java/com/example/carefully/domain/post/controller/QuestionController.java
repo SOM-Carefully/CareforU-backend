@@ -39,7 +39,7 @@ public class QuestionController {
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<SliceDto<QuestionDto.SearchResponse>>> searchQuestionList(@PageableDefault(size = 20) Pageable pageable) {
+    public ResponseEntity<BaseResponse<SliceDto<QuestionDto.SearchResponse>>> searchQuestionList(@PageableDefault(size = 100) Pageable pageable) {
         return ResponseEntity.ok(BaseResponse.create(
                 GET_QUESTION_LIST_SUCCESS.getMessage(), questionService.searchQuestionList(pageable)));
     }
