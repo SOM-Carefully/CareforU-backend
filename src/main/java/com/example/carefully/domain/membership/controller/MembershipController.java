@@ -5,6 +5,7 @@ import com.example.carefully.domain.membership.service.impl.MembershipServiceImp
 import com.example.carefully.global.dto.BaseResponse;
 import com.example.carefully.global.dto.SliceDto;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,12 +23,14 @@ public class MembershipController {
     private final MembershipServiceImpl membershipService;
 
     @GetMapping("all")
+    @ApiOperation(value = "회원가입 신청 전체 리스트 조회", notes = "회원가입 조회 API - 어드민 회원만 가능")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse<SliceDto<MembershipDto.MembershipResponse>>> membershipAllookup() {
         return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), membershipService.membershipAllLookup()));
     }
 
     @GetMapping("")
+    @ApiOperation(value = "회원가입 신청 상태별 리스트 조회", notes = "회원가입 조회 API - 어드민 회원만 가능")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse<SliceDto<MembershipDto.MembershipResponse>>> membershipLookup(@RequestParam("state") String membershipStatus,
                                                                                                      @PageableDefault(size = 10) Pageable pageable) {
@@ -35,6 +38,7 @@ public class MembershipController {
     }
 
     @PutMapping("/accept/{membershipId}")
+    @ApiOperation(value = "회원가입 신청 승인", notes = "회원가입 승인 API - 어드민 회원만 가능")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity acceptMembership(@PathVariable("membershipId") Long membershipId) {
         membershipService.accept(membershipId);
@@ -42,6 +46,7 @@ public class MembershipController {
     }
 
     @PutMapping("/reject/{membershipId}")
+    @ApiOperation(value = "회원가입 신청 거절", notes = "회원가입 거절 API - 어드민 회원만 가능")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity rejectMembership(@PathVariable("membershipId") Long membershipId) {
         membershipService.reject(membershipId);
