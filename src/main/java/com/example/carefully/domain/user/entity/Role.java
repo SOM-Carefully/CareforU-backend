@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Role {
-    GENERAL("일반"), OPERATION("운영"), ADMIN("관리자");
+    CLASSIC("일반회원"), SILVER("유료회원1"), GOLD("유료회원2"), PLATINUM("유료회원3"), ADMIN("관리자");
 
     private static final String PREFIX = "ROLE_";
     private final String description;

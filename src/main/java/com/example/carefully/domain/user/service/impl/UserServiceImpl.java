@@ -1,10 +1,10 @@
 package com.example.carefully.domain.user.service.impl;
 
+import com.example.carefully.domain.membership.entity.Membership;
+import com.example.carefully.domain.membership.repository.MembershipRepository;
 import com.example.carefully.domain.user.dto.TokenResponse;
 import com.example.carefully.domain.user.dto.UserDto;
 import com.example.carefully.domain.user.entity.User;
-import com.example.carefully.domain.user.entity.Operation;
-import com.example.carefully.domain.user.entity.General;
 import com.example.carefully.domain.user.exception.DuplicatedUsernameException;
 import com.example.carefully.domain.user.exception.NotValidationPasswordException;
 import com.example.carefully.domain.user.exception.NotValidationRoleException;
@@ -28,6 +28,7 @@ import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final MembershipRepository membershipRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -51,57 +52,62 @@ public class UserServiceImpl implements UserService {
     }
 
     /*
-    회원가입 (리팩토링해라 김현빈)
+    회원가입 신청
      */
     @Override
     @Transactional
-    public void signup(UserDto.RegisterRequest registerRequest) {
-        if (isDuplicateUsername(registerRequest.getUsername())) {
-            throw new DuplicatedUsernameException();
-        }
-
-        String requestRole = String.valueOf(registerRequest.getRole());
-
+    public void userSignup(UserDto.UserRegisterRequest registerRequest) {
+        isDuplicateUsername(registerRequest.getUsername());
         registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
-        if (requestRole.equals("GENERAL")) {
-            General general = General.registerUser(registerRequest);
-            userRepository.save(general);
-        }
-        else if (requestRole.equals("OPERATION")) {
-            Operation operation = Operation.registerOperation(registerRequest);
-            userRepository.save(operation);
-        }
-        else {
-            throw new NotValidationRoleException();
+        User user = User.userRequest(registerRequest);
+        userRepository.save(user);
+
+        Membership membership = Membership.request(user, registerRequest.getContent());
+        membershipRepository.save(membership);
+    }
+
+    @Override
+    @Transactional
+    public void adminSignup(UserDto.AdminRegisterRequest registerRequest) {
+        isDuplicateUsername(registerRequest.getUsername());
+        registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+
+        User user = User.adminRequest(registerRequest);
+        userRepository.save(user);
+
+        Membership membership = Membership.request(user, registerRequest.getContent());
+        membershipRepository.save(membership);
+    }
+
+
+
+
+    @Override
+    @Transactional
+    public void adminSignupTest(UserDto.AdminRegisterRequest registerRequest) {
+        isDuplicateUsername(registerRequest.getUsername());
+        registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+
+        User user = User.adminRequest(registerRequest);
+        user.signup();
+
+        userRepository.save(user);
+    }
+
+    /*
+    유저 아이디 중복검사
+     */
+    public void isDuplicateUsername(String username) {
+        if (userRepository.existsByUsername(username)) {
+            throw new DuplicatedUsernameException();
         }
     }
 
     /*
-    회원 정보 수정 (리팩토링해라 감현빈2)
+    회원 정보 수정
      */
-    @Override
-    @Transactional
-    public void update(UserDto.UpdateRequest updateRequest) {
 
-        User user = getCurrentUser(userRepository);
-
-        if (user.getRole().name().equals("GENERAL")) {
-            General general = (General) user;
-            General result = General.updateUser(general, updateRequest);
-            general.update(result);
-            userRepository.save(result);
-        }
-        else if (user.getRole().name().equals("OPERATION")) {
-            Operation operation = (Operation) user;
-            Operation result = Operation.updateOperation(operation, updateRequest);
-            operation.update(result);
-            userRepository.save(operation);
-        }
-        else {
-            throw new NotValidationRoleException();
-        }
-    }
 
     /*
     회원 탈퇴
@@ -110,7 +116,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void signout(UserDto.SignoutRequest signoutRequest) {
 
-        User currentUser = getCurrentUser(userRepository);
+        User currentUser = getCurrentUser();
 
         UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, signoutRequest.getPassword());
 
@@ -122,21 +128,23 @@ public class UserServiceImpl implements UserService {
     }
 
     /*
-    유저 아이디 중복검사
-     */
-    @Override
-    public boolean isDuplicateUsername(String username) {
-        return userRepository.existsByUsername(username);
-    }
-
-    /*
-    로그인한 사용자 정보 조회
+    로그인한 일반 사용자 정보 조회
      */
     @Override
     @Transactional(readOnly = true)
     public UserDto.UserResponse getMyUserWithAuthorities() {
-        User user =  getCurrentUser(userRepository);
+        User user = getCurrentUser();
         return UserDto.UserResponse.create(user);
+    }
+
+    /*
+    로그인한 일반 사용자 정보 조회
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public UserDto.AdminResponse getMyAdminWithAuthorities() {
+        User user = getCurrentUser();
+        return UserDto.AdminResponse.create(user);
     }
 
     @Transactional(readOnly = true)
@@ -147,4 +155,5 @@ public class UserServiceImpl implements UserService {
         );
         return unauthenticated;
     }
+
 }

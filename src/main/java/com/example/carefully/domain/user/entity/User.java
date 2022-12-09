@@ -1,5 +1,6 @@
 package com.example.carefully.domain.user.entity;
 
+import com.example.carefully.domain.user.dto.UserDto;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,44 +15,89 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="User_Type")
-@Table( name = "USER_TABLE")
 @AllArgsConstructor
+@Table(name = "user_table")
 @NoArgsConstructor(access = PROTECTED)
-public abstract class User extends BaseEntity {
+public class User extends BaseEntity {
     @Id
-    @Column(name = "user_id")
     @GeneratedValue(strategy = IDENTITY)
     Long id;
 
-    @Column(name ="username", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     String username;
 
-    @Column(name = "name")
+    @Column(nullable = false)
+    String password;
+    @Column(nullable = false)
     String name;
 
-    @Column(name ="phoneNumber", nullable = true)
+    @Column(unique = true)
+    String identificationNumber;
+
+    @Column(nullable = false, unique = true)
     String phoneNumber;
+    @Column(unique = true)
+    String businessRegistrationNumber;
 
-    @Column(name ="password", nullable = false)
-    String password;
+    @Column
+    String universityName;
 
-    @Column(name = "activated")
+    @Enumerated(value = STRING)
+    Education education;
+
+    @Enumerated(value = STRING)
+    Gender gender;
+
+    @Column
     boolean activated;
 
     @Enumerated(value = STRING)
     Role role;
 
-    public User(String username, String name, String phoneNumber, String password, Role role, boolean activated) {
+    @Builder
+    public User(String username, String password, String name, String phoneNumber, String identificationNumber,
+                String businessRegistrationNumber, String universityName, Education education, Role role,
+                Gender gender, boolean activated) {
         this.username = username;
+        this.password = password;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.password = password;
+        this.identificationNumber = identificationNumber;
+        this.businessRegistrationNumber = businessRegistrationNumber;
+        this.universityName = universityName;
+        this.education = education;
+        this.gender = gender;
         this.role = role;
         this.activated = activated;
     }
-    
+
+    public static User userRequest(UserDto.UserRegisterRequest registerRequest) {
+        return User.builder()
+                .username(registerRequest.getUsername())
+                .password(registerRequest.getPassword())
+                .name(registerRequest.getName())
+                .phoneNumber(registerRequest.getPhoneNumber())
+                .universityName(registerRequest.getUniversityName())
+                .education(Education.valueOf((registerRequest.getEducationRequest().name())))
+                .activated(false)
+                .role(Role.valueOf((registerRequest.getRole().name())))
+                .build();
+    }
+
+    public static User adminRequest(UserDto.AdminRegisterRequest registerRequest) {
+        return User.builder()
+                .username(registerRequest.getUsername())
+                .password(registerRequest.getPassword())
+                .name(registerRequest.getName())
+                .phoneNumber(registerRequest.getPhoneNumber())
+                .businessRegistrationNumber(registerRequest.getBusinessRegistrationNumber())
+                .activated(false)
+                .role(Role.valueOf("ADMIN"))
+                .build();
+    }
+
+    public void signup() { this.activated = true; }
+
     public void signout() {
         this.activated = false; 
     }
