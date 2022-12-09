@@ -4,6 +4,7 @@ import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.domain.post.domain.PostRole;
 import com.example.carefully.domain.post.dto.QuestionDto;
 import com.example.carefully.domain.post.exception.PostEmptyException;
+import com.example.carefully.domain.post.repository.CustomPostRepository;
 import com.example.carefully.domain.post.repository.PostRepository;
 import com.example.carefully.global.dto.SliceDto;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionServiceImpl implements QuestionService {
 
     private final PostRepository postRepository;
+    private final CustomPostRepository customPostRepository;
     private final Long tempUserId = 1L;
 
     @Override
@@ -42,9 +44,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public SliceDto<QuestionDto.SearchResponse> searchQuestionList(Pageable pageable) {
-        Slice<QuestionDto.SearchResponse> sliceDto = postRepository.findAllByPostRoleOrderByCreatedAtDesc(pageable, PostRole.QUEST)
+        Slice<QuestionDto.SearchResponse> sliceDto = customPostRepository.getPostList(pageable, PostRole.QUEST, null)
                 .map(QuestionDto.SearchResponse::create);
-
         return SliceDto.create(sliceDto);
     }
 

@@ -7,6 +7,7 @@ import com.example.carefully.domain.post.dto.PostDto;
 import com.example.carefully.domain.category.exception.CategoryEmptyException;
 import com.example.carefully.domain.post.exception.PostEmptyException;
 import com.example.carefully.domain.category.repository.CategoryRepository;
+import com.example.carefully.domain.post.repository.CustomPostRepository;
 import com.example.carefully.domain.post.repository.PostRepository;
 import com.example.carefully.global.dto.SliceDto;
 import com.example.carefully.infra.s3.S3Service;
@@ -23,6 +24,7 @@ public class PostServiceImpl implements PostService {
     private final S3Service s3Service;
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
+    private final CustomPostRepository customPostRepository;
     private final Long tempUserId = 1L;
 
     @Override
@@ -66,18 +68,10 @@ public class PostServiceImpl implements PostService {
     public SliceDto<PostDto.SearchResponse> searchPostList(String postRole,
                                                            Long categoryId,
                                                            Pageable pageable) {
-        Slice<PostDto.SearchResponse> searchListByPostRole = getSearchListByPostRole(postRole, categoryId, pageable);
-        return SliceDto.create(searchListByPostRole);
-    }
-
-    private Slice<PostDto.SearchResponse> getSearchListByPostRole(String postRole, Long categoryId, Pageable pageable) {
-        if (PostRole.isFree(postRole)) {
-            return postRepository.findAllByPostRoleAndCategoryIdOrderByCreatedAtDesc(
-                    pageable,
-                    PostRole.valueOf(postRole),
-                    categoryId).map(PostDto.SearchResponse::create);
-        }
-        return postRepository.findAllByPostRoleOrderByCreatedAtDesc(pageable, PostRole.valueOf(postRole))
+        Slice<PostDto.SearchResponse> postsByRole = customPostRepository
+                .getPostList(pageable, PostRole.valueOf(postRole), categoryId)
                 .map(PostDto.SearchResponse::create);
+
+        return SliceDto.create(postsByRole);
     }
 }
