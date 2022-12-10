@@ -100,6 +100,18 @@ public class User extends BaseEntity {
                 .build();
     }
 
+    public void updateUser(String name, String universityName, String education, String gender) {
+        this.name = name;
+        this.universityName = universityName;
+        this.education = Education.valueOf(education);
+        this.gender = Gender.valueOf(gender);
+    }
+
+    public void updateAdmin(String name, String gender) {
+        this.name = name;
+        this.gender = Gender.valueOf(gender);
+    }
+
     public void signup() { this.activated = true; }
 
     public void signout() {

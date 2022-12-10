@@ -8,6 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.example.carefully.domain.booking.dto.BookingResponseMessage.*;
@@ -20,6 +21,7 @@ public class BookingController {
     private final BookingServiceImpl bookingService;
 
     @ApiOperation(value = "서비스 신청", notes = "서비스 신청 API")
+    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
     @PostMapping("")
     public ResponseEntity requestService(@RequestBody BookingDto.ReceiveRequest receiveRequest) {
         bookingService.request(receiveRequest);
@@ -46,7 +48,7 @@ public class BookingController {
     }
 
     @ApiOperation(value = "서비스 승인", notes = "서비스 승인 API")
-    @PutMapping("/accept/{bookingId}")
+    @PatchMapping("/accept/{bookingId}")
     public ResponseEntity acceptService(@PathVariable("bookingId") Long bookingId) {
         bookingService.accept(bookingId);
         return ResponseEntity.ok(BaseResponse.create(ACCEPT_SUCCESS.getMessage()));

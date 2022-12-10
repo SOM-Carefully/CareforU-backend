@@ -65,13 +65,21 @@ public class UserController {
     }
 
 
-//    @ApiOperation(value = "내 정보 수정", notes = "회원 수정 API")
-//    @PutMapping("/my")
-//    @PreAuthorize("hasAnyRole('GENERAL','OPERATION', 'ADMIN')")
-//    public ResponseEntity update(@RequestBody UserDto.UpdateRequest updateRequest) {
-//        userService.update(updateRequest);
-//        return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
-//    }
+    @ApiOperation(value = "일반 유저 내 정보 수정", notes = "회원 수정 API")
+    @PatchMapping("/user/my")
+    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
+    public ResponseEntity userUpdate(@RequestBody UserDto.UserUpdateRequest userUpdateRequest) {
+        userService.userUpdate(userUpdateRequest);
+        return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
+    }
+
+    @ApiOperation(value = "어드민 유저 내 정보 수정", notes = "회원 수정 API")
+    @PatchMapping("/admin/my")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity adminUpdate(@RequestBody UserDto.AdminUpdateRequest adminUpdateRequest) {
+        userService.adminUpdate(adminUpdateRequest);
+        return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
+    }
 
     @ApiOperation(value = "회원 탈퇴", notes = "회원 탈퇴 API")
     @PostMapping("/signout")
