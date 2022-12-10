@@ -7,6 +7,7 @@ import com.example.carefully.domain.membership.exception.AlreadyProcessedMembers
 import com.example.carefully.domain.membership.exception.NotValidationMembershipAdmin;
 import com.example.carefully.domain.membership.repository.MembershipRepository;
 import com.example.carefully.domain.membership.service.MembershipService;
+import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.global.dto.SliceDto;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 @RequiredArgsConstructor
 public class MembershipServiceImpl implements MembershipService {
     private final MembershipRepository membershipRepository;
+    private final UserRepository userRepository;
 
     /*
     회원가입 신청 전체 리스트 조회
@@ -60,35 +62,39 @@ public class MembershipServiceImpl implements MembershipService {
     @Override
     @Transactional
     public void accept(Long membershipId) {
-     Membership membership = membershipRepository.findById(membershipId).orElseThrow();
-     if (membership.getAdmin() == null) {
-         membership.setAdmin();
-         membership.accept();
-         membershipRepository.save(membership);
-     } else if (checkCurrentAdmin(membership)) {
-         accept(membershipId);
-     } else {
-         throw new AlreadyProcessedMembership();
-     }
+        Membership membership = membershipRepository.findById(membershipId).orElseThrow();
+        User currentUser = getCurrentUser(userRepository);
+
+        if (membership.getAdmin() == null) {
+            membership.setAdmin(currentUser);
+            membership.accept();
+            membershipRepository.save(membership);
+        } else if (checkCurrentAdmin(membership, currentUser)) {
+            accept(membershipId);
+        } else {
+            throw new AlreadyProcessedMembership();
+        }
     }
 
     @Override
     @Transactional
     public void reject(Long membershipId) {
         Membership membership = membershipRepository.findById(membershipId).orElseThrow();
+        User currentUser = getCurrentUser(userRepository);
+
         if (membership.getAdmin() == null) {
-            membership.setAdmin();
+            membership.setAdmin(currentUser);
             membership.reject();
             membershipRepository.save(membership);
-        } else if (checkCurrentAdmin(membership)) {
+        } else if (checkCurrentAdmin(membership, currentUser)) {
             reject(membershipId);
         } else {
             throw new AlreadyProcessedMembership();
         }
     }
 
-    public boolean checkCurrentAdmin(Membership membership) {
-        if (membership.getAdmin() == getCurrentUser()) {
+    public boolean checkCurrentAdmin(Membership membership, User currentUser) {
+        if (membership.getAdmin() == currentUser) {
             membership.setNullAdmin();
             return true;
         } else {
