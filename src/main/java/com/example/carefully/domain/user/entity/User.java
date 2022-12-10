@@ -79,6 +79,7 @@ public class User extends BaseEntity {
                 .phoneNumber(registerRequest.getPhoneNumber())
                 .universityName(registerRequest.getUniversityName())
                 .education(Education.valueOf((registerRequest.getEducationRequest().name())))
+                .gender(Gender.valueOf(registerRequest.getGenderRequest().name()))
                 .activated(false)
                 .role(Role.valueOf((registerRequest.getRole().name())))
                 .build();
@@ -91,6 +92,7 @@ public class User extends BaseEntity {
                 .name(registerRequest.getName())
                 .phoneNumber(registerRequest.getPhoneNumber())
                 .businessRegistrationNumber(registerRequest.getBusinessRegistrationNumber())
+                .gender(Gender.valueOf(registerRequest.getGenderRequest().name()))
                 .activated(false)
                 .role(Role.valueOf("ADMIN"))
                 .build();

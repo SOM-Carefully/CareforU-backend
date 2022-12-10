@@ -118,7 +118,8 @@ public class UserServiceImpl implements UserService {
         UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, signoutRequest.getPassword());
 
         if (unauthenticated != null) {
-            userRepository.delete(currentUser);
+            currentUser.signout();
+            userRepository.save(currentUser);
         } else {
             throw new NotValidationPasswordException();
         }
