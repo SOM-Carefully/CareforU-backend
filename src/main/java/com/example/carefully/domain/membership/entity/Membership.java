@@ -56,9 +56,8 @@ public class Membership extends BaseEntity {
                 .build();
     }
 
-    public void setAdmin() {
-        User admin = getCurrentUser();
-        this.admin = admin;
+    public void setAdmin(User currentUser) {
+        this.admin = currentUser;
     }
 
     public void accept() {
