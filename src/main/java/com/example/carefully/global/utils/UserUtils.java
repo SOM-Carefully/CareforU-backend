@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserUtils {
-    private static UserRepository userRepository;
-    public static User getCurrentUser() {
+    public static User getCurrentUser(UserRepository userRepository) {
         return SecurityUtil.getCurrentUsername()
                 .flatMap(userRepository::findOneWithAuthoritiesByUsername)
                 .orElseThrow(() -> new NotValidationRoleException());

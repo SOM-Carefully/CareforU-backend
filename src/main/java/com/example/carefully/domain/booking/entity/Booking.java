@@ -15,7 +15,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 import static com.example.carefully.domain.booking.entity.BookingStatus.*;
-import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -81,8 +80,8 @@ public class Booking extends BaseEntity {
         this.content = content;
     }
 
-    public void setAdmin() {
-        User admin = getCurrentUser();
+    public void setAdmin(User currentUSer) {
+        User admin = currentUSer;
         this.admin = admin;
     }
 

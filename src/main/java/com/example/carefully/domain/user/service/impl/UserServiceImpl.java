@@ -80,9 +80,6 @@ public class UserServiceImpl implements UserService {
         membershipRepository.save(membership);
     }
 
-
-
-
     @Override
     @Transactional
     public void adminSignupTest(UserDto.AdminRegisterRequest registerRequest) {
@@ -116,7 +113,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void signout(UserDto.SignoutRequest signoutRequest) {
 
-        User currentUser = getCurrentUser();
+        User currentUser = getCurrentUser(userRepository);
 
         UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, signoutRequest.getPassword());
 
@@ -133,8 +130,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserDto.UserResponse getMyUserWithAuthorities() {
-        User user = getCurrentUser();
-        return UserDto.UserResponse.create(user);
+        User currentUser = getCurrentUser(userRepository);
+        return UserDto.UserResponse.create(currentUser);
     }
 
     /*
@@ -143,8 +140,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserDto.AdminResponse getMyAdminWithAuthorities() {
-        User user = getCurrentUser();
-        return UserDto.AdminResponse.create(user);
+        User currentUser = getCurrentUser(userRepository);
+        return UserDto.AdminResponse.create(currentUser);
     }
 
     @Transactional(readOnly = true)

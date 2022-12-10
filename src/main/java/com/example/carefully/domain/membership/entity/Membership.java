@@ -1,7 +1,6 @@
 package com.example.carefully.domain.membership.entity;
 
 import com.example.carefully.domain.user.entity.User;
-import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +11,6 @@ import javax.persistence.*;
 
 import static com.example.carefully.domain.membership.entity.MembershipStatus.ACCEPT;
 import static com.example.carefully.domain.membership.entity.MembershipStatus.REJECT;
-import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -56,8 +54,8 @@ public class Membership extends BaseEntity {
                 .build();
     }
 
-    public void setAdmin() {
-        User admin = getCurrentUser();
+    public void setAdmin(User currentUser) {
+        User admin = currentUser;
         this.admin = admin;
     }
 
