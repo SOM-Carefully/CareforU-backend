@@ -7,6 +7,8 @@ import com.example.carefully.domain.booking.exception.NotValidationBookingId;
 import com.example.carefully.domain.booking.exception.NotValidationServiceAdmin;
 import com.example.carefully.domain.booking.repository.BookingRepository;
 import com.example.carefully.domain.booking.service.BookingService;
+import com.example.carefully.domain.membership.dto.MembershipDto;
+import com.example.carefully.domain.membership.entity.Membership;
 import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.global.dto.SliceDto;
@@ -33,6 +35,16 @@ public class BookingServiceImpl implements BookingService {
         User currentUser = getCurrentUser(userRepository);
         Booking booking = Booking.request(currentUser, receiveRequest);
         bookingRepository.save(booking);
+    }
+
+    /*
+    서비스 신청 전체 리스트 조회
+    */
+    @Override
+    @Transactional(readOnly = true)
+    public SliceDto<BookingDto.ServiceResponse> serviceAllLookup() {
+        Slice<Booking> bookingList = bookingRepository.findAllByOrderByCreatedAtDesc();
+        return SliceDto.create(bookingList.map(BookingDto.ServiceResponse::create));
     }
 
     /*

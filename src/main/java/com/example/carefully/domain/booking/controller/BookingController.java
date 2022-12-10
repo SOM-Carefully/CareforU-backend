@@ -28,6 +28,12 @@ public class BookingController {
         return ResponseEntity.ok(BaseResponse.create(REQUEST_SUCCESS.getMessage()));
     }
 
+    @ApiOperation(value = "전체 서비스 신청 리스트 조회", notes = "서비스 조회 API")
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponse<SliceDto<BookingDto.ServiceResponse>>> lookupAllService() {
+        return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), bookingService.serviceAllLookup()));
+    }
+
     @ApiOperation(value = "단일 서비스 조회", notes = "서비스 조회 API")
     @GetMapping("/{bookingId}")
     public ResponseEntity<BaseResponse<BookingDto.ServiceResponse>> lookupService(@PathVariable("bookingId") Long bookingId) {
@@ -35,7 +41,7 @@ public class BookingController {
     }
 
     @ApiOperation(value = "내 서비스 신청 리스트 조회", notes = "서비스 조회 API")
-    @GetMapping
+    @GetMapping("/my")
     public ResponseEntity<BaseResponse<SliceDto<BookingDto.ServiceResponse>>> lookupMyService() {
         return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), bookingService.userLookup()));
     }
@@ -48,6 +54,7 @@ public class BookingController {
     }
 
     @ApiOperation(value = "서비스 승인", notes = "서비스 승인 API")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping("/accept/{bookingId}")
     public ResponseEntity acceptService(@PathVariable("bookingId") Long bookingId) {
         bookingService.accept(bookingId);
@@ -55,6 +62,7 @@ public class BookingController {
     }
 
     @ApiOperation(value = "서비스 취소", notes = "서비스 취소 API")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping("/cancel/{bookingId}")
     public ResponseEntity cancelService(@PathVariable("bookingId") Long bookingId) {
         bookingService.cancel(bookingId);
@@ -62,6 +70,7 @@ public class BookingController {
     }
 
     @ApiOperation(value = "서비스 완료", notes = "서비스 완료 API")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping("/complete/{bookingId}")
     public ResponseEntity completeService(@PathVariable("bookingId") Long bookingId) {
         bookingService.complete(bookingId);
