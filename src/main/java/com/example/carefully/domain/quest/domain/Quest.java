@@ -55,4 +55,9 @@ public class Quest extends BaseEntity {
     private String mapString(boolean locked) {
         return locked ? "Y" : "N";
     }
+
+    public void registerAns(Long adminId, String answer) {
+        this.adminId = adminId;
+        this.answer = answer;
+    }
 }

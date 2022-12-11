@@ -1,14 +1,12 @@
 package com.example.carefully.domain.quest.dto;
 
-import com.example.carefully.domain.post.domain.Post;
-import com.example.carefully.domain.post.domain.PostRole;
 import com.example.carefully.domain.quest.domain.Quest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-public class QuestionDto {
+public class QuestDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -57,7 +55,7 @@ public class QuestionDto {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
 
-        public static QuestionDto.SearchResponse create(Quest quest) {
+        public static QuestDto.SearchResponse create(Quest quest) {
             return SearchResponse.builder()
                     .questionId(quest.getId())
                     .title(quest.getTitle())
@@ -66,5 +64,12 @@ public class QuestionDto {
                     .locked(quest.getLocked())
                     .createdAt(quest.getCreatedAt()).build();
         }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public static class AnswerRequest {
+        private String content;
     }
 }

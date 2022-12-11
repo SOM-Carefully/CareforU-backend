@@ -15,6 +15,7 @@ public enum PostResponseMessage {
     GET_QUESTION_DETAIL_SUCCESS("문의 사항 상세정보를 가져오는데 성공하였습니다."),
     GET_QUESTION_LIST_SUCCESS("문의 사항 리스트를 가져오는데 성공하였습니다."),
     DELETE_QUESTION_SUCCESS("문의 사항을 삭제하는데 성공하였습니다."),
+    ANSWER_QUESTION_SUCCESS("문의 사항에 대한 답변을 등록하는데 성공하였습니다."),
     CREATE_CATEGORY_SUCCESS("카테고리를 생성하는데 성공하였습니다."),
     GET_CATEGORY_LIST_SUCCESS("카테고리 리스트를 가져오는데 성공하였습니다."),
     UPDATE_CATEGORY_SUCCESS("카테고리 이름을 수정하는데 성공하였습니다."),

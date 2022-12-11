@@ -19,8 +19,8 @@ public class BaseResponse<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T result;
 
-    public static <T> BaseResponse<T> create(String message){
-        return new BaseResponse<>(message, null);
+    public static <T> BaseResponse<T> create(T message){
+        return new BaseResponse<>((String)message, null);
     }
 
     public static <T> BaseResponse<T> create(String message, T result){

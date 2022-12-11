@@ -1,7 +1,7 @@
 package com.example.carefully.domain.quest.service;
 
 import com.example.carefully.domain.quest.domain.Quest;
-import com.example.carefully.domain.quest.dto.QuestionDto;
+import com.example.carefully.domain.quest.dto.QuestDto;
 import com.example.carefully.domain.quest.exception.QuestEmptyException;
 import com.example.carefully.domain.quest.repository.QuestRepository;
 import com.example.carefully.global.dto.SliceDto;
@@ -18,31 +18,32 @@ public class QuestionServiceImpl implements QuestionService {
 
     private final QuestRepository questRepository;
     private final Long tempUserId = 1L;
+    private final Long tempAdminId = 2L;
 
     @Override
     @Transactional
-    public QuestionDto.CreateResponse createNewQuestion(QuestionDto.CreateRequest request) {
+    public QuestDto.CreateResponse createNewQuestion(QuestDto.CreateRequest request) {
         Quest question = questRepository.save(request.toEntity(tempUserId));
-        return new QuestionDto.CreateResponse(question.getId());
+        return new QuestDto.CreateResponse(question.getId());
     }
 
     @Override
     @Transactional
-    public void updateQuestion(QuestionDto.UpdateRequest request, Long questionId) {
-        Quest question = questRepository.findById(questionId).orElseThrow(QuestEmptyException::new);
+    public void updateQuestion(QuestDto.UpdateRequest request, Long questionId) {
+        Quest question = findQuestById(questionId);
         question.updateQuest(request.getTitle(), request.getContent(), request.isLocked());
     }
 
     @Override
-    public QuestionDto.SearchResponse searchQuestionDetail(Long questionId) {
-        Quest question = questRepository.findById(questionId).orElseThrow(QuestEmptyException::new);
-        return QuestionDto.SearchResponse.create(question);
+    public QuestDto.SearchResponse searchQuestionDetail(Long questionId) {
+        Quest question = findQuestById(questionId);
+        return QuestDto.SearchResponse.create(question);
     }
 
     @Override
-    public SliceDto<QuestionDto.SearchResponse> searchQuestionList(Pageable pageable) {
-        Slice<QuestionDto.SearchResponse> sliceDto = questRepository.findAllByOrderByCreatedAtDesc(pageable)
-                        .map(QuestionDto.SearchResponse::create);
+    public SliceDto<QuestDto.SearchResponse> searchQuestionList(Pageable pageable) {
+        Slice<QuestDto.SearchResponse> sliceDto = questRepository.findAllByOrderByCreatedAtDesc(pageable)
+                        .map(QuestDto.SearchResponse::create);
 
         return SliceDto.create(sliceDto);
     }
@@ -50,7 +51,18 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public void deleteQuestion(Long questionId) {
-        Quest question = questRepository.findById(questionId).orElseThrow(QuestEmptyException::new);
+        Quest question = findQuestById(questionId);
         questRepository.delete(question);
+    }
+
+    @Override
+    @Transactional
+    public void registerAnswer(QuestDto.AnswerRequest request, Long questionId) {
+        Quest quest = findQuestById(questionId);
+        quest.registerAns(tempAdminId, request.getContent());
+    }
+
+    private Quest findQuestById(Long questionId) {
+        return questRepository.findById(questionId).orElseThrow(QuestEmptyException::new);
     }
 }
