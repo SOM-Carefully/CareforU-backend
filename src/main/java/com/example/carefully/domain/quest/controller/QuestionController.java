@@ -1,7 +1,7 @@
-package com.example.carefully.domain.post.controller;
+package com.example.carefully.domain.quest.controller;
 
-import com.example.carefully.domain.post.dto.QuestionDto;
-import com.example.carefully.domain.post.service.QuestionServiceImpl;
+import com.example.carefully.domain.quest.dto.QuestionDto;
+import com.example.carefully.domain.quest.service.QuestionServiceImpl;
 import com.example.carefully.global.dto.BaseResponse;
 import com.example.carefully.global.dto.SliceDto;
 import lombok.RequiredArgsConstructor;

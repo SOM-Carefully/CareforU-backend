@@ -1,6 +1,6 @@
-package com.example.carefully.domain.post.service;
+package com.example.carefully.domain.quest.service;
 
-import com.example.carefully.domain.post.dto.QuestionDto;
+import com.example.carefully.domain.quest.dto.QuestionDto;
 import com.example.carefully.global.dto.SliceDto;
 import org.springframework.data.domain.Pageable;
 

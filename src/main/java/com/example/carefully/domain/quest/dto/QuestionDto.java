@@ -1,7 +1,8 @@
-package com.example.carefully.domain.post.dto;
+package com.example.carefully.domain.quest.dto;
 
 import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.domain.post.domain.PostRole;
+import com.example.carefully.domain.quest.domain.Quest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
@@ -17,9 +18,8 @@ public class QuestionDto {
         private String content;
         private boolean locked;
 
-        public Post toEntity(PostRole role, Long userId) {
-            return Post.builder()
-                    .postRole(role)
+        public Quest toEntity(Long userId) {
+            return Quest.builder()
                     .userId(userId)
                     .title(title)
                     .content(content)
@@ -57,14 +57,14 @@ public class QuestionDto {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
 
-        public static QuestionDto.SearchResponse create(Post post) {
+        public static QuestionDto.SearchResponse create(Quest quest) {
             return SearchResponse.builder()
-                    .questionId(post.getId())
-                    .title(post.getTitle())
-                    .content(post.getContent())
-                    .writer(post.getUserId().toString())
-                    .locked(post.getLocked())
-                    .createdAt(post.getCreatedAt()).build();
+                    .questionId(quest.getId())
+                    .title(quest.getTitle())
+                    .content(quest.getContent())
+                    .writer(quest.getUserId().toString())
+                    .locked(quest.getLocked())
+                    .createdAt(quest.getCreatedAt()).build();
         }
     }
 }

@@ -1,11 +1,9 @@
-package com.example.carefully.domain.post.service;
+package com.example.carefully.domain.quest.service;
 
-import com.example.carefully.domain.post.domain.Post;
-import com.example.carefully.domain.post.domain.PostRole;
-import com.example.carefully.domain.post.dto.QuestionDto;
-import com.example.carefully.domain.post.exception.PostEmptyException;
-import com.example.carefully.domain.post.repository.CustomPostRepository;
-import com.example.carefully.domain.post.repository.PostRepository;
+import com.example.carefully.domain.quest.domain.Quest;
+import com.example.carefully.domain.quest.dto.QuestionDto;
+import com.example.carefully.domain.quest.exception.QuestEmptyException;
+import com.example.carefully.domain.quest.repository.QuestRepository;
 import com.example.carefully.global.dto.SliceDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -18,41 +16,41 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
-    private final PostRepository postRepository;
-    private final CustomPostRepository customPostRepository;
+    private final QuestRepository questRepository;
     private final Long tempUserId = 1L;
 
     @Override
     @Transactional
     public QuestionDto.CreateResponse createNewQuestion(QuestionDto.CreateRequest request) {
-        Post question = postRepository.save(request.toEntity(PostRole.QUEST, tempUserId));
+        Quest question = questRepository.save(request.toEntity(tempUserId));
         return new QuestionDto.CreateResponse(question.getId());
     }
 
     @Override
     @Transactional
     public void updateQuestion(QuestionDto.UpdateRequest request, Long questionId) {
-        Post question = postRepository.findById(questionId).orElseThrow(PostEmptyException::new);
+        Quest question = questRepository.findById(questionId).orElseThrow(QuestEmptyException::new);
         question.updateQuest(request.getTitle(), request.getContent(), request.isLocked());
     }
 
     @Override
     public QuestionDto.SearchResponse searchQuestionDetail(Long questionId) {
-        Post question = postRepository.findById(questionId).orElseThrow(PostEmptyException::new);
+        Quest question = questRepository.findById(questionId).orElseThrow(QuestEmptyException::new);
         return QuestionDto.SearchResponse.create(question);
     }
 
     @Override
     public SliceDto<QuestionDto.SearchResponse> searchQuestionList(Pageable pageable) {
-        Slice<QuestionDto.SearchResponse> sliceDto = customPostRepository.getPostList(pageable, PostRole.QUEST, null)
-                .map(QuestionDto.SearchResponse::create);
+        Slice<QuestionDto.SearchResponse> sliceDto = questRepository.findAllByOrderByCreatedAtDesc(pageable)
+                        .map(QuestionDto.SearchResponse::create);
+
         return SliceDto.create(sliceDto);
     }
 
     @Override
     @Transactional
     public void deleteQuestion(Long questionId) {
-        Post question = postRepository.findById(questionId).orElseThrow(PostEmptyException::new);
-        postRepository.delete(question);
+        Quest question = questRepository.findById(questionId).orElseThrow(QuestEmptyException::new);
+        questRepository.delete(question);
     }
 }
