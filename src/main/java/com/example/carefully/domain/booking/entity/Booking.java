@@ -3,7 +3,6 @@ package com.example.carefully.domain.booking.entity;
 import com.example.carefully.domain.booking.dto.BookingDto;
 import com.example.carefully.domain.user.entity.BusinessType;
 import com.example.carefully.domain.user.entity.User;
-import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +14,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 import static com.example.carefully.domain.booking.entity.BookingStatus.*;
-import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;

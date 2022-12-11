@@ -8,6 +8,8 @@ public interface BookingService {
 
     void request(BookingDto.ReceiveRequest receiveRequest);
 
+    SliceDto<BookingDto.ServiceResponse> serviceAllLookup();
+
     BookingDto.ServiceResponse lookup(Long bookingId);
 
     SliceDto<BookingDto.ServiceResponse> userLookup();

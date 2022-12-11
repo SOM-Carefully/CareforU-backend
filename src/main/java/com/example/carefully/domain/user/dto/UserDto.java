@@ -92,6 +92,30 @@ public class UserDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class UserUpdateRequest {
+
+        @NotNull
+        @ApiModelProperty(example = "홍길동")
+        private String name;
+
+        @NotNull
+        @ApiModelProperty(example = "상명대학교")
+        private String universityName;
+
+        @NotNull
+        @ApiModelProperty(example = "UNDERGRADUATE/BACHELOR/MASTER/DOCTOR")
+        private EducationRequest educationRequest;
+
+        @NotNull
+        @ApiModelProperty(example = "MAN/WOMAN/NA")
+        private GenderRequest genderRequest;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class AdminRegisterRequest {
 
         @NotNull
@@ -127,6 +151,23 @@ public class UserDto {
 
         @ApiModelProperty(example = "회원가입 신청합니다!")
         private String content;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AdminUpdateRequest {
+
+        @NotNull
+        @ApiModelProperty(example = "홍길동")
+        private String name;
+
+        @NotNull
+        @ApiModelProperty(example = "MAN/WOMAN/NA")
+        private GenderRequest genderRequest;
+
     }
 
     @Getter

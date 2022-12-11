@@ -77,8 +77,10 @@ public class User extends BaseEntity {
                 .password(registerRequest.getPassword())
                 .name(registerRequest.getName())
                 .phoneNumber(registerRequest.getPhoneNumber())
+                .identificationNumber(registerRequest.getIdentificationNumber())
                 .universityName(registerRequest.getUniversityName())
                 .education(Education.valueOf((registerRequest.getEducationRequest().name())))
+                .gender(Gender.valueOf(registerRequest.getGenderRequest().name()))
                 .activated(false)
                 .role(Role.valueOf((registerRequest.getRole().name())))
                 .build();
@@ -90,10 +92,24 @@ public class User extends BaseEntity {
                 .password(registerRequest.getPassword())
                 .name(registerRequest.getName())
                 .phoneNumber(registerRequest.getPhoneNumber())
+                .identificationNumber(registerRequest.getIdentificationNumber())
                 .businessRegistrationNumber(registerRequest.getBusinessRegistrationNumber())
+                .gender(Gender.valueOf(registerRequest.getGenderRequest().name()))
                 .activated(false)
                 .role(Role.valueOf("ADMIN"))
                 .build();
+    }
+
+    public void updateUser(String name, String universityName, String education, String gender) {
+        this.name = name;
+        this.universityName = universityName;
+        this.education = Education.valueOf(education);
+        this.gender = Gender.valueOf(gender);
+    }
+
+    public void updateAdmin(String name, String gender) {
+        this.name = name;
+        this.gender = Gender.valueOf(gender);
     }
 
     public void signup() { this.activated = true; }

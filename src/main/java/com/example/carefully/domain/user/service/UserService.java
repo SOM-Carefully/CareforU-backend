@@ -10,9 +10,10 @@ public interface UserService {
     void userSignup(UserDto.UserRegisterRequest registerRequest);
     void adminSignup(UserDto.AdminRegisterRequest registerRequest);
     void signout(UserDto.SignoutRequest signoutRequest);
+    void userUpdate(UserDto.UserUpdateRequest userUpdateRequest);
+    void adminUpdate(UserDto.AdminUpdateRequest adminUpdateRequest);
 
     UserDto.UserResponse getMyUserWithAuthorities();
-
     UserDto.AdminResponse getMyAdminWithAuthorities();
 
     void adminSignupTest(UserDto.AdminRegisterRequest registerRequest);

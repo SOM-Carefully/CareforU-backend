@@ -104,7 +104,22 @@ public class UserServiceImpl implements UserService {
     /*
     회원 정보 수정
      */
+    @Override
+    @Transactional
+    public void userUpdate(UserDto.UserUpdateRequest userUpdateRequest) {
+        User currentUser = getCurrentUser(userRepository);
+        currentUser.updateUser(userUpdateRequest.getName(), userUpdateRequest.getUniversityName(),
+                userUpdateRequest.getEducationRequest().name(), userUpdateRequest.getGenderRequest().name());
+        userRepository.save(currentUser);
+    }
 
+    @Override
+    @Transactional
+    public void adminUpdate(UserDto.AdminUpdateRequest adminUpdateRequest) {
+        User currentUser = getCurrentUser(userRepository);
+        currentUser.updateAdmin(adminUpdateRequest.getName(), adminUpdateRequest.getGenderRequest().name());
+        userRepository.save(currentUser);
+    }
 
     /*
     회원 탈퇴
@@ -118,7 +133,8 @@ public class UserServiceImpl implements UserService {
         UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, signoutRequest.getPassword());
 
         if (unauthenticated != null) {
-            userRepository.delete(currentUser);
+            currentUser.signout();
+            userRepository.save(currentUser);
         } else {
             throw new NotValidationPasswordException();
         }
@@ -135,7 +151,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /*
-    로그인한 일반 사용자 정보 조회
+    로그인한 어드민 사용자 정보 조회
      */
     @Override
     @Transactional(readOnly = true)
