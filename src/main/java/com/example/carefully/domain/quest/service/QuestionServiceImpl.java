@@ -4,7 +4,10 @@ import com.example.carefully.domain.quest.domain.Quest;
 import com.example.carefully.domain.quest.dto.QuestDto;
 import com.example.carefully.domain.quest.exception.QuestEmptyException;
 import com.example.carefully.domain.quest.repository.QuestRepository;
+import com.example.carefully.domain.user.entity.User;
+import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.global.dto.SliceDto;
+import com.example.carefully.global.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -17,13 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestRepository questRepository;
-    private final Long tempUserId = 1L;
-    private final Long tempAdminId = 2L;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
     public QuestDto.CreateResponse createNewQuestion(QuestDto.CreateRequest request) {
-        Quest question = questRepository.save(request.toEntity(tempUserId));
+        User currentUser = UserUtils.getCurrentUser(userRepository);
+        Quest question = questRepository.save(request.toEntity(currentUser));
         return new QuestDto.CreateResponse(question.getId());
     }
 
@@ -59,7 +62,8 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public void registerAnswer(QuestDto.AnswerRequest request, Long questionId) {
         Quest quest = findQuestById(questionId);
-        quest.registerAns(tempAdminId, request.getContent());
+        User currentUser = UserUtils.getCurrentUser(userRepository);
+        quest.registerAns(currentUser, request.getContent());
     }
 
     private Quest findQuestById(Long questionId) {

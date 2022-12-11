@@ -1,6 +1,7 @@
 package com.example.carefully.domain.quest.dto;
 
 import com.example.carefully.domain.quest.domain.Quest;
+import com.example.carefully.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
@@ -16,9 +17,9 @@ public class QuestDto {
         private String content;
         private boolean locked;
 
-        public Quest toEntity(Long userId) {
+        public Quest toEntity(User user) {
             return Quest.builder()
-                    .userId(userId)
+                    .user(user)
                     .title(title)
                     .content(content)
                     .locked(locked)
@@ -61,7 +62,7 @@ public class QuestDto {
                     .questionId(quest.getId())
                     .title(quest.getTitle())
                     .content(quest.getContent())
-                    .writer(quest.getUserId().toString())
+                    .writer(quest.getUser().getName())
                     .locked(quest.getLocked())
                     .answer(quest.getAnswer())
                     .createdAt(quest.getCreatedAt()).build();

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.example.carefully.domain.post.dto.PostResponseMessage.*;
@@ -57,6 +58,7 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "문의사항 답변 등록 및 수정", notes = "문의사항 답변 등록 및 수정 API")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping("/{questionId}/answer")
     public ResponseEntity<BaseResponse<String>> answerQuestion(@PathVariable("questionId") Long questionId,
                                                                 @RequestBody QuestDto.AnswerRequest request) {

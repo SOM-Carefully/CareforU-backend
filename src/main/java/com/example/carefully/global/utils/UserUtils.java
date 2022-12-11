@@ -11,6 +11,6 @@ public class UserUtils {
     public static User getCurrentUser(UserRepository userRepository) {
         return SecurityUtil.getCurrentUsername()
                 .flatMap(userRepository::findOneWithAuthoritiesByUsername)
-                .orElseThrow(() -> new NotValidationRoleException());
+                .orElseThrow(NotValidationRoleException::new);
     }
 }

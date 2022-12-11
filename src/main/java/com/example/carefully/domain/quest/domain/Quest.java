@@ -1,5 +1,6 @@
 package com.example.carefully.domain.quest.domain;
 
+import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,12 +19,13 @@ public class Quest extends BaseEntity {
     @Column(name = "quest_id")
     private Long id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "admin_id")
+    private User admin;
 
     private Long adminId;
 
@@ -39,8 +41,8 @@ public class Quest extends BaseEntity {
     private String answer;
 
     @Builder
-    public Quest(Long userId, String title, String content, boolean locked) {
-        this.userId = userId;
+    public Quest(User user, String title, String content, boolean locked) {
+        this.user = user;
         this.title = title;
         this.content = content;
         this.locked = mapString(locked);
@@ -56,8 +58,8 @@ public class Quest extends BaseEntity {
         return locked ? "Y" : "N";
     }
 
-    public void registerAns(Long adminId, String answer) {
-        this.adminId = adminId;
+    public void registerAns(User admin, String answer) {
+        this.admin = admin;
         this.answer = answer;
     }
 }

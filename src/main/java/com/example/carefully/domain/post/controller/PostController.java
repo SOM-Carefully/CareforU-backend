@@ -1,15 +1,14 @@
 package com.example.carefully.domain.post.controller;
 
 import com.example.carefully.domain.post.service.PostServiceImpl;
-import com.example.carefully.global.dto.SliceDto;
 import com.example.carefully.global.dto.BaseResponse;
+import com.example.carefully.global.dto.SliceDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 import static com.example.carefully.domain.post.dto.PostDto.*;
 import static com.example.carefully.domain.post.dto.PostResponseMessage.*;
