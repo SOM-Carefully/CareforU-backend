@@ -52,6 +52,7 @@ public class QuestDto {
         private String content;
         private String writer;
         private String locked;
+        private String answer;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
 
@@ -62,6 +63,7 @@ public class QuestDto {
                     .content(quest.getContent())
                     .writer(quest.getUserId().toString())
                     .locked(quest.getLocked())
+                    .answer(quest.getAnswer())
                     .createdAt(quest.getCreatedAt()).build();
         }
     }
