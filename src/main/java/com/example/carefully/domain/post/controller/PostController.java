@@ -3,6 +3,7 @@ package com.example.carefully.domain.post.controller;
 import com.example.carefully.domain.post.service.PostServiceImpl;
 import com.example.carefully.global.dto.SliceDto;
 import com.example.carefully.global.dto.BaseResponse;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -19,6 +20,7 @@ import static com.example.carefully.domain.post.dto.PostResponseMessage.*;
 public class PostController {
     private final PostServiceImpl postService;
 
+    @ApiOperation(value = "게시판 및 공지글 등록", notes = "일반 사용자는 게시판 및 관리자는 공지게시판의 글을 등록하는 API")
     @PostMapping
     public ResponseEntity<BaseResponse<CreateResponse>> createPost(@RequestParam("role") String postRole,
                                                                    @RequestParam(value = "category", required = false) Long categoryId,
@@ -27,6 +29,7 @@ public class PostController {
                 CREATE_POST_SUCCESS.getMessage(), postService.createNewPost(createRequest, postRole, categoryId)));
     }
 
+    @ApiOperation(value = "게시판 및 공지글 수정", notes = "일반 사용자는 게시판 및 관리자는 공지게시판의 글을 수정하는 API")
     @PatchMapping("/{postId}")
     public ResponseEntity<BaseResponse<UpdateResponse>> updatePost(@PathVariable("postId") Long postId,
                                                                    @RequestBody UpdateRequest updateRequest) {
@@ -34,12 +37,14 @@ public class PostController {
                 UPDATE_POST_SUCCESS.getMessage(), postService.updatePost(updateRequest, postId)));
     }
 
+    @ApiOperation(value = "게시판 및 공지글 조회", notes = "게시판 및 공지게시판의 글 상세정보를 조회하는 API")
     @GetMapping("/{postId}")
     public ResponseEntity<BaseResponse<SearchResponse>> searchPostDetail(@PathVariable("postId") Long postId) {
         return ResponseEntity.ok(BaseResponse.create(
                 GET_POST_DETAIL_SUCCESS.getMessage(), postService.searchPostDetail(postId)));
     }
 
+    @ApiOperation(value = "게시판 및 공지글 리스트 조회", notes = "게시판과 공지게시판의 글 전체 리스트를 조회하는 API")
     @GetMapping
     public ResponseEntity<BaseResponse<SliceDto<SearchResponse>>> searchPostList(@RequestParam("role") String postRole,
                                                                                  @RequestParam(value = "category", required = false) Long categoryId,
@@ -48,6 +53,7 @@ public class PostController {
                 GET_POST_LIST_SUCCESS.getMessage(), postService.searchPostList(postRole, categoryId, pageable)));
     }
 
+    @ApiOperation(value = "게시판 및 공지글 삭제", notes = "일반 사용자는 게시판 및 관리자는 공지게시판의 글을 삭제하는 API")
     @DeleteMapping("/{postId}")
     public ResponseEntity<BaseResponse<String>> deletePost(@PathVariable("postId") Long postId) {
         postService.findPostAndDelete(postId);

@@ -1,13 +1,12 @@
-package com.example.carefully.domain.post.dto;
+package com.example.carefully.domain.quest.dto;
 
-import com.example.carefully.domain.post.domain.Post;
-import com.example.carefully.domain.post.domain.PostRole;
+import com.example.carefully.domain.quest.domain.Quest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-public class QuestionDto {
+public class QuestDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,9 +16,8 @@ public class QuestionDto {
         private String content;
         private boolean locked;
 
-        public Post toEntity(PostRole role, Long userId) {
-            return Post.builder()
-                    .postRole(role)
+        public Quest toEntity(Long userId) {
+            return Quest.builder()
                     .userId(userId)
                     .title(title)
                     .content(content)
@@ -54,17 +52,26 @@ public class QuestionDto {
         private String content;
         private String writer;
         private String locked;
+        private String answer;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
 
-        public static QuestionDto.SearchResponse create(Post post) {
+        public static QuestDto.SearchResponse create(Quest quest) {
             return SearchResponse.builder()
-                    .questionId(post.getId())
-                    .title(post.getTitle())
-                    .content(post.getContent())
-                    .writer(post.getUserId().toString())
-                    .locked(post.getLocked())
-                    .createdAt(post.getCreatedAt()).build();
+                    .questionId(quest.getId())
+                    .title(quest.getTitle())
+                    .content(quest.getContent())
+                    .writer(quest.getUserId().toString())
+                    .locked(quest.getLocked())
+                    .answer(quest.getAnswer())
+                    .createdAt(quest.getCreatedAt()).build();
         }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public static class AnswerRequest {
+        private String content;
     }
 }

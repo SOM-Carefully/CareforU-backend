@@ -30,6 +30,7 @@ public enum ErrorCode {
     //POST
     POST_NOT_FOUND(3010, "존재하지 않는 글입니다."),
     CATEGORY_NOT_FOUND(3011, "존재하지 않는 카테고리입니다."),
+    QUEST_NOT_FOUND(3012, "존재하지 않는 문의글입니다."),
 
     //COMMENT
     COMMENT_NOT_FOUND(4010, "존재하지 않는 댓글입니다."),
