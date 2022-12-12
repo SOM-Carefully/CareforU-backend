@@ -3,6 +3,7 @@ package com.example.carefully.domain.post.dto;
 import com.example.carefully.domain.category.domain.Category;
 import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.domain.post.domain.PostRole;
+import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.global.common.Constant;
 import lombok.*;
 
@@ -22,10 +23,10 @@ public class PostDto {
         private String content;
         private String imgUrl;
 
-        public Post toEntity(PostRole role, Category category, Long userId) {
+        public Post toEntity(PostRole role, Category category, User user) {
             return Post.builder()
                     .postRole(role)
-                    .userId(userId)
+                    .user(user)
                     .category(category)
                     .title(title)
                     .content(content)
@@ -75,7 +76,7 @@ public class PostDto {
                     .postId(post.getId())
                     .title(post.getTitle())
                     .content(post.getContent())
-                    .writer(post.getUserId().toString())
+                    .writer(post.getUser().getName())
                     .imgUrl(post.getImgUrl())
                     .createdAt(post.getCreatedAt().format(Constant.formatter)).build();
         }

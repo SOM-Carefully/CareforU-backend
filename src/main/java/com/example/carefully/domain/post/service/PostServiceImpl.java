@@ -1,14 +1,15 @@
 package com.example.carefully.domain.post.service;
 
 import com.example.carefully.domain.category.domain.Category;
+import com.example.carefully.domain.category.exception.CategoryEmptyException;
+import com.example.carefully.domain.category.repository.CategoryRepository;
 import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.domain.post.domain.PostRole;
 import com.example.carefully.domain.post.dto.PostDto;
-import com.example.carefully.domain.category.exception.CategoryEmptyException;
 import com.example.carefully.domain.post.exception.PostEmptyException;
-import com.example.carefully.domain.category.repository.CategoryRepository;
 import com.example.carefully.domain.post.repository.CustomPostRepository;
 import com.example.carefully.domain.post.repository.PostRepository;
+import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.global.dto.SliceDto;
 import com.example.carefully.infra.s3.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,7 +28,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final CustomPostRepository customPostRepository;
-    private final Long tempUserId = 1L;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
@@ -37,7 +40,7 @@ public class PostServiceImpl implements PostService {
             category = categoryRepository.findById(categoryId).orElseThrow(CategoryEmptyException::new);
         }
 
-        Post post = request.toEntity(PostRole.valueOf(postRole), category, tempUserId);
+        Post post = request.toEntity(PostRole.valueOf(postRole), category, getCurrentUser(userRepository));
         Post persistPost = postRepository.save(post);
         return new PostDto.CreateResponse(persistPost.getId());
     }
