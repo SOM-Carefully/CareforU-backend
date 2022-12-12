@@ -6,6 +6,7 @@ import com.example.carefully.global.dto.BaseResponse;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.example.carefully.domain.comment.dto.CommentResponseMessage.*;
@@ -18,6 +19,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @ApiOperation(value = "댓글 생성", notes = "댓글을 생성하는 API")
+    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
     @PostMapping
     public ResponseEntity<BaseResponse<CommentDto.CreateResponse>> createComment(@RequestBody CommentDto.CreateRequest request) {
         return ResponseEntity.ok(BaseResponse.create(
@@ -32,6 +34,7 @@ public class CommentController {
     }
 
     @ApiOperation(value = "댓글 삭제", notes = "댓글을 삭제하는 API")
+    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
     @DeleteMapping("/{commentId}")
     public  ResponseEntity<BaseResponse<String>> deleteComment(@PathVariable("commentId") Long commentId) {
         commentService.deleteComment(commentId);

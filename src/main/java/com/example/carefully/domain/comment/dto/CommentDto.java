@@ -3,6 +3,7 @@ package com.example.carefully.domain.comment.dto;
 import com.example.carefully.domain.comment.domain.Comment;
 import com.example.carefully.domain.comment.domain.Comment.CommentStatus;
 import com.example.carefully.domain.post.domain.Post;
+import com.example.carefully.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,9 +22,9 @@ public class CommentDto {
         private String content;
         private String hierarchy;
 
-        public Comment toEntity(Post post) {
+        public Comment toEntity(Post post, User user) {
             return Comment.builder()
-                    .userId(1L)
+                    .user(user)
                     .post(post)
                     .content(content)
                     .hierarchy(Comment.Hierarchy.valueOf(hierarchy))
