@@ -7,12 +7,13 @@ import com.example.carefully.domain.quest.repository.QuestRepository;
 import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.global.dto.SliceDto;
-import com.example.carefully.global.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,7 +26,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public QuestDto.CreateResponse createNewQuestion(QuestDto.CreateRequest request) {
-        User currentUser = UserUtils.getCurrentUser(userRepository);
+        User currentUser = getCurrentUser(userRepository);
         Quest question = questRepository.save(request.toEntity(currentUser));
         return new QuestDto.CreateResponse(question.getId());
     }
@@ -33,7 +34,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public void updateQuestion(QuestDto.UpdateRequest request, Long questionId) {
-        Quest question = findQuestById(questionId);
+        Quest question = findQuestByIdAndUser(questionId);
         question.updateQuest(request.getTitle(), request.getContent(), request.isLocked());
     }
 
@@ -54,7 +55,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public void deleteQuestion(Long questionId) {
-        Quest question = findQuestById(questionId);
+        Quest question = findQuestByIdAndUser(questionId);
         questRepository.delete(question);
     }
 
@@ -62,11 +63,16 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public void registerAnswer(QuestDto.AnswerRequest request, Long questionId) {
         Quest quest = findQuestById(questionId);
-        User currentUser = UserUtils.getCurrentUser(userRepository);
-        quest.registerAns(currentUser, request.getContent());
+        User adminUser = getCurrentUser(userRepository);
+        quest.registerAns(adminUser, request.getContent());
     }
 
     private Quest findQuestById(Long questionId) {
         return questRepository.findById(questionId).orElseThrow(QuestEmptyException::new);
+    }
+
+    private Quest findQuestByIdAndUser(Long questionId) {
+        return questRepository.findByIdAndUser(questionId, getCurrentUser(userRepository))
+                .orElseThrow(QuestEmptyException::new);
     }
 }

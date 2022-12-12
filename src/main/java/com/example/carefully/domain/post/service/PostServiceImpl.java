@@ -48,7 +48,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostDto.UpdateResponse updatePost(PostDto.UpdateRequest request, Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(PostEmptyException::new);
+        Post post = findPostByIdAndUser(postId);
         post.updatePost(request.getTitle(), request.getTitle(), request.getImgUrl());
         return new PostDto.UpdateResponse(post.getId());
     }
@@ -56,7 +56,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void findPostAndDelete(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(PostEmptyException::new);
+        Post post = findPostByIdAndUser(postId);
         s3Service.deleteFile(post.getImgUrl());
         postRepository.delete(post);
     }
@@ -76,5 +76,9 @@ public class PostServiceImpl implements PostService {
                 .map(PostDto.SearchResponse::create);
 
         return SliceDto.create(postsByRole);
+    }
+
+    private Post findPostByIdAndUser(Long postId) {
+        return postRepository.findByIdAndUser(postId, getCurrentUser(userRepository)).orElseThrow(PostEmptyException::new);
     }
 }
