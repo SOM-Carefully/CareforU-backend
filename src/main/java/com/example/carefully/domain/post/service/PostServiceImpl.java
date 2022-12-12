@@ -33,14 +33,14 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostDto.CreateResponse createNewPost(PostDto.CreateRequest request,
-                                                String postRole,
+                                                PostRole postRole,
                                                 Long categoryId) {
         Category category = null;
-        if (PostRole.isFree(postRole)) {
+        if (postRole == PostRole.FREE) {
             category = categoryRepository.findById(categoryId).orElseThrow(CategoryEmptyException::new);
         }
 
-        Post post = request.toEntity(PostRole.valueOf(postRole), category, getCurrentUser(userRepository));
+        Post post = request.toEntity(postRole, category, getCurrentUser(userRepository));
         Post persistPost = postRepository.save(post);
         return new PostDto.CreateResponse(persistPost.getId());
     }
@@ -74,11 +74,11 @@ public class PostServiceImpl implements PostService {
         Slice<PostDto.SearchResponse> postsByRole = customPostRepository
                 .getPostList(pageable, PostRole.valueOf(postRole), categoryId)
                 .map(PostDto.SearchResponse::create);
-
         return SliceDto.create(postsByRole);
     }
 
     private Post findPostByIdAndUser(Long postId) {
-        return postRepository.findByIdAndUser(postId, getCurrentUser(userRepository)).orElseThrow(PostEmptyException::new);
+        return postRepository.findByIdAndUser(postId, getCurrentUser(userRepository))
+                .orElseThrow(PostEmptyException::new);
     }
 }

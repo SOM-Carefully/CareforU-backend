@@ -1,5 +1,6 @@
 package com.example.carefully.domain.post.controller;
 
+import com.example.carefully.domain.post.domain.PostRole;
 import com.example.carefully.domain.post.service.PostServiceImpl;
 import com.example.carefully.global.dto.BaseResponse;
 import com.example.carefully.global.dto.SliceDto;
@@ -23,11 +24,10 @@ public class PostController {
     @ApiOperation(value = "게시판 글 등록", notes = "일반 사용자가 게시판의 글을 등록하는 API")
     @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
     @PostMapping
-    public ResponseEntity<BaseResponse<CreateResponse>> createPost(@RequestParam("role") String postRole,
-                                                                   @RequestParam(value = "category", required = false) Long categoryId,
+    public ResponseEntity<BaseResponse<CreateResponse>> createPost(@RequestParam(value = "category", required = false) Long categoryId,
                                                                    @RequestBody CreateRequest createRequest) {
         return ResponseEntity.ok(BaseResponse.create(
-                CREATE_POST_SUCCESS.getMessage(), postService.createNewPost(createRequest, postRole, categoryId)));
+                CREATE_POST_SUCCESS.getMessage(), postService.createNewPost(createRequest, PostRole.FREE, categoryId)));
     }
 
     @ApiOperation(value = "게시판 글 수정", notes = "일반 사용자가 게시판의 글을 수정하는 API")

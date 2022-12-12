@@ -1,5 +1,6 @@
 package com.example.carefully.domain.post.controller;
 
+import com.example.carefully.domain.post.domain.PostRole;
 import com.example.carefully.domain.post.dto.PostDto;
 import com.example.carefully.domain.post.service.PostServiceImpl;
 import com.example.carefully.global.dto.BaseResponse;
@@ -24,11 +25,10 @@ public class NoticeController {
     @ApiOperation(value = "공지게시판 글 등록", notes = "관리자가 공지게시판의 글을 등록하는 API")
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<BaseResponse<PostDto.CreateResponse>> createPost(@RequestParam("role") String postRole,
-                                                                           @RequestParam(value = "category", required = false) Long categoryId,
+    public ResponseEntity<BaseResponse<PostDto.CreateResponse>> createPost(@RequestParam(value = "category", required = false) Long categoryId,
                                                                            @RequestBody PostDto.CreateRequest createRequest) {
         return ResponseEntity.ok(BaseResponse.create(
-                CREATE_POST_SUCCESS.getMessage(), postService.createNewPost(createRequest, postRole, categoryId)));
+                CREATE_POST_SUCCESS.getMessage(), postService.createNewPost(createRequest, PostRole.NOTICE, categoryId)));
     }
 
     @ApiOperation(value = "공지게시판 글 수정", notes = "관리자가 공지게시판의 글을 수정하는 API")
