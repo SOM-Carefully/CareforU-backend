@@ -27,8 +27,6 @@ public class Quest extends BaseEntity {
     @JoinColumn(name = "admin_id")
     private User admin;
 
-    private Long adminId;
-
     @Column(nullable = false)
     private String title;
 
