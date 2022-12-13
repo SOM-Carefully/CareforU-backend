@@ -4,6 +4,7 @@ import com.example.carefully.domain.comment.domain.Comment;
 import com.example.carefully.domain.comment.domain.Comment.CommentStatus;
 import com.example.carefully.domain.post.domain.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

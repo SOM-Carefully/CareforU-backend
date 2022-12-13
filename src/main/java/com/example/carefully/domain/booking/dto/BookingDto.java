@@ -2,15 +2,13 @@ package com.example.carefully.domain.booking.dto;
 
 import com.example.carefully.domain.booking.entity.Booking;
 import com.example.carefully.domain.booking.entity.BookingStatus;
-import com.example.carefully.domain.user.entity.BusinessType;
+import com.example.carefully.domain.booking.entity.BusinessType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class BookingDto {
     @Getter
@@ -26,14 +24,6 @@ public class BookingDto {
     @NoArgsConstructor
     public static class ReceiveRequest {
         @NotNull
-        @ApiModelProperty(example = "2018-07-26T01:20:00")
-        private LocalDateTime requestTime;
-
-        @NotNull
-        @ApiModelProperty(example = "TRANSLATE/DWELLING/TRAFFIC")
-        private BusinessType businessType;
-
-        @NotNull
         @ApiModelProperty(example = "안녕하세요. \n" +
                 "저는 컴퓨터과학과 20학번 이혜린입니다.\n" +
                 "다름이 아니라 케어풀리라는 팀은\n" +
@@ -47,14 +37,6 @@ public class BookingDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ServiceResponse {
-        @NotNull
-        @ApiModelProperty(example = "2018-07-26T01:20:00")
-        private LocalDateTime requestTime;
-
-        @NotNull
-        @ApiModelProperty(example = "TRANSLATE/DWELLING/TRAFFIC")
-        private BusinessType businessType;
-
         @NotNull
         @ApiModelProperty(example = "general@general.com")
         private String userUsername;
@@ -82,8 +64,6 @@ public class BookingDto {
             }
 
             return ServiceResponse.builder()
-                    .requestTime(booking.getRequestTime())
-                    .businessType(booking.getBusinessType())
                     .userUsername(booking.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .content(booking.getContent())
@@ -98,13 +78,6 @@ public class BookingDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class UpdateRequest {
-        @NotNull
-        @ApiModelProperty(example = "2018-07-26T01:20:00")
-        private LocalDateTime requestTime;
-
-        @NotNull
-        @ApiModelProperty(example = "TRANSLATE/DWELLING/TRAFFIC")
-        private BusinessType businessType;
 
         @NotNull
         @Size(min = 3, max = 500)

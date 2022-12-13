@@ -81,7 +81,7 @@ public class BookingServiceImpl implements BookingService {
     public void update(Long bookingId, BookingDto.UpdateRequest updateRequest) {
         User currentUser = getCurrentUser(userRepository);
         Booking booking = bookingRepository.findByIdAndUser(bookingId, currentUser);
-        booking.update(updateRequest.getRequestTime(), updateRequest.getBusinessType(), updateRequest.getContent());
+        booking.update(updateRequest.getContent());
         bookingRepository.save(booking);
     }
 

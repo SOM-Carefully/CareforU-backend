@@ -1,10 +1,8 @@
 package com.example.carefully.domain.membership.dto;
 
 import com.example.carefully.domain.membership.entity.Membership;
-import com.example.carefully.domain.user.entity.User;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.springframework.security.core.parameters.P;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;

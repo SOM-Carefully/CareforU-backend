@@ -1,7 +1,6 @@
 package com.example.carefully.domain.booking.entity;
 
 import com.example.carefully.domain.booking.dto.BookingDto;
-import com.example.carefully.domain.user.entity.BusinessType;
 import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -23,20 +22,16 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class Booking extends BaseEntity {
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="Booking_Type")
+public abstract class Booking extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private LocalDateTime requestTime;
-
-    @Column(nullable = false)
     private String content;
-
-    @Column(nullable = false)
-    private BusinessType businessType;
 
     @Column(nullable = false)
     @Enumerated(value = STRING)
@@ -50,32 +45,24 @@ public class Booking extends BaseEntity {
     @JoinColumn(name = "admin_id")
     private User admin;
 
+    private String userFileUrl;
+
+    private String adminFileUrl;
+
     @Builder
-    public Booking(Long id, LocalDateTime requestTime, String content, BusinessType businessType, User user, User admin, BookingStatus bookingStatus) {
+    public Booking(Long id, String content, User user, User admin, BookingStatus bookingStatus, String userFileUrl, String adminFileUrl) {
         this.id = id;
-        this.user = user;
-        this.requestTime = requestTime;
+        this.user = user ;
         this.admin = admin;
         this.content = content;
-        this.businessType = businessType;
         this.bookingStatus = bookingStatus;
-    }
-
-    public static Booking request(User user, BookingDto.ReceiveRequest receiveRequest) {
-        return Booking.builder()
-                .user(user)
-                .requestTime(receiveRequest.getRequestTime())
-                .content(receiveRequest.getContent())
-                .businessType(receiveRequest.getBusinessType())
-                .bookingStatus(BookingStatus.valueOf("WAITING"))
-                .build();
+        this.userFileUrl = userFileUrl;
+        this.adminFileUrl = adminFileUrl;
     }
 
     //== 비지니스 메서드 ==//
 
-    public void update(LocalDateTime requestTime, BusinessType businessType, String content) {
-        this.requestTime = requestTime;
-        this.businessType = businessType;
+    public void update(String content) {
         this.content = content;
     }
 
