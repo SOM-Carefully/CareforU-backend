@@ -1,6 +1,7 @@
 package com.example.carefully.domain.booking.entity;
 
 import com.example.carefully.domain.booking.dto.BookingDto;
+import com.example.carefully.domain.user.entity.Education;
 import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -9,8 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
-import java.time.LocalDateTime;
 
 import static com.example.carefully.domain.booking.entity.BookingStatus.*;
 import static javax.persistence.EnumType.STRING;
@@ -45,26 +44,26 @@ public abstract class Booking extends BaseEntity {
     @JoinColumn(name = "admin_id")
     private User admin;
 
+    @Column(nullable = false)
+    private BusinessType businessType;
+
     private String userFileUrl;
 
     private String adminFileUrl;
 
-    @Builder
-    public Booking(Long id, String content, User user, User admin, BookingStatus bookingStatus, String userFileUrl, String adminFileUrl) {
+    public Booking(Long id, String content, User user, User admin, BookingStatus bookingStatus, BusinessType businessType, String userFileUrl, String adminFileUrl) {
         this.id = id;
         this.user = user ;
         this.admin = admin;
         this.content = content;
         this.bookingStatus = bookingStatus;
+        this.businessType = businessType;
         this.userFileUrl = userFileUrl;
         this.adminFileUrl = adminFileUrl;
     }
 
-    //== 비지니스 메서드 ==//
 
-    public void update(String content) {
-        this.content = content;
-    }
+    //== 비지니스 메서드 ==//
 
     public void setAdmin(User currentUser) {
         this.admin = currentUser;

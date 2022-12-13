@@ -1,14 +1,12 @@
 package com.example.carefully.domain.booking.service.Impl;
 
-import com.example.carefully.domain.booking.entity.Booking;
+import com.example.carefully.domain.booking.entity.*;
 import com.example.carefully.domain.booking.dto.BookingDto;
 import com.example.carefully.domain.booking.exception.AlreadyProcessedService;
 import com.example.carefully.domain.booking.exception.NotValidationBookingId;
 import com.example.carefully.domain.booking.exception.NotValidationServiceAdmin;
 import com.example.carefully.domain.booking.repository.BookingRepository;
 import com.example.carefully.domain.booking.service.BookingService;
-import com.example.carefully.domain.membership.dto.MembershipDto;
-import com.example.carefully.domain.membership.entity.Membership;
 import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.global.dto.SliceDto;
@@ -31,9 +29,33 @@ public class BookingServiceImpl implements BookingService {
      */
     @Override
     @Transactional
-    public void request(BookingDto.ReceiveRequest receiveRequest) {
+    public void educationRequest(BookingDto.EducationReceiveRequest educationReceiveRequest) {
         User currentUser = getCurrentUser(userRepository);
-        Booking booking = Booking.request(currentUser, receiveRequest);
+        Education booking = Education.educationRequest(currentUser, educationReceiveRequest);
+        bookingRepository.save(booking);
+    }
+
+    @Override
+    @Transactional
+    public void trafficRequest(BookingDto.TrafficReceiveRequest trafficReceiveRequest) {
+        User currentUser = getCurrentUser(userRepository);
+        Traffic booking = Traffic.trafficRequest(currentUser, trafficReceiveRequest);
+        bookingRepository.save(booking);
+    }
+
+    @Override
+    @Transactional
+    public void dwellingRequest(BookingDto.DwellingReceiveRequest dwellingReceiveRequest) {
+        User currentUser = getCurrentUser(userRepository);
+        Dwelling booking = Dwelling.dwellingRequest(currentUser, dwellingReceiveRequest);
+        bookingRepository.save(booking);
+    }
+
+    @Override
+    @Transactional
+    public void communicationRequest(BookingDto.CommunicationReceiveRequest communicationReceiveRequest) {
+        User currentUser = getCurrentUser(userRepository);
+        Communication booking = Communication.communicationRequest(currentUser, communicationReceiveRequest);
         bookingRepository.save(booking);
     }
 
@@ -71,18 +93,6 @@ public class BookingServiceImpl implements BookingService {
             bookingList = bookingRepository.findAllByUser(currentUser).map(BookingDto.ServiceResponse::create);
         }
         return SliceDto.create(bookingList);
-    }
-
-    /*
-    서비스 내용 수정
-     */
-    @Override
-    @Transactional
-    public void update(Long bookingId, BookingDto.UpdateRequest updateRequest) {
-        User currentUser = getCurrentUser(userRepository);
-        Booking booking = bookingRepository.findByIdAndUser(bookingId, currentUser);
-        booking.update(updateRequest.getContent());
-        bookingRepository.save(booking);
     }
 
     /*
