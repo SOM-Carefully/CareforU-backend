@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 
 import static lombok.AccessLevel.PROTECTED;
 
+@Getter
 @Entity(name="Communication")
 @DiscriminatorValue("Communication")
 @NoArgsConstructor(access = PROTECTED)

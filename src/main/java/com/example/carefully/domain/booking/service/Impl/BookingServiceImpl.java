@@ -64,9 +64,9 @@ public class BookingServiceImpl implements BookingService {
     */
     @Override
     @Transactional(readOnly = true)
-    public SliceDto<BookingDto.ServiceResponse> serviceAllLookup() {
+    public SliceDto<BookingDto.ServiceAllResponse> serviceAllLookup() {
         Slice<Booking> bookingList = bookingRepository.findAllByOrderByCreatedAtDesc();
-        return SliceDto.create(bookingList.map(BookingDto.ServiceResponse::create));
+        return SliceDto.create(bookingList.map(BookingDto.ServiceAllResponse::create));
     }
 
     /*
@@ -74,23 +74,44 @@ public class BookingServiceImpl implements BookingService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BookingDto.ServiceResponse lookup(Long bookingId) {
-        Booking booking = bookingRepository.getReferenceById(bookingId);
-        return BookingDto.ServiceResponse.create(booking);
+    public BookingDto.EducationReceiveResponse educationLookup (Long bookingId) {
+        Education booking = (Education) bookingRepository.getReferenceById(bookingId);
+        return BookingDto.EducationReceiveResponse.create(booking);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BookingDto.CommunicationReceiveResponse communicationLookup (Long bookingId) {
+        Communication booking = (Communication) bookingRepository.getReferenceById(bookingId);
+        return BookingDto.CommunicationReceiveResponse.create(booking);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BookingDto.TrafficReceiveResponse trafficLookup (Long bookingId) {
+        Traffic booking = (Traffic) bookingRepository.getReferenceById(bookingId);
+        return BookingDto.TrafficReceiveResponse.create(booking);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BookingDto.DwellingReceiveResponse dwellingLookup (Long bookingId) {
+        Dwelling booking = (Dwelling) bookingRepository.getReferenceById(bookingId);
+        return BookingDto.DwellingReceiveResponse.create(booking);
     }
 
     /*
     내 서비스 리스트 조회
      */
     @Override
-    public SliceDto<BookingDto.ServiceResponse> userLookup() {
-        Slice<BookingDto.ServiceResponse> bookingList = null;
+    public SliceDto<BookingDto.ServiceAllResponse> userLookup() {
+        Slice<BookingDto.ServiceAllResponse> bookingList = null;
         User currentUser = getCurrentUser(userRepository);
 
         if (currentUser.getRole().toString().equals("ADMIN")) {
-            bookingList = bookingRepository.findAllByAdmin(currentUser).map(BookingDto.ServiceResponse::create);
+            bookingList = bookingRepository.findAllByAdmin(currentUser).map(BookingDto.ServiceAllResponse::create);
         } else {
-            bookingList = bookingRepository.findAllByUser(currentUser).map(BookingDto.ServiceResponse::create);
+            bookingList = bookingRepository.findAllByUser(currentUser).map(BookingDto.ServiceAllResponse::create);
         }
         return SliceDto.create(bookingList);
     }

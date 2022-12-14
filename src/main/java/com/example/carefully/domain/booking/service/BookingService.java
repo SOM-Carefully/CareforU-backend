@@ -14,11 +14,14 @@ public interface BookingService {
 
     void communicationRequest(BookingDto.CommunicationReceiveRequest communicationReceiveRequest);
 
-    SliceDto<BookingDto.ServiceResponse> serviceAllLookup();
+    SliceDto<BookingDto.ServiceAllResponse> serviceAllLookup();
 
-    BookingDto.ServiceResponse lookup(Long bookingId);
+    BookingDto.EducationReceiveResponse educationLookup(Long bookingId);
+    BookingDto.DwellingReceiveResponse dwellingLookup(Long bookingId);
+    BookingDto.TrafficReceiveResponse trafficLookup(Long bookingId);
+    BookingDto.CommunicationReceiveResponse communicationLookup(Long bookingId);
 
-    SliceDto<BookingDto.ServiceResponse> userLookup();
+    SliceDto<BookingDto.ServiceAllResponse> userLookup();
 
     void accept(Long bookingId);
 

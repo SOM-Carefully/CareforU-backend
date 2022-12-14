@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 
 import static lombok.AccessLevel.PROTECTED;
 
+@Getter
 @Entity(name="Education")
 @DiscriminatorValue("Education")
 @NoArgsConstructor(access = PROTECTED)
@@ -39,18 +40,3 @@ public class Education extends Booking{
     }
 }
 
-@Getter
-@RequiredArgsConstructor
-enum Degree {
-    MASTER("석사"), DOCTOR("박사");
-
-    private final String description;
-}
-
-@Getter
-@RequiredArgsConstructor
-enum EducationContent {
-    CONSULTING("컨설팅"), CORRECTION("교정/교열"), TRANSLATION("번역");
-
-    private final String description;
-}

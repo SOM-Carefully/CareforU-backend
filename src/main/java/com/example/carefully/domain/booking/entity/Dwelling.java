@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 
 import static lombok.AccessLevel.PROTECTED;
 
+@Getter
 @Entity(name="Dwelling")
 @DiscriminatorValue("Dwelling")
 @NoArgsConstructor(access = PROTECTED)
@@ -41,18 +42,3 @@ public class Dwelling extends Booking {
     }
 }
 
-@Getter
-@RequiredArgsConstructor
-enum TransactionMethod {
-    CHARTER("전세"), MONTHLY("월세");
-
-    private final String description;
-}
-
-@Getter
-@RequiredArgsConstructor
-enum NumberOfRooms {
-    ONEROOM("원룸"), TWOROOM("투룸"), TWOBAY("투베이");
-
-    private final String description;
-}

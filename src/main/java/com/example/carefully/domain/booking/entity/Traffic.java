@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 
 import static lombok.AccessLevel.PROTECTED;
 
+@Getter
 @Entity(name="Traffic")
 @DiscriminatorValue("Traffic")
 @NoArgsConstructor(access = PROTECTED)
@@ -38,10 +39,3 @@ public class Traffic extends Booking {
     }
 }
 
-@Getter
-@RequiredArgsConstructor
-enum CarType {
-    COMPACT("소형"), MIDSIZE("중형"), SUV("SUV");
-
-    private final String description;
-}
