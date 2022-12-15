@@ -5,7 +5,6 @@ import com.example.carefully.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -21,8 +20,8 @@ public class Communication extends Booking {
     private boolean usim;
 
     @Builder
-    public Communication(Long id, String content, User user, User admin, BookingStatus bookingStatus, BusinessType businessType, String userFileUrl, String adminFileUrl, String modelName, boolean usim) {
-        super(id, content, user, admin, bookingStatus, businessType, userFileUrl, adminFileUrl);
+    public Communication(Long id, String userContent, String adminContent, User user, User admin, BookingStatus bookingStatus, BusinessType businessType, String userFileUrl, String adminFileUrl, String modelName, boolean usim) {
+        super(id, userContent, adminContent, user, admin, bookingStatus, businessType, userFileUrl, adminFileUrl);
         this.modelName = modelName;
         this.usim = usim;
     }
@@ -30,7 +29,7 @@ public class Communication extends Booking {
     public static Communication communicationRequest(User user, BookingDto.CommunicationReceiveRequest communicationReceiveRequest) {
         return Communication.builder()
                 .user(user)
-                .content(communicationReceiveRequest.getContent())
+                .userContent(communicationReceiveRequest.getContent())
                 .bookingStatus(BookingStatus.valueOf("WAITING"))
                 .businessType(BusinessType.valueOf("COMMUNICATION"))
                 .modelName(communicationReceiveRequest.getModelName())

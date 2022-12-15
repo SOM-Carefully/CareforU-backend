@@ -1,13 +1,11 @@
 package com.example.carefully.domain.booking.dto;
 
 import com.example.carefully.domain.booking.entity.*;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 public class BookingDto {
@@ -98,7 +96,10 @@ public class BookingDto {
         private EducationContentRequest educationContentRequest;
 
         @Schema(description = "서비스 신청 내용", example = "안녕하세요! 교육 서비스를 신청한.. 어쩌구..")
-        private String content;
+        private String userContent;
+
+        @Schema(description = "서비스 승인 내용", example = "안녕하세요! 교육 서비스를 승인한.. 어쩌구..")
+        private String adminContent;
 
         @Schema(description = "서비스 신청시 업로드한 파일", example = "https://picsum.photos/seed/picsum/200/300")
         private String userFileUrl;
@@ -125,7 +126,8 @@ public class BookingDto {
                     .degreeRequest(DegreeRequest.valueOf(education.getDegree().name()))
                     .bookingStatus(BookingStatusResponse.valueOf(education.getBookingStatus().name()))
                     .educationContentRequest(EducationContentRequest.valueOf(education.getEducationContent().name()))
-                    .content(education.getContent())
+                    .userContent(education.getUserContent())
+                    .adminContent(education.getAdminContent())
                     .userFileUrl(education.getUserFileUrl())
                     .adminFileUrl(education.getAdminFileUrl())
                     .bookingStatus(BookingStatusResponse.valueOf(education.getBookingStatus().name()))
@@ -149,7 +151,6 @@ public class BookingDto {
         @Schema(description = "서비스 신청 파일", example = "https://picsum.photos/seed/picsum/200/300")
         private String userFileUrl;
 
-        @NotNull(message = "자동차 종류를 선택해주세요..")
         @Schema(description = "차종", example = "COMPACT/MIDSIZE/SUV", required = true)
         private CarTypeRequest carTypeRequest;
 
@@ -178,7 +179,10 @@ public class BookingDto {
         private String price;
 
         @Schema(description = "서비스 신청 내용", example = "안녕하세요! 교육 서비스를 신청한.. 어쩌구..")
-        private String content;
+        private String userContent;
+
+        @Schema(description = "서비스 승인 내용", example = "안녕하세요! 교육 서비스를 승인한.. 어쩌구..")
+        private String adminContent;
 
         @Schema(description = "서비스 신청시 업로드한 파일", example = "https://picsum.photos/seed/picsum/200/300")
         private String userFileUrl;
@@ -204,7 +208,8 @@ public class BookingDto {
                     .operationUsername(operationUsername)
                     .carTypeRequest(CarTypeRequest.valueOf(traffic.getCarType().name()))
                     .price(traffic.getPrice())
-                    .content(traffic.getContent())
+                    .userContent(traffic.getUserContent())
+                    .adminContent(traffic.getAdminContent())
                     .userFileUrl(traffic.getUserFileUrl())
                     .adminFileUrl(traffic.getAdminFileUrl())
                     .bookingStatus(BookingStatusResponse.valueOf(traffic.getBookingStatus().name()))
@@ -265,7 +270,10 @@ public class BookingDto {
         private String price;
 
         @Schema(description = "서비스 신청 내용", example = "안녕하세요! 교육 서비스를 신청한.. 어쩌구..")
-        private String content;
+        private String userContent;
+
+        @Schema(description = "서비스 승인 내용", example = "안녕하세요! 교육 서비스를 승인한.. 어쩌구..")
+        private String adminContent;
 
         @Schema(description = "서비스 신청시 업로드한 파일", example = "https://picsum.photos/seed/picsum/200/300")
         private String userFileUrl;
@@ -292,7 +300,8 @@ public class BookingDto {
                     .transactionMethodRequest(TransactionMethodRequest.valueOf(dwelling.getTransactionMethod().name()))
                     .numberOfRoomsRequest(NumberOfRoomsRequest.valueOf(dwelling.getNumberOfRooms().name()))
                     .price(dwelling.getPrice())
-                    .content(dwelling.getContent())
+                    .userContent(dwelling.getUserContent())
+                    .adminContent(dwelling.getAdminContent())
                     .userFileUrl(dwelling.getUserFileUrl())
                     .adminFileUrl(dwelling.getAdminFileUrl())
                     .bookingStatus(BookingStatusResponse.valueOf(dwelling.getBookingStatus().name()))
@@ -345,7 +354,10 @@ public class BookingDto {
         private boolean usim;
 
         @Schema(description = "서비스 신청 내용", example = "안녕하세요! 교육 서비스를 신청한.. 어쩌구..")
-        private String content;
+        private String userContent;
+
+        @Schema(description = "서비스 승인 내용", example = "안녕하세요! 교육 서비스를 승인한.. 어쩌구..")
+        private String adminContent;
 
         @Schema(description = "서비스 신청시 업로드한 파일", example = "https://picsum.photos/seed/picsum/200/300")
         private String userFileUrl;
@@ -371,7 +383,8 @@ public class BookingDto {
                     .operationUsername(operationUsername)
                     .modelName(communication.getModelName())
                     .usim(communication.isUsim())
-                    .content(communication.getContent())
+                    .userContent(communication.getUserContent())
+                    .adminContent(communication.getAdminContent())
                     .userFileUrl(communication.getUserFileUrl())
                     .adminFileUrl(communication.getAdminFileUrl())
                     .bookingStatus(BookingStatusResponse.valueOf(communication.getBookingStatus().name()))
@@ -413,5 +426,21 @@ public class BookingDto {
                     .createdAt(booking.getCreatedAt())
                     .build();
         }
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ServiceAcceptRequest {
+
+        @NotNull(message = "서비스 승인 내용을 입력해주세요.")
+        @Schema(description = "내용", example = "안녕하세요! 교육 서비스를 승인한.. 어쩌구..")
+        private String content;
+
+        @Null(message = "서비스 승인시 첨부할 파일의 url을 입력해주세요.")
+        @Schema(description = "서비스 승인 파일", example = "https://picsum.photos/seed/picsum/200/300")
+        private String adminFileUrl;
     }
 }

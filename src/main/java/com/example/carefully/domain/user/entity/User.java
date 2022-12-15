@@ -28,6 +28,7 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     String password;
+
     @Column(nullable = false)
     String name;
 
@@ -36,17 +37,27 @@ public class User extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     String phoneNumber;
-    @Column(unique = true)
-    String businessRegistrationNumber;
+
+    @Enumerated(value = STRING)
+    Gender gender;
+
+    @Column
+    String nationality;
 
     @Column
     String universityName;
 
+    @Column
+    String major;
+
+    @Column
+    String advisorName;
+
     @Enumerated(value = STRING)
     Education education;
 
-    @Enumerated(value = STRING)
-    Gender gender;
+    @Embedded
+    private Address address;
 
     @Column
     boolean activated;
@@ -55,18 +66,21 @@ public class User extends BaseEntity {
     Role role;
 
     @Builder
-    public User(String username, String password, String name, String phoneNumber, String identificationNumber,
-                String businessRegistrationNumber, String universityName, Education education, Role role,
-                Gender gender, boolean activated) {
+    public User(String username, String password, String name, String identificationNumber, String phoneNumber, Gender gender,
+                String nationality, String universityName, String major, String advisorName, Education education,
+                String address, Role role, boolean activated) {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.phoneNumber = phoneNumber;
         this.identificationNumber = identificationNumber;
-        this.businessRegistrationNumber = businessRegistrationNumber;
-        this.universityName = universityName;
-        this.education = education;
+        this.phoneNumber = phoneNumber;
         this.gender = gender;
+        this.nationality = nationality;
+        this.universityName = universityName;
+        this.major = major;
+        this.advisorName = advisorName;
+        this.education = education;
+        this.address = new Address(address);
         this.role = role;
         this.activated = activated;
     }
@@ -76,13 +90,17 @@ public class User extends BaseEntity {
                 .username(registerRequest.getUsername())
                 .password(registerRequest.getPassword())
                 .name(registerRequest.getName())
-                .phoneNumber(registerRequest.getPhoneNumber())
                 .identificationNumber(registerRequest.getIdentificationNumber())
-                .universityName(registerRequest.getUniversityName())
-                .education(Education.valueOf((registerRequest.getEducationRequest().name())))
+                .phoneNumber(registerRequest.getPhoneNumber())
                 .gender(Gender.valueOf(registerRequest.getGenderRequest().name()))
+                .nationality(registerRequest.getNationality())
+                .universityName(registerRequest.getUniversityName())
+                .major(registerRequest.getMajor())
+                .advisorName(registerRequest.getAdvisorName())
+                .education(Education.valueOf((registerRequest.getEducationRequest().name())))
+                .address(registerRequest.getAddress())
                 .activated(false)
-                .role(Role.valueOf((registerRequest.getRole().name())))
+                .role(Role.valueOf("CLASSIC"))
                 .build();
     }
 
@@ -93,8 +111,6 @@ public class User extends BaseEntity {
                 .name(registerRequest.getName())
                 .phoneNumber(registerRequest.getPhoneNumber())
                 .identificationNumber(registerRequest.getIdentificationNumber())
-                .businessRegistrationNumber(registerRequest.getBusinessRegistrationNumber())
-                .gender(Gender.valueOf(registerRequest.getGenderRequest().name()))
                 .activated(false)
                 .role(Role.valueOf("ADMIN"))
                 .build();
@@ -110,6 +126,10 @@ public class User extends BaseEntity {
     public void updateAdmin(String name, String gender) {
         this.name = name;
         this.gender = Gender.valueOf(gender);
+    }
+
+    public void updateUserRole(String role) {
+        this.role = Role.valueOf(role);
     }
 
     public void signup() { this.activated = true; }

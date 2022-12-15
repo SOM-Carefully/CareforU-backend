@@ -23,7 +23,7 @@ public interface BookingService {
 
     SliceDto<BookingDto.ServiceAllResponse> userLookup();
 
-    void accept(Long bookingId);
+    void accept(Long bookingId, BookingDto.ServiceAcceptRequest serviceAcceptRequest);
 
     void cancel(Long bookingId);
 

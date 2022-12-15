@@ -121,18 +121,17 @@ public class BookingServiceImpl implements BookingService {
      */
     @Override
     @Transactional
-    public void accept(Long bookingId) {
+    public void accept(Long bookingId, BookingDto.ServiceAcceptRequest serviceAcceptRequest) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
         User currentUser = getCurrentUser(userRepository);
 
         if (booking.getAdmin() == null) {
             booking.setAdmin(currentUser);
-            booking.accept();
+            booking.accept(serviceAcceptRequest);
             bookingRepository.save(booking);
         } else if (checkCurrentAdmin(booking, currentUser)) {
-            accept(bookingId);
-        } else {
-            throw new AlreadyProcessedService();
+            booking.setNullAdmin();
+            accept(bookingId, serviceAcceptRequest);
         }
     }
 
@@ -150,9 +149,8 @@ public class BookingServiceImpl implements BookingService {
             booking.cancel();
             bookingRepository.save(booking);
         } else if (checkCurrentAdmin(booking, currentUser)) {
+            booking.setNullAdmin();
             cancel(bookingId);
-        } else {
-            throw new AlreadyProcessedService();
         }
     }
 
@@ -170,15 +168,13 @@ public class BookingServiceImpl implements BookingService {
             booking.complete();
             bookingRepository.save(booking);
         } else if (checkCurrentAdmin(booking, currentUser)) {
+            booking.setNullAdmin();
             complete(bookingId);
-        } else {
-            throw new AlreadyProcessedService();
         }
     }
 
     public boolean checkCurrentAdmin(Booking booking, User currentUser) {
         if (booking.getAdmin() == currentUser) {
-            booking.setNullAdmin();
             return true;
         } else {
             throw new NotValidationServiceAdmin();

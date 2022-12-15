@@ -30,7 +30,10 @@ public abstract class Booking extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String content;
+    private String userContent;
+
+    @Column(nullable = false)
+    private String adminContent;
 
     @Column(nullable = false)
     @Enumerated(value = STRING)
@@ -51,11 +54,12 @@ public abstract class Booking extends BaseEntity {
 
     private String adminFileUrl;
 
-    public Booking(Long id, String content, User user, User admin, BookingStatus bookingStatus, BusinessType businessType, String userFileUrl, String adminFileUrl) {
+    public Booking(Long id, String userContent, String adminContent, User user, User admin, BookingStatus bookingStatus, BusinessType businessType, String userFileUrl, String adminFileUrl) {
         this.id = id;
         this.user = user ;
         this.admin = admin;
-        this.content = content;
+        this.userContent = userContent;
+        this.adminContent = adminContent;
         this.bookingStatus = bookingStatus;
         this.businessType = businessType;
         this.userFileUrl = userFileUrl;
@@ -69,8 +73,10 @@ public abstract class Booking extends BaseEntity {
         this.admin = currentUser;
     }
 
-    public void accept() {
+    public void accept(BookingDto.ServiceAcceptRequest serviceAcceptRequest) {
         this.bookingStatus = ACCEPT;
+        this.adminContent = serviceAcceptRequest.getContent();
+        this.adminFileUrl = serviceAcceptRequest.getAdminFileUrl();
     }
 
     public void cancel() {

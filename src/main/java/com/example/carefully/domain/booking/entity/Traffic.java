@@ -21,8 +21,8 @@ public class Traffic extends Booking {
     private String price;
 
     @Builder
-    public Traffic(Long id, String content, User user, User admin, BookingStatus bookingStatus, BusinessType businessType, String userFileUrl, String adminFileUrl, CarType carType, String price) {
-        super(id, content, user, admin, bookingStatus, businessType, userFileUrl, adminFileUrl);
+    public Traffic(Long id, String userContent, String adminContent, User user, User admin, BookingStatus bookingStatus, BusinessType businessType, String userFileUrl, String adminFileUrl, CarType carType, String price) {
+        super(id, userContent, adminContent, user, admin, bookingStatus, businessType, userFileUrl, adminFileUrl);
         this.carType = carType;
         this.price = price;
     }
@@ -30,7 +30,7 @@ public class Traffic extends Booking {
     public static Traffic trafficRequest(User user, BookingDto.TrafficReceiveRequest trafficReceiveRequest) {
         return Traffic.builder()
                 .user(user)
-                .content(trafficReceiveRequest.getContent())
+                .userContent(trafficReceiveRequest.getContent())
                 .bookingStatus(BookingStatus.valueOf("WAITING"))
                 .businessType(BusinessType.valueOf("TRAFFIC"))
                 .carType(CarType.valueOf(trafficReceiveRequest.getCarTypeRequest().name()))

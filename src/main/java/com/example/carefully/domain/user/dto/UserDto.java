@@ -4,9 +4,12 @@ import com.example.carefully.domain.booking.entity.Booking;
 import com.example.carefully.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -17,6 +20,13 @@ public class UserDto {
     @RequiredArgsConstructor
     public enum RoleRequest {
         CLASSIC, SILVER, GOLD, PLATINUM;
+    }
+
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum RoleResponse {
+        CLASSIC, SILVER, GOLD, PLATINUM, ADMIN;
     }
 
     @Getter
@@ -44,44 +54,59 @@ public class UserDto {
     @NoArgsConstructor
     public static class UserRegisterRequest {
 
-        @NotNull
-        @Size(min = 3, max = 50)
-        @ApiModelProperty(example = "test@test.com")
+        @NotNull(message = "이메일을 입력해 주세요.")
+        @Email(message = "이메일이 형식이 유효하지 않습니다.")
+        @Schema(description = "이메일", example = "example@example.com", required = true)
         private String username;
 
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        @NotNull
-        @Size(min = 3, max = 100)
-        @ApiModelProperty(example = "test1234")
+        @NotNull(message = "비밀번호를 입력해 주세요.")
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,24}$",
+                message = "비밀번호는 8자리 이상 24자리 이하여야 하며 숫자와 특수문자를 한 자리 이상 반드시 포함해야 합니다.")
         private String password;
 
-        @NotNull
-        @ApiModelProperty(example = "홍길동")
+        @NotNull(message = "이름을 입력해 주세요.")
+        @Pattern(regexp = "^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]{2,10}$",
+                message = "이름은 2자리 이상 10자리 이하여야 하며 특수문자는 입력할 수 없습니다.")
         private String name;
 
-        @NotNull
+        @NotNull(message = "주민번호를 입력해 주세요.")
+        @Pattern(regexp = "^([0-9]{6})-([0-9]{7})$", message = "주민번호 형식이 유효하지 않습니다.")
+        @Schema(description = "전화번호", example = "010-1234-5678", required = true)
         @ApiModelProperty(example = "123456-1234567")
         private String identificationNumber;
 
-        @NotNull
-        @ApiModelProperty(example = "010-1234-5678")
+        @NotNull(message = "전화번호를 입력해 주세요.")
+        @Pattern(regexp = "^01([0|1|6|7|8|9])-([0-9]{3,4})-([0-9]{4})$", message = "전화번호 형식이 유효하지 않습니다.")
+        @Schema(description = "전화번호", example = "010-1234-5678", required = true)
         private String phoneNumber;
 
-        @NotNull
-        @ApiModelProperty(example = "상명대학교")
-        private String universityName;
-
-        @NotNull
-        @ApiModelProperty(example = "UNDERGRADUATE/BACHELOR/MASTER/DOCTOR")
-        private EducationRequest educationRequest;
-
-        @NotNull
+        @NotNull(message = "성별을 선택해주세요.")
         @ApiModelProperty(example = "MAN/WOMAN/NA")
         private GenderRequest genderRequest;
 
-        @NotNull
-        @ApiModelProperty(example = "CLASSIC/SILVER/GOLD/PLATINUM")
-        private RoleRequest role;
+        @NotNull(message = "국적을 입력해주세요.")
+        @ApiModelProperty(example = "대한민국")
+        private String nationality;
+
+        @NotNull(message = "대학교 이름을 입력해주세요.")
+        @ApiModelProperty(example = "상명대학교")
+        private String universityName;
+
+        @NotNull(message = "전공을 입력해주세요.")
+        @ApiModelProperty(example = "컴퓨터과학부")
+        private String major;
+
+        @NotNull(message = "지도교수님 성함을 입력해주세요.")
+        @ApiModelProperty(example = "김교수")
+        private String advisorName;
+
+        @NotNull(message = "학위를 선택해주세요.")
+        @ApiModelProperty(example = "UNDERGRADUATE/BACHELOR/MASTER/DOCTOR")
+        private EducationRequest educationRequest;
+
+        @NotNull(message = "주소를 입력해 주세요.")
+        @Schema(description = "주소", example = "서울시 어딘가...", required = true)
+        private String address;
 
         @ApiModelProperty(example = "회원가입 신청합니다!")
         private String content;
@@ -118,36 +143,31 @@ public class UserDto {
     @NoArgsConstructor
     public static class AdminRegisterRequest {
 
-        @NotNull
-        @Size(min = 3, max = 50)
-        @ApiModelProperty(example = "test@test.com")
+        @NotNull(message = "이메일을 입력해 주세요.")
+        @Email(message = "이메일이 형식이 유효하지 않습니다.")
+        @Schema(description = "이메일", example = "example@example.com", required = true)
         private String username;
 
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        @NotNull
-        @Size(min = 3, max = 100)
-        @ApiModelProperty(example = "test1234")
+        @NotNull(message = "비밀번호를 입력해 주세요.")
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,24}$",
+                message = "비밀번호는 8자리 이상 24자리 이하여야 하며 숫자와 특수문자를 한 자리 이상 반드시 포함해야 합니다.")
         private String password;
 
-        @NotNull
-        @ApiModelProperty(example = "홍길동")
+        @NotNull(message = "이름을 입력해 주세요.")
+        @Pattern(regexp = "^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]{2,10}$",
+                message = "이름은 2자리 이상 10자리 이하여야 하며 특수문자는 입력할 수 없습니다.")
         private String name;
 
-        @NotNull
+        @NotNull(message = "주민번호를 입력해 주세요.")
+        @Pattern(regexp = "^([0-9]{6})-([0-9]{7})$", message = "주민번호 형식이 유효하지 않습니다.")
+        @Schema(description = "전화번호", example = "010-1234-5678", required = true)
         @ApiModelProperty(example = "123456-1234567")
         private String identificationNumber;
 
-        @NotNull
-        @ApiModelProperty(example = "010-1234-5678")
+        @NotNull(message = "전화번호를 입력해 주세요.")
+        @Pattern(regexp = "^01([0|1|6|7|8|9])-([0-9]{3,4})-([0-9]{4})$", message = "전화번호 형식이 유효하지 않습니다.")
+        @Schema(description = "전화번호", example = "010-1234-5678", required = true)
         private String phoneNumber;
-
-        @NotNull
-        @ApiModelProperty(example = "MAN/WOMAN/NA")
-        private GenderRequest genderRequest;
-
-        @NotNull
-        @ApiModelProperty(example = "123-12-12345")
-        String businessRegistrationNumber;
 
         @ApiModelProperty(example = "회원가입 신청합니다!")
         private String content;
@@ -176,34 +196,36 @@ public class UserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class UserResponse {
-        @NotNull
-        @Size(min = 3, max = 50)
-        @ApiModelProperty(example = "test@test.com")
+
+        @Schema(description = "유저 이메일", example = "test@test.com", required = true)
         private String username;
 
-        @NotNull
-        @ApiModelProperty(example = "홍길동")
+        @Schema(description = "유저 이름", example = "홍길동", required = true)
         private String name;
 
-        @NotNull
-        @ApiModelProperty(example = "123456-1234567")
-        private String identificationNumber;
-
-        @NotNull
-        @ApiModelProperty(example = "010-1234-5678")
+        @Schema(description = "유저 전화번호", example = "010-1234-5678", required = true)
         private String phoneNumber;
 
-        @NotNull
-        @ApiModelProperty(example = "상명대학교")
+        @Schema(description = "유저 성별", example = "MAN/WOMAN/NA", required = true)
+        private GenderRequest gender;
+
+        @Schema(description = "유저 국적", example = "대한민국", required = true)
+        private String nationality;
+
+        @Schema(description = "유저 대학교", example = "상명대학교", required = true)
         private String universityName;
 
-        @NotNull
-        @ApiModelProperty(example = "UNDERGRADUATE/BACHELOR/MASTER/DOCTOR")
+        @Schema(description = "유저 전공", example = "컴퓨터과학부", required = true)
+        private String major;
+
+        @Schema(description = "유저 지도교수 성함", example = "김교수", required = true)
+        private String advisorName;
+
+        @Schema(description = "유저 학위", example = "UNDERGRADUATE/BACHELOR/MASTER/DOCTOR", required = true)
         private EducationRequest education;
 
-        @NotNull
-        @ApiModelProperty(example = "MAN/WOMAN/NA")
-        private GenderRequest gender;
+        @Schema(description = "유저 주소", example = "서울시 어딘가...", required = true)
+        private String address;
 
         @NotNull
         @ApiModelProperty(example = "CLASSIC/SILVER/GOLD/PLATINUM")
@@ -213,11 +235,14 @@ public class UserDto {
             return UserResponse.builder()
                     .username(user.getUsername())
                     .name(user.getName())
-                    .identificationNumber(user.getIdentificationNumber())
                     .phoneNumber(user.getPhoneNumber())
-                    .universityName(user.getUniversityName())
-                    .education(EducationRequest.valueOf(user.getEducation().name()))
                     .gender(GenderRequest.valueOf(user.getGender().name()))
+                    .nationality(user.getNationality())
+                    .universityName(user.getUniversityName())
+                    .major(user.getMajor())
+                    .advisorName(user.getAdvisorName())
+                    .education(EducationRequest.valueOf(user.getEducation().name()))
+                    .address(user.getAddress().getDetails())
                     .role(RoleRequest.valueOf(user.getRole().name()))
                     .build();
         }
@@ -229,30 +254,17 @@ public class UserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class AdminResponse {
-        @NotNull
-        @Size(min = 3, max = 50)
-        @ApiModelProperty(example = "test@test.com")
+        @Schema(description = "어드민 이메일", example = "test@test.com", required = true)
         private String username;
 
-        @NotNull
-        @ApiModelProperty(example = "홍길동")
+        @Schema(description = "어드민 이름", example = "홍길동", required = true)
         private String name;
 
-        @NotNull
-        @ApiModelProperty(example = "123456-1234567")
+        @Schema(description = "어드민 주민번호", example = "123456-1234567", required = true)
         private String identificationNumber;
 
-        @NotNull
-        @ApiModelProperty(example = "010-1234-5678")
+        @Schema(description = "어드민 전화번호", example = "010-1234-5678", required = true)
         private String phoneNumber;
-
-        @NotNull
-        @ApiModelProperty(example = "123-12-12345")
-        String businessRegistrationNumber;
-
-        @NotNull
-        @ApiModelProperty(example = "MAN/WOMAN/NA")
-        private GenderRequest gender;
 
         String role;
 
@@ -262,8 +274,6 @@ public class UserDto {
                     .name(user.getName())
                     .identificationNumber(user.getIdentificationNumber())
                     .phoneNumber(user.getPhoneNumber())
-                    .businessRegistrationNumber(user.getBusinessRegistrationNumber())
-                    .gender(GenderRequest.valueOf(user.getGender().name()))
                     .role(user.getRole().name())
                     .build();
         }
@@ -276,14 +286,14 @@ public class UserDto {
     @NoArgsConstructor
     public static class LoginRequest {
 
-        @NotNull
-        @Size(min = 3, max = 50)
-        @ApiModelProperty(example = "test@test.com")
+        @NotNull(message = "이메일을 입력해 주세요.")
+        @Email(message = "이메일이 형식이 유효하지 않습니다.")
+        @Schema(description = "이메일", example = "example@example.com", required = true)
         private String username;
 
-        @NotNull
-        @Size(min = 3, max = 100)
-        @ApiModelProperty(example = "test1234")
+        @NotNull(message = "비밀번호를 입력해 주세요.")
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,24}$",
+                message = "비밀번호는 8자리 이상 24자리 이하여야 하며 숫자와 특수문자를 한 자리 이상 반드시 포함해야 합니다.")
         private String password;
     }
 
@@ -293,10 +303,53 @@ public class UserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class SignoutRequest {
+        @NotNull(message = "비밀번호를 입력해 주세요.")
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,24}$",
+                message = "비밀번호는 8자리 이상 24자리 이하여야 하며 숫자와 특수문자를 한 자리 이상 반드시 포함해야 합니다.")
+        private String password;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserRoleRequest {
+        @NotNull
+        @ApiModelProperty(example = "CLASSIC/SILVER/GOLD/PLATINUM")
+        private RoleRequest roleRequest;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserAllResponse {
+        @NotNull
+        @Size(min = 3, max = 50)
+        @ApiModelProperty(example = "test@test.com")
+        private String username;
 
         @NotNull
-        @Size(min = 3, max = 100)
-        @ApiModelProperty(example = "test1234")
-        private String password;
+        @ApiModelProperty(example = "홍길동")
+        private String name;
+
+        @NotNull
+        @ApiModelProperty(example = "CLASSIC/SILVER/GOLD/PLATINUM")
+        private RoleResponse role;
+
+        @NotNull
+        @ApiModelProperty(example = "010-1234-5678")
+        private String phoneNumber;
+
+        public static UserAllResponse create(User user) {
+            return UserAllResponse.builder()
+                    .username(user.getUsername())
+                    .name(user.getName())
+                    .phoneNumber(user.getPhoneNumber())
+                    .role(RoleResponse.valueOf(user.getRole().name()))
+                    .build();
+        }
     }
 }

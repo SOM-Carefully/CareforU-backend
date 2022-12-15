@@ -5,11 +5,9 @@ import com.example.carefully.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -22,8 +20,8 @@ public class Education extends Booking{
     private EducationContent educationContent;
 
     @Builder
-    public Education(Long id, String content, User user, User admin, BookingStatus bookingStatus, BusinessType businessType, String userFileUrl, String adminFileUrl, Degree degree, EducationContent educationContent) {
-        super(id, content, user, admin, bookingStatus, businessType, userFileUrl, adminFileUrl);
+    public Education(Long id, String userContent, String adminContent, User user, User admin, BookingStatus bookingStatus, BusinessType businessType, String userFileUrl, String adminFileUrl, Degree degree, EducationContent educationContent) {
+        super(id, userContent, adminContent, user, admin, bookingStatus, businessType, userFileUrl, adminFileUrl);
         this.degree = degree;
         this.educationContent = educationContent;
     }
@@ -31,7 +29,7 @@ public class Education extends Booking{
     public static Education educationRequest(User user, BookingDto.EducationReceiveRequest educationReceiveRequest) {
         return Education.builder()
                 .user(user)
-                .content(educationReceiveRequest.getContent())
+                .userContent(educationReceiveRequest.getContent())
                 .bookingStatus(BookingStatus.valueOf("WAITING"))
                 .businessType(BusinessType.valueOf("EDUCATION"))
                 .degree(Degree.valueOf(educationReceiveRequest.getDegreeRequest().name()))
