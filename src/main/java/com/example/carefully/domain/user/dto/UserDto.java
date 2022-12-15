@@ -1,8 +1,6 @@
 package com.example.carefully.domain.user.dto;
 
-import com.example.carefully.domain.booking.entity.Booking;
 import com.example.carefully.domain.user.entity.User;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -67,12 +65,12 @@ public class UserDto {
         @NotNull(message = "이름을 입력해 주세요.")
         @Pattern(regexp = "^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]{2,10}$",
                 message = "이름은 2자리 이상 10자리 이하여야 하며 특수문자는 입력할 수 없습니다.")
+        @Schema(description = "이름", example = "홍길동", required = true)
         private String name;
 
         @NotNull(message = "주민번호를 입력해 주세요.")
         @Pattern(regexp = "^([0-9]{6})-([0-9]{7})$", message = "주민번호 형식이 유효하지 않습니다.")
-        @Schema(description = "전화번호", example = "010-1234-5678", required = true)
-        @ApiModelProperty(example = "123456-1234567")
+        @Schema(description = "주민번호", example = "123456-1234567", required = true)
         private String identificationNumber;
 
         @NotNull(message = "전화번호를 입력해 주세요.")

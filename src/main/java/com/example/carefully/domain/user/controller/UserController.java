@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import static com.example.carefully.domain.booking.dto.BookingResponseMessage.LOOKUP_SUCCESS;
 import static com.example.carefully.domain.user.dto.UserResponseMessage.*;
@@ -35,29 +36,29 @@ public class UserController {
     })
     @ApiOperation(value = "로그인", notes = "로그인을 합니다.")
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<TokenResponse>> login(@RequestBody UserDto.LoginRequest request) {
+    public ResponseEntity<BaseResponse<TokenResponse>> login(@Valid @RequestBody UserDto.LoginRequest request) {
         return ResponseEntity.ok(BaseResponse.create(LOGIN_SUCCESS.getMessage(), userService.login(request)));
     }
 
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원가입 신청에 성공하였습니다."),
-            @ApiResponse(responseCode = "500", description = "이미 존재하는 회원이거나, 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
+            @ApiResponse(responseCode = "500", description = "이미 존재하는 이메일, 주민번호, 전화번호이거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
     })
     @ApiOperation(value = "일반 유저 회원가입 신청", notes = "일반유저가 회원가입을 신청합니다.")
     @PostMapping("/user/signup")
-    public ResponseEntity userSignup(@RequestBody UserDto.UserRegisterRequest registerRequest) {
+    public ResponseEntity userSignup(@Valid @RequestBody UserDto.UserRegisterRequest registerRequest) {
         userService.userSignup(registerRequest);
         return ResponseEntity.ok(BaseResponse.create(REGISTER_REQUEST_SUCCESS.getMessage()));
     }
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원가입 신청에 성공하였습니다."),
-            @ApiResponse(responseCode = "500", description = "이미 존재하는 회원이거나, 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
+            @ApiResponse(responseCode = "500", description = "이미 존재하는 이메일, 주민번호, 전화번호이거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
     })
     @ApiOperation(value = "어드민 회원가입 신청", notes = "어드민 회원이 회원가입을 신청합니다.")
     @PostMapping("/admin/signup")
-    public ResponseEntity adminSignup(@RequestBody UserDto.AdminRegisterRequest registerRequest) {
+    public ResponseEntity adminSignup(@Valid @RequestBody UserDto.AdminRegisterRequest registerRequest) {
         userService.adminSignup(registerRequest);
         return ResponseEntity.ok(BaseResponse.create(REGISTER_REQUEST_SUCCESS.getMessage()));
     }
@@ -105,7 +106,7 @@ public class UserController {
     @ApiOperation(value = "일반 유저 내 정보 수정", notes = "일반 유저의 정보를 수정합니다.")
     @PatchMapping("/user/my")
     @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
-    public ResponseEntity userUpdate(@RequestBody UserDto.UserUpdateRequest userUpdateRequest) {
+    public ResponseEntity userUpdate(@Valid @RequestBody UserDto.UserUpdateRequest userUpdateRequest) {
         userService.userUpdate(userUpdateRequest);
         return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
     }
@@ -131,7 +132,7 @@ public class UserController {
     @ApiOperation(value = "어드민 유저 내 정보 수정", notes = "어드민 회원의 정보를 수정합니다.")
     @PatchMapping("/admin/my")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity adminUpdate(@RequestBody UserDto.AdminUpdateRequest adminUpdateRequest) {
+    public ResponseEntity adminUpdate(@Valid @RequestBody UserDto.AdminUpdateRequest adminUpdateRequest) {
         userService.adminUpdate(adminUpdateRequest);
         return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
     }
@@ -143,7 +144,7 @@ public class UserController {
     })
     @ApiOperation(value = "회원 탈퇴", notes = "로그인한 유저가 회원 탈퇴를 진행합니다.")
     @PostMapping("/signout")
-    public ResponseEntity signout(@RequestBody UserDto.SignoutRequest signoutRequest) {
+    public ResponseEntity signout(@Valid @RequestBody UserDto.SignoutRequest signoutRequest) {
         userService.signout(signoutRequest);
         return ResponseEntity.ok(BaseResponse.create(SIGNOUT_SUCCESS.getMessage()));
     }
