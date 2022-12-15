@@ -37,17 +37,14 @@ public class Post extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private PostRole postRole;
 
-    private String locked;
-
     @Builder
     public Post(Long userId, Category category, String title, String content,
-                boolean locked, String imgUrl, PostRole postRole) {
+                String imgUrl, PostRole postRole) {
         this.userId = userId;
         this.category = category;
         this.title = title;
         this.content = content;
         this.imgUrl = imgUrl;
-        this.locked = mapString(locked);
         this.postRole = postRole;
     }
 
@@ -55,15 +52,5 @@ public class Post extends BaseEntity {
         this.title = title;
         this.content = content;
         this.imgUrl = imgUrl;
-    }
-
-    public void updateQuest(String title, String content, boolean locked) {
-        this.title = title;
-        this.content = content;
-        this.locked = mapString(locked);
-    }
-
-    private String mapString(boolean locked) {
-        return locked ? "Y" : "N";
     }
 }

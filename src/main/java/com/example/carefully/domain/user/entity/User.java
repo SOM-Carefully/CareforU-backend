@@ -135,6 +135,6 @@ public class User extends BaseEntity {
     public void signup() { this.activated = true; }
 
     public void signout() {
-        this.activated = false; 
+        this.activated = false;
     }
 }

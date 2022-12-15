@@ -29,4 +29,3 @@ public interface BookingService {
 
     void complete(Long bookingId);
 }
-

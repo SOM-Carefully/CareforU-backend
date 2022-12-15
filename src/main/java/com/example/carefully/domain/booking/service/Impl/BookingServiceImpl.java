@@ -2,7 +2,6 @@ package com.example.carefully.domain.booking.service.Impl;
 
 import com.example.carefully.domain.booking.entity.*;
 import com.example.carefully.domain.booking.dto.BookingDto;
-import com.example.carefully.domain.booking.exception.AlreadyProcessedService;
 import com.example.carefully.domain.booking.exception.NotValidationBookingId;
 import com.example.carefully.domain.booking.exception.NotValidationServiceAdmin;
 import com.example.carefully.domain.booking.repository.BookingRepository;
