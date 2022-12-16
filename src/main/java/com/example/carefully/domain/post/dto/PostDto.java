@@ -5,9 +5,8 @@ import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.domain.post.domain.PostRole;
 import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.global.common.Constant;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
-
-import javax.validation.constraints.NotNull;
 
 @Getter
 public class PostDto {
@@ -17,10 +16,13 @@ public class PostDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class CreateRequest {
-        @NotNull
+        @Schema(description = "게시글 제목", required = true)
         private String title;
-        @NotNull
+
+        @Schema(description = "게시글 내용", required = true)
         private String content;
+
+        @Schema(description = "S3에서 불러온 이미지 경로")
         private String imgUrl;
 
         public Post toEntity(PostRole role, Category category, User user) {
@@ -47,8 +49,13 @@ public class PostDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class UpdateRequest {
+        @Schema(description = "게시글 제목", required = true)
         private String title;
+
+        @Schema(description = "게시글 내용", required = true)
         private String content;
+
+        @Schema(description = "S3에서 불러온 이미지 경로")
         private String imgUrl;
     }
 
