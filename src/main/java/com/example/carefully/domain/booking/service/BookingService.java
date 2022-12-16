@@ -6,20 +6,26 @@ import com.example.carefully.global.dto.SliceDto;
 
 public interface BookingService {
 
-    void request(BookingDto.ReceiveRequest receiveRequest);
+    void educationRequest(BookingDto.EducationReceiveRequest educationReceiveRequest);
 
-    SliceDto<BookingDto.ServiceResponse> serviceAllLookup();
+    void trafficRequest(BookingDto.TrafficReceiveRequest trafficReceiveRequest);
 
-    BookingDto.ServiceResponse lookup(Long bookingId);
+    void dwellingRequest(BookingDto.DwellingReceiveRequest dwellingReceiveRequest);
 
-    SliceDto<BookingDto.ServiceResponse> userLookup();
+    void communicationRequest(BookingDto.CommunicationReceiveRequest communicationReceiveRequest);
 
-    void update(Long bookingId, BookingDto.UpdateRequest updateRequest);
+    SliceDto<BookingDto.ServiceAllResponse> serviceAllLookup();
 
-    void accept(Long bookingId);
+    BookingDto.EducationReceiveResponse educationLookup(Long bookingId);
+    BookingDto.DwellingReceiveResponse dwellingLookup(Long bookingId);
+    BookingDto.TrafficReceiveResponse trafficLookup(Long bookingId);
+    BookingDto.CommunicationReceiveResponse communicationLookup(Long bookingId);
+
+    SliceDto<BookingDto.ServiceAllResponse> userLookup();
+
+    void accept(Long bookingId, BookingDto.ServiceAcceptRequest serviceAcceptRequest);
 
     void cancel(Long bookingId);
 
     void complete(Long bookingId);
 }
-

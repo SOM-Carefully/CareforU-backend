@@ -1,17 +1,22 @@
 package com.example.carefully.domain.user.service.impl;
 
+import com.example.carefully.domain.booking.dto.BookingDto;
+import com.example.carefully.domain.booking.entity.Booking;
 import com.example.carefully.domain.membership.entity.Membership;
 import com.example.carefully.domain.membership.repository.MembershipRepository;
 import com.example.carefully.domain.user.dto.TokenResponse;
 import com.example.carefully.domain.user.dto.UserDto;
 import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.domain.user.exception.DuplicatedUsernameException;
+import com.example.carefully.domain.user.exception.NotFoundUserException;
 import com.example.carefully.domain.user.exception.NotValidationPasswordException;
 import com.example.carefully.domain.user.exception.NotValidationRoleException;
 import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.domain.user.service.UserService;
+import com.example.carefully.global.dto.SliceDto;
 import com.example.carefully.global.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -121,6 +126,15 @@ public class UserServiceImpl implements UserService {
         userRepository.save(currentUser);
     }
 
+    @Override
+    @Transactional
+    public void userRoleUpdate(String username, String role) {
+        User user = userRepository.findOneWithAuthoritiesByUsername(username).orElseThrow(NotFoundUserException::new);
+        user.updateUserRole(role);
+        userRepository.save(user);
+    }
+
+
     /*
     회원 탈퇴
      */
@@ -154,18 +168,34 @@ public class UserServiceImpl implements UserService {
     로그인한 어드민 사용자 정보 조회
      */
     @Override
-    @Transactional(readOnly = true)
     public UserDto.AdminResponse getMyAdminWithAuthorities() {
         User currentUser = getCurrentUser(userRepository);
         return UserDto.AdminResponse.create(currentUser);
     }
 
-    @Transactional(readOnly = true)
     public UsernamePasswordAuthenticationToken passwordCheckLogic(User user, String password) {
         UsernamePasswordAuthenticationToken unauthenticated = UsernamePasswordAuthenticationToken.unauthenticated(
                 user.getUsername(),
                 password
         );
         return unauthenticated;
+    }
+
+    /*
+    유저 이메일로 사용자 정보 조회
+     */
+    @Override
+    public UserDto.UserResponse getUserWithAuthorities(String username) {
+        User user = userRepository.findOneWithAuthoritiesByUsername(username).orElseThrow(NotFoundUserException::new);
+        return UserDto.UserResponse.create(user);
+    }
+
+    /*
+    전체 회원 조회
+     */
+    @Override
+    public SliceDto<UserDto.UserAllResponse> userAllLookup() {
+        Slice<User> userList = userRepository.findAllByActivatedTrueOrderByCreatedAtDesc();
+        return SliceDto.create(userList.map(UserDto.UserAllResponse::create));
     }
 }

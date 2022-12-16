@@ -1,7 +1,7 @@
 package com.example.carefully.domain.booking.entity;
 
 import com.example.carefully.domain.booking.dto.BookingDto;
-import com.example.carefully.domain.user.entity.BusinessType;
+import com.example.carefully.domain.user.entity.Education;
 import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
-import java.time.LocalDateTime;
 
 import static com.example.carefully.domain.booking.entity.BookingStatus.*;
 import static javax.persistence.EnumType.STRING;
@@ -23,20 +21,19 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class Booking extends BaseEntity {
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="Booking_Type")
+public abstract class Booking extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private LocalDateTime requestTime;
+    private String userContent;
 
     @Column(nullable = false)
-    private String content;
-
-    @Column(nullable = false)
-    private BusinessType businessType;
+    private String adminContent;
 
     @Column(nullable = false)
     @Enumerated(value = STRING)
@@ -50,41 +47,36 @@ public class Booking extends BaseEntity {
     @JoinColumn(name = "admin_id")
     private User admin;
 
-    @Builder
-    public Booking(Long id, LocalDateTime requestTime, String content, BusinessType businessType, User user, User admin, BookingStatus bookingStatus) {
+    @Column(nullable = false)
+    private BusinessType businessType;
+
+    private String userFileUrl;
+
+    private String adminFileUrl;
+
+    public Booking(Long id, String userContent, String adminContent, User user, User admin, BookingStatus bookingStatus, BusinessType businessType, String userFileUrl, String adminFileUrl) {
         this.id = id;
-        this.user = user;
-        this.requestTime = requestTime;
+        this.user = user ;
         this.admin = admin;
-        this.content = content;
-        this.businessType = businessType;
+        this.userContent = userContent;
+        this.adminContent = adminContent;
         this.bookingStatus = bookingStatus;
+        this.businessType = businessType;
+        this.userFileUrl = userFileUrl;
+        this.adminFileUrl = adminFileUrl;
     }
 
-    public static Booking request(User user, BookingDto.ReceiveRequest receiveRequest) {
-        return Booking.builder()
-                .user(user)
-                .requestTime(receiveRequest.getRequestTime())
-                .content(receiveRequest.getContent())
-                .businessType(receiveRequest.getBusinessType())
-                .bookingStatus(BookingStatus.valueOf("WAITING"))
-                .build();
-    }
 
     //== 비지니스 메서드 ==//
-
-    public void update(LocalDateTime requestTime, BusinessType businessType, String content) {
-        this.requestTime = requestTime;
-        this.businessType = businessType;
-        this.content = content;
-    }
 
     public void setAdmin(User currentUser) {
         this.admin = currentUser;
     }
 
-    public void accept() {
+    public void accept(BookingDto.ServiceAcceptRequest serviceAcceptRequest) {
         this.bookingStatus = ACCEPT;
+        this.adminContent = serviceAcceptRequest.getContent();
+        this.adminFileUrl = serviceAcceptRequest.getAdminFileUrl();
     }
 
     public void cancel() {
