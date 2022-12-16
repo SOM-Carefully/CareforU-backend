@@ -22,7 +22,7 @@ public class PostController {
     private final PostServiceImpl postService;
 
     @ApiOperation(value = "게시판 글 등록", notes = "일반 사용자가 게시판의 글을 등록하는 API")
-    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
+    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM', 'ADMIN')")
     @PostMapping
     public ResponseEntity<BaseResponse<CreateResponse>> createPost(@RequestParam(value = "category", required = false) Long categoryId,
                                                                    @RequestBody CreateRequest createRequest) {
@@ -31,7 +31,7 @@ public class PostController {
     }
 
     @ApiOperation(value = "게시판 글 수정", notes = "일반 사용자가 게시판의 글을 수정하는 API")
-    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
+    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM', 'ADMIN')")
     @PatchMapping("/{postId}")
     public ResponseEntity<BaseResponse<UpdateResponse>> updatePost(@PathVariable("postId") Long postId,
                                                                    @RequestBody UpdateRequest updateRequest) {
@@ -56,7 +56,7 @@ public class PostController {
     }
 
     @ApiOperation(value = "게시판 글 삭제", notes = "일반 사용자가 게시판의 글을 삭제하는 API")
-    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
+    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM', 'ADMIN')")
     @DeleteMapping("/{postId}")
     public ResponseEntity<BaseResponse<String>> deletePost(@PathVariable("postId") Long postId) {
         postService.findPostAndDelete(postId);
