@@ -4,6 +4,8 @@ import com.example.carefully.domain.quest.domain.Quest;
 import com.example.carefully.domain.quest.dto.QuestDto;
 import com.example.carefully.domain.quest.exception.QuestEmptyException;
 import com.example.carefully.domain.quest.repository.QuestRepository;
+import com.example.carefully.domain.user.entity.User;
+import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.global.dto.SliceDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -11,26 +13,28 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestRepository questRepository;
-    private final Long tempUserId = 1L;
-    private final Long tempAdminId = 2L;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
     public QuestDto.CreateResponse createNewQuestion(QuestDto.CreateRequest request) {
-        Quest question = questRepository.save(request.toEntity(tempUserId));
+        User currentUser = getCurrentUser(userRepository);
+        Quest question = questRepository.save(request.toEntity(currentUser));
         return new QuestDto.CreateResponse(question.getId());
     }
 
     @Override
     @Transactional
     public void updateQuestion(QuestDto.UpdateRequest request, Long questionId) {
-        Quest question = findQuestById(questionId);
+        Quest question = findQuestByIdAndUser(questionId);
         question.updateQuest(request.getTitle(), request.getContent(), request.isLocked());
     }
 
@@ -51,7 +55,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public void deleteQuestion(Long questionId) {
-        Quest question = findQuestById(questionId);
+        Quest question = findQuestByIdAndUser(questionId);
         questRepository.delete(question);
     }
 
@@ -59,10 +63,16 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public void registerAnswer(QuestDto.AnswerRequest request, Long questionId) {
         Quest quest = findQuestById(questionId);
-        quest.registerAns(tempAdminId, request.getContent());
+        User adminUser = getCurrentUser(userRepository);
+        quest.registerAns(adminUser, request.getContent());
     }
 
     private Quest findQuestById(Long questionId) {
         return questRepository.findById(questionId).orElseThrow(QuestEmptyException::new);
+    }
+
+    private Quest findQuestByIdAndUser(Long questionId) {
+        return questRepository.findByIdAndUser(questionId, getCurrentUser(userRepository))
+                .orElseThrow(QuestEmptyException::new);
     }
 }

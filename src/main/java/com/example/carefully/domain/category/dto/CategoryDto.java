@@ -1,6 +1,7 @@
 package com.example.carefully.domain.category.dto;
 
 import com.example.carefully.domain.category.domain.Category;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.util.List;
@@ -11,6 +12,7 @@ public class CategoryDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class CreateRequest {
+        @Schema(description = "카테고리 이름", required = true)
         private String categoryName;
 
         public Category toEntity() {
@@ -29,6 +31,7 @@ public class CategoryDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class UpdateRequest {
+        @Schema(description = "카테고리 이름", required = true)
         private String categoryName;
     }
 
