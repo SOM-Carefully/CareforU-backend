@@ -1,6 +1,7 @@
 package com.example.carefully.domain.comment.domain;
 
 import com.example.carefully.domain.post.domain.Post;
+import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,12 +21,9 @@ public class Comment extends BaseEntity {
     @Column(name = "comment_id")
     private Long id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-//    private User user;
-
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
@@ -58,8 +56,8 @@ public class Comment extends BaseEntity {
     }
 
     @Builder
-    public Comment(Long userId, Post post, String content,  Hierarchy hierarchy) {
-        this.userId = userId;
+    public Comment(User user, Post post, String content,  Hierarchy hierarchy) {
+        this.user = user;
         this.post = post;
         this.content = content;
         this.hierarchy = hierarchy;
