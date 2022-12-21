@@ -32,6 +32,7 @@ public enum ErrorCode {
     CATEGORY_NOT_FOUND(3011, "존재하지 않는 카테고리입니다."),
     QUEST_NOT_FOUND(3012, "존재하지 않는 문의글입니다."),
     ACCESS_NOT_VALIDATE(3013, "현재 회원의 등급보다 더 높은 등급의 게시판에는 접근할 수 없습니다."),
+    WRITE_NOT_VALIDATE(3014, "현재 회원의 등급과 같은 등급의 게시판에만 글을 작성할 수 있습니다."),
 
     //COMMENT
     COMMENT_NOT_FOUND(4010, "존재하지 않는 댓글입니다."),

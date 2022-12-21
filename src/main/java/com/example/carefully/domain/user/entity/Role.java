@@ -30,6 +30,10 @@ public enum Role {
                 .orElseThrow(NoSuchElementException::new);
     }
 
+    public boolean isPaidRole() {
+        return this.equals(Role.SILVER) || this.equals(Role.GOLD) || this.equals(Role.PLATINUM);
+    }
+
     public boolean canAccess(int userRank) {
         return rank <= userRank;
     }

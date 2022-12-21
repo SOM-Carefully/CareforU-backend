@@ -33,7 +33,15 @@ public class Category {
     }
 
     public boolean isAssociatedToRank() {
-        return name.equals(Role.SILVER.getDescription())
-                || name.equals(Role.GOLD.getDescription()) || name.equals(Role.PLATINUM.getDescription());
+        Role categoryRole = Role.of(name);
+        return categoryRole.isPaidRole();
+    }
+
+    public boolean isSameRankWithUser(Role role) {
+        return name.equals(role.getDescription());
+    }
+
+    public boolean isClassic() {
+        return name.equals(Role.CLASSIC.getDescription());
     }
 }

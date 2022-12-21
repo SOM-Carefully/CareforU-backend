@@ -7,6 +7,7 @@ import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.domain.post.domain.PostRole;
 import com.example.carefully.domain.post.dto.PostDto;
 import com.example.carefully.domain.post.exception.NotValidateAccessException;
+import com.example.carefully.domain.post.exception.NotValidateWriteException;
 import com.example.carefully.domain.post.exception.PostEmptyException;
 import com.example.carefully.domain.post.repository.CustomPostRepository;
 import com.example.carefully.domain.post.repository.PostRepository;
@@ -37,6 +38,10 @@ public class PostServiceImpl implements PostService {
     public PostDto.CreateResponse createNewPost(PostDto.CreateRequest request,
                                                 PostRole postRole,
                                                 Long categoryId) {
+        if (isRankFailToCreatePost(postRole, categoryId)) {
+            throw new NotValidateWriteException();
+        }
+
         Category category = null;
         if (postRole == PostRole.FREE) {
             category = findCategoryById(categoryId);
@@ -45,6 +50,23 @@ public class PostServiceImpl implements PostService {
         Post post = request.toEntity(postRole, category, getCurrentUser(userRepository));
         Post persistPost = postRepository.save(post);
         return new PostDto.CreateResponse(persistPost.getId());
+    }
+
+    private boolean isRankFailToCreatePost(PostRole postRole, Long categoryId) {
+        Role userRole = getCurrentUser(userRepository).getRole();
+        if (postRole == PostRole.NOTICE) {
+            return false;
+        }
+
+        Category category = findCategoryById(categoryId);
+        if (!category.isAssociatedToRank()) {
+            return false;
+        }
+
+        if (userRole.isPaidRole() && category.isClassic()) {
+            return true;
+        }
+        return !category.isSameRankWithUser(userRole);
     }
 
     @Override
@@ -74,7 +96,7 @@ public class PostServiceImpl implements PostService {
                                                            Long categoryId,
                                                            Pageable pageable) {
         PostRole role = PostRole.valueOf(postRole);
-        if (rankFailToAccessPost(role, categoryId)) {
+        if (isRankFailToAccessPost(role, categoryId)) {
             throw new NotValidateAccessException();
         }
 
@@ -85,9 +107,9 @@ public class PostServiceImpl implements PostService {
         return SliceDto.create(postsByRole);
     }
 
-    private boolean rankFailToAccessPost(PostRole role, Long categoryId) {
+    private boolean isRankFailToAccessPost(PostRole postRole, Long categoryId) {
         Role userRole = getCurrentUser(userRepository).getRole();
-        if (role != PostRole.FREE) {
+        if (postRole != PostRole.FREE) {
             return false;
         }
 
