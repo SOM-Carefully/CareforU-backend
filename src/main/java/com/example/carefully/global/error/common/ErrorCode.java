@@ -31,6 +31,7 @@ public enum ErrorCode {
     POST_NOT_FOUND(3010, "존재하지 않는 글입니다."),
     CATEGORY_NOT_FOUND(3011, "존재하지 않는 카테고리입니다."),
     QUEST_NOT_FOUND(3012, "존재하지 않는 문의글입니다."),
+    ACCESS_NOT_VALIDATE(3013, "현재 회원의 등급보다 더 높은 등급의 게시판에는 접근할 수 없습니다."),
 
     //COMMENT
     COMMENT_NOT_FOUND(4010, "존재하지 않는 댓글입니다."),
@@ -42,8 +43,7 @@ public enum ErrorCode {
 
     //MEMBERSHIP
     MEMBERSHIP_ALREADY_PROCESSED(2000, "이미 처리된 회원가입 신청입니다."),
-    MEMBERSHIP_ANOTHER_PROCESSED(2000, "다른 운영팀 회원이 이미 처리한 회원가입 신청입니다.")
-    ;
+    MEMBERSHIP_ANOTHER_PROCESSED(2000, "다른 운영팀 회원이 이미 처리한 회원가입 신청입니다.");
 
     private final String message;
     private final int status;

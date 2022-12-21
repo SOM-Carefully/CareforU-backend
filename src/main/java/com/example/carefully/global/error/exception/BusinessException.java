@@ -7,6 +7,7 @@ import com.example.carefully.global.error.common.ErrorCode;
  */
 
 public class BusinessException extends BaseException{
+
     public BusinessException(ErrorCode errorCode){
         super(errorCode);
     }

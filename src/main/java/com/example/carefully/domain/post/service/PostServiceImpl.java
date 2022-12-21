@@ -6,9 +6,11 @@ import com.example.carefully.domain.category.repository.CategoryRepository;
 import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.domain.post.domain.PostRole;
 import com.example.carefully.domain.post.dto.PostDto;
+import com.example.carefully.domain.post.exception.NotValidateAccessException;
 import com.example.carefully.domain.post.exception.PostEmptyException;
 import com.example.carefully.domain.post.repository.CustomPostRepository;
 import com.example.carefully.domain.post.repository.PostRepository;
+import com.example.carefully.domain.user.entity.Role;
 import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.global.dto.SliceDto;
 import com.example.carefully.infra.s3.S3Service;
@@ -37,7 +39,7 @@ public class PostServiceImpl implements PostService {
                                                 Long categoryId) {
         Category category = null;
         if (postRole == PostRole.FREE) {
-            category = categoryRepository.findById(categoryId).orElseThrow(CategoryEmptyException::new);
+            category = findCategoryById(categoryId);
         }
 
         Post post = request.toEntity(postRole, category, getCurrentUser(userRepository));
@@ -71,10 +73,35 @@ public class PostServiceImpl implements PostService {
     public SliceDto<PostDto.SearchResponse> searchPostList(String postRole,
                                                            Long categoryId,
                                                            Pageable pageable) {
+        PostRole role = PostRole.valueOf(postRole);
+        if (rankFailToAccessPost(role, categoryId)) {
+            throw new NotValidateAccessException();
+        }
+
         Slice<PostDto.SearchResponse> postsByRole = customPostRepository
-                .getPostList(pageable, PostRole.valueOf(postRole), categoryId)
+                .getPostList(pageable, role, categoryId)
                 .map(PostDto.SearchResponse::create);
+
         return SliceDto.create(postsByRole);
+    }
+
+    private boolean rankFailToAccessPost(PostRole role, Long categoryId) {
+        Role userRole = getCurrentUser(userRepository).getRole();
+        if (role != PostRole.FREE) {
+            return false;
+        }
+
+        Category category = findCategoryById(categoryId);
+        if (!category.isAssociatedToRank()) {
+            return false;
+        }
+
+        Role postRank = Role.of(category.getName());
+        return !postRank.canAccess(userRole.getRank());
+    }
+
+    private Category findCategoryById(Long categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(CategoryEmptyException::new);
     }
 
     private Post findPostByIdAndUser(Long postId) {
