@@ -1,6 +1,7 @@
 package com.example.carefully.domain.category.domain;
 
 import com.example.carefully.domain.post.domain.Post;
+import com.example.carefully.domain.user.entity.Role;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,5 +30,18 @@ public class Category {
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    public boolean isAssociatedToRank() {
+        Role categoryRole = Role.of(name);
+        return categoryRole.isPaidRole();
+    }
+
+    public boolean isSameRankWithUser(Role role) {
+        return name.equals(role.getDescription());
+    }
+
+    public boolean isClassic() {
+        return name.equals(Role.CLASSIC.getDescription());
     }
 }
