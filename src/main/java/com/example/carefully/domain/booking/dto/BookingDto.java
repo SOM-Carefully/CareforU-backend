@@ -443,4 +443,16 @@ public class BookingDto {
         @Schema(description = "서비스 승인 파일", example = "https://picsum.photos/seed/picsum/200/300")
         private String adminFileUrl;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ServiceRejectRequest {
+
+        @NotNull(message = "서비스 거절 사유를 입력해주세요.")
+        @Schema(description = "내용", example = "신청한 서비스를 처리할 관리자가 없어 거절합니다... 어쩌구...")
+        private String content;
+    }
 }

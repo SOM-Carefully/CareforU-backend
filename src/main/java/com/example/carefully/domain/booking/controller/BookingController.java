@@ -163,8 +163,8 @@ public class BookingController {
     @ApiOperation(value = "서비스 취소", notes = "서비스 취소 API")
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping("/cancel/{bookingId}")
-    public ResponseEntity cancelService(@PathVariable("bookingId") Long bookingId) {
-        bookingService.cancel(bookingId);
+    public ResponseEntity cancelService(@PathVariable("bookingId") Long bookingId, @RequestBody BookingDto.ServiceRejectRequest serviceRejectRequest) {
+        bookingService.cancel(bookingId, serviceRejectRequest);
         return ResponseEntity.ok(BaseResponse.create(CANCEL_SUCCESS.getMessage()));
     }
 

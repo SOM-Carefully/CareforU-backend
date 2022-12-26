@@ -139,17 +139,17 @@ public class BookingServiceImpl implements BookingService {
      */
     @Override
     @Transactional
-    public void cancel(Long bookingId) {
+    public void cancel(Long bookingId, BookingDto.ServiceRejectRequest serviceRejectRequest) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
         User currentUser = getCurrentUser(userRepository);
 
         if (booking.getAdmin() == null) {
             booking.setAdmin(currentUser);
-            booking.cancel();
+            booking.cancel(serviceRejectRequest);
             bookingRepository.save(booking);
         } else if (checkCurrentAdmin(booking, currentUser)) {
             booking.setNullAdmin();
-            cancel(bookingId);
+            cancel(bookingId, serviceRejectRequest);
         }
     }
 
