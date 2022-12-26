@@ -143,9 +143,23 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "회원 탈퇴", notes = "로그인한 유저가 회원 탈퇴를 진행합니다.")
-    @PostMapping("/signout")
+    @PostMapping("/sign-out")
     public ResponseEntity signout(@Valid @RequestBody UserDto.SignoutRequest signoutRequest) {
         userService.signout(signoutRequest);
+        return ResponseEntity.ok(BaseResponse.create(SIGNOUT_SUCCESS.getMessage()));
+    }
+
+
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴에 성공하였습니다."),
+            @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다.."),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
+    })
+    @ApiOperation(value = "강제 탈퇴", notes = "어드민이 강제 회원 탈퇴를 진행합니다.")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PostMapping("/sign-out/{username}")
+    public ResponseEntity forceSignout(@PathVariable String username) {
+        userService.forceSignout(username);
         return ResponseEntity.ok(BaseResponse.create(SIGNOUT_SUCCESS.getMessage()));
     }
 

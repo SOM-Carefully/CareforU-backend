@@ -156,6 +156,16 @@ public class UserServiceImpl implements UserService {
     }
 
     /*
+    강제 회원 탈퇴
+    */
+    @Override
+    @Transactional
+    public void forceSignout(String username) {
+        User user = userRepository.findOneWithAuthoritiesByUsername(username).orElseThrow(NotFoundUserException::new);
+        userRepository.delete(user);
+    }
+
+    /*
     로그인한 일반 사용자 정보 조회
      */
     @Override
