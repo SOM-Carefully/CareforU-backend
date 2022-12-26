@@ -113,8 +113,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void userUpdate(UserDto.UserUpdateRequest userUpdateRequest) {
         User currentUser = getCurrentUser(userRepository);
-        currentUser.updateUser(userUpdateRequest.getName(), userUpdateRequest.getUniversityName(),
-                userUpdateRequest.getEducationRequest().name(), userUpdateRequest.getGenderRequest().name());
+        currentUser.updateUser(userUpdateRequest.getUniversityName(),
+                userUpdateRequest.getEducationRequest().name(),
+                userUpdateRequest.getMajor(), userUpdateRequest.getAdvisorName(), userUpdateRequest.getAddress(),
+                userUpdateRequest.getProfileUrl(), userUpdateRequest.getNickname(), userUpdateRequest.getBio());
         userRepository.save(currentUser);
     }
 
@@ -122,7 +124,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void adminUpdate(UserDto.AdminUpdateRequest adminUpdateRequest) {
         User currentUser = getCurrentUser(userRepository);
-        currentUser.updateAdmin(adminUpdateRequest.getName(), adminUpdateRequest.getGenderRequest().name());
+        currentUser.updateAdmin(adminUpdateRequest.getProfileUrl(), adminUpdateRequest.getNickname(), adminUpdateRequest.getBio());
         userRepository.save(currentUser);
     }
 

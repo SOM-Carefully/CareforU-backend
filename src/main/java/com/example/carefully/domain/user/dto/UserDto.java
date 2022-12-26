@@ -1,14 +1,12 @@
 package com.example.carefully.domain.user.dto;
 
 import com.example.carefully.domain.user.entity.User;
+import com.example.carefully.domain.user.entity.UserProfile;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Getter
 @Builder
@@ -116,22 +114,37 @@ public class UserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class UserUpdateRequest {
-
-        @NotNull
-        @ApiModelProperty(example = "홍길동")
-        private String name;
-
-        @NotNull
+        @NotNull(message = "대학교 이름을 입력해주세요.")
         @ApiModelProperty(example = "상명대학교")
         private String universityName;
 
-        @NotNull
+        @NotNull(message = "학과를 입력해주세요.")
+        @ApiModelProperty(example = "컴퓨터과학과")
+        private String major;
+
+        @NotNull(message = "지됴교수 이름을 입력해주세요.")
+        @ApiModelProperty(example = "김교수")
+        private String advisorName;
+
+        @NotNull(message = "학위를 입력해주세요.")
         @ApiModelProperty(example = "UNDERGRADUATE/BACHELOR/MASTER/DOCTOR")
         private EducationRequest educationRequest;
 
-        @NotNull
-        @ApiModelProperty(example = "MAN/WOMAN/NA")
-        private GenderRequest genderRequest;
+        @NotNull(message = "주소를 입력해 주세요.")
+        @Schema(description = "주소", example = "서울시 어딘가...", required = true)
+        private String address;
+
+        @NotBlank(message = "프로필 이미지 주소를 입력해 주세요.")
+        @Schema(description = "프로필 이미지", example = "https://picsum.photos/seed/picsum/200/300", required = true)
+        private String profileUrl;
+
+        @NotNull(message = "닉네임을 입력해주세요.")
+        @ApiModelProperty(example = "길동이")
+        private String nickname;
+
+        @NotNull(message = "한줄소개를 입력해주세요.")
+        @ApiModelProperty(example = "나는야 홍길동")
+        private String bio;
     }
 
     @Getter
@@ -177,15 +190,17 @@ public class UserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class AdminUpdateRequest {
+        @NotBlank(message = "프로필 이미지 주소를 입력해 주세요.")
+        @Schema(description = "프로필 이미지", example = "https://picsum.photos/seed/picsum/200/300", required = true)
+        private String profileUrl;
 
-        @NotNull
-        @ApiModelProperty(example = "홍길동")
-        private String name;
+        @NotNull(message = "닉네임을 입력해주세요.")
+        @ApiModelProperty(example = "길동이")
+        private String nickname;
 
-        @NotNull
-        @ApiModelProperty(example = "MAN/WOMAN/NA")
-        private GenderRequest genderRequest;
-
+        @NotNull(message = "한줄소개를 입력해주세요.")
+        @ApiModelProperty(example = "나는야 홍길동")
+        private String bio;
     }
 
     @Getter
@@ -225,9 +240,17 @@ public class UserDto {
         @Schema(description = "유저 주소", example = "서울시 어딘가...", required = true)
         private String address;
 
-        @NotNull
-        @ApiModelProperty(example = "CLASSIC/SILVER/GOLD/PLATINUM")
+        @Schema(example = "CLASSIC/SILVER/GOLD/PLATINUM")
         private RoleRequest role;
+
+        @Schema(description = "프로필 이미지", example = "https://picsum.photos/seed/picsum/200/300")
+        private String profileUrl;
+
+        @Schema(description = "닉네임", example = "길동이")
+        private String nickname;
+
+        @Schema(description = "한 줄 소개", example = "나는 홍길동")
+        private String bio;
 
         public static UserResponse create(User user) {
             return UserResponse.builder()
@@ -242,6 +265,9 @@ public class UserDto {
                     .education(EducationRequest.valueOf(user.getEducation().name()))
                     .address(user.getAddress().getDetails())
                     .role(RoleRequest.valueOf(user.getRole().name()))
+                    .profileUrl(user.getUserProfile().getProfileUrl())
+                    .nickname(user.getUserProfile().getNickname())
+                    .bio(user.getUserProfile().getBio())
                     .build();
         }
     }
@@ -258,21 +284,30 @@ public class UserDto {
         @Schema(description = "어드민 이름", example = "홍길동", required = true)
         private String name;
 
-        @Schema(description = "어드민 주민번호", example = "123456-1234567", required = true)
-        private String identificationNumber;
-
         @Schema(description = "어드민 전화번호", example = "010-1234-5678", required = true)
         private String phoneNumber;
 
+        @Schema(example = "CLASSIC/SILVER/GOLD/PLATINUM")
         String role;
+
+        @Schema(description = "프로필 이미지", example = "https://picsum.photos/seed/picsum/200/300")
+        private String profileUrl;
+
+        @Schema(description = "닉네임", example = "길동이")
+        private String nickname;
+
+        @Schema(description = "한 줄 소개", example = "나는 홍길동")
+        private String bio;
 
         public static AdminResponse create(User user) {
             return AdminResponse.builder()
                     .username(user.getUsername())
                     .name(user.getName())
-                    .identificationNumber(user.getIdentificationNumber())
                     .phoneNumber(user.getPhoneNumber())
                     .role(user.getRole().name())
+                    .profileUrl(user.getUserProfile().getProfileUrl())
+                    .nickname(user.getUserProfile().getNickname())
+                    .bio(user.getUserProfile().getBio())
                     .build();
         }
     }
