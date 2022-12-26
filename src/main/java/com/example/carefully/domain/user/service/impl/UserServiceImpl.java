@@ -211,7 +211,7 @@ public class UserServiceImpl implements UserService {
         UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, updatePasswordRequest.getOldPassword());
 
         if (unauthenticated != null) {
-            currentUser.updatePassword(updatePasswordRequest.getNewPassword());
+            currentUser.updatePassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
             userRepository.save(currentUser);
         } else {
             throw new NotValidationPasswordException();
