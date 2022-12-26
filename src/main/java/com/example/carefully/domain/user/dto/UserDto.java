@@ -347,6 +347,21 @@ public class UserDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class updatePasswordRequest {
+        @NotNull(message = "기존의 비밇번호를 입력해 주세요.")
+        private String oldPassword;
+
+        @NotNull(message = "새로운 비밇번호를 입력해 주세요.")
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,24}$",
+                message = "비밀번호는 8자리 이상 24자리 이하여야 하며 숫자와 특수문자를 한 자리 이상 반드시 포함해야 합니다.")
+        private String newPassword;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class UserRoleRequest {
         @NotNull
         @ApiModelProperty(example = "CLASSIC/SILVER/GOLD/PLATINUM")

@@ -14,6 +14,7 @@ public interface UserService {
     void userUpdate(UserDto.UserUpdateRequest userUpdateRequest);
     void userRoleUpdate(String username, String role);
     void adminUpdate(UserDto.AdminUpdateRequest adminUpdateRequest);
+    void passwordUpdate(UserDto.updatePasswordRequest updatePasswordRequest);
 
     UserDto.UserResponse getMyUserWithAuthorities();
     UserDto.AdminResponse getMyAdminWithAuthorities();

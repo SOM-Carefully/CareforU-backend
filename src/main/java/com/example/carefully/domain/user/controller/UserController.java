@@ -171,4 +171,17 @@ public class UserController {
     public ResponseEntity<BaseResponse<UserDto.UserResponse>> getUserInfo(@PathVariable String username) {
         return ResponseEntity.ok(BaseResponse.create(USER_LOOKUP_SUCCESS.getMessage(), userService.getUserWithAuthorities(username)));
     }
+
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원 정보 수정에 성공하였습니다."),
+            @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다.."),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
+    })
+    @ApiOperation(value = "비밀번호 변경", notes = "로그인된 회원의 비밀번호를 변경합니다.")
+    @PatchMapping("/change-password")
+    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM', 'ADMIN')")
+    public ResponseEntity passwordUpdate(@Valid @RequestBody UserDto.updatePasswordRequest updatePasswordRequest) {
+        userService.passwordUpdate(updatePasswordRequest);
+        return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
+    }
 }

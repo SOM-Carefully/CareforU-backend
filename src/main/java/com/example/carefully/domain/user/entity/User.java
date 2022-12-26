@@ -145,7 +145,9 @@ public class User extends BaseEntity {
 
     public void signup() { this.activated = true; }
 
-    public void signout() {
-        this.activated = false;
-    }
+    public void updatePassword(String password) { this.password = password; }
+
+//    public void signout() {
+//        this.activated = false;
+//    }
 }

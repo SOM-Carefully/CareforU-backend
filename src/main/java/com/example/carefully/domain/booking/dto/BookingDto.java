@@ -82,6 +82,8 @@ public class BookingDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class EducationReceiveResponse {
+        @Schema(description = "서비스 고유 번호", example = "1", required = true)
+        private Long bookingId;
 
         @Schema(description = "서비스를 신청한 유저의 이메일", example = "test@test.com", required = true)
         private String userUsername;
@@ -121,6 +123,7 @@ public class BookingDto {
             }
 
             return EducationReceiveResponse.builder()
+                    .bookingId(education.getId())
                     .userUsername(education.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .degreeRequest(DegreeRequest.valueOf(education.getDegree().name()))
@@ -165,6 +168,8 @@ public class BookingDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class TrafficReceiveResponse {
+        @Schema(description = "서비스 고유 번호", example = "1", required = true)
+        private Long bookingId;
 
         @Schema(description = "서비스를 신청한 유저의 이메일", example = "test@test.com", required = true)
         private String userUsername;
@@ -204,6 +209,7 @@ public class BookingDto {
             }
 
             return TrafficReceiveResponse.builder()
+                    .bookingId(traffic.getId())
                     .userUsername(traffic.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .carTypeRequest(CarTypeRequest.valueOf(traffic.getCarType().name()))
@@ -252,6 +258,8 @@ public class BookingDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DwellingReceiveResponse {
+        @Schema(description = "서비스 고유 번호", example = "1", required = true)
+        private Long bookingId;
 
         @Schema(description = "서비스를 신청한 유저의 이메일", example = "test@test.com", required = true)
         private String userUsername;
@@ -295,6 +303,7 @@ public class BookingDto {
             }
 
             return DwellingReceiveResponse.builder()
+                    .bookingId(dwelling.getId())
                     .userUsername(dwelling.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .transactionMethodRequest(TransactionMethodRequest.valueOf(dwelling.getTransactionMethod().name()))
@@ -340,6 +349,8 @@ public class BookingDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CommunicationReceiveResponse {
+        @Schema(description = "서비스 고유 번호", example = "1", required = true)
+        private Long bookingId;
 
         @Schema(description = "서비스를 신청한 유저의 이메일", example = "test@test.com", required = true)
         private String userUsername;
@@ -379,6 +390,7 @@ public class BookingDto {
             }
 
             return CommunicationReceiveResponse.builder()
+                    .bookingId(communication.getId())
                     .userUsername(communication.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .modelName(communication.getModelName())
@@ -399,6 +411,8 @@ public class BookingDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ServiceAllResponse {
+        @Schema(description = "서비스 고유 번호", example = "1", required = true)
+        private Long bookingId;
 
         @Schema(description = "서비스를 신청한 유저의 이메일", example = "test@test.com", required = true)
         private String userUsername;
@@ -420,6 +434,7 @@ public class BookingDto {
             }
 
             return ServiceAllResponse.builder()
+                    .bookingId(booking.getId())
                     .userUsername(booking.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .bookingStatus(BookingStatusResponse.valueOf(booking.getBookingStatus().name()))

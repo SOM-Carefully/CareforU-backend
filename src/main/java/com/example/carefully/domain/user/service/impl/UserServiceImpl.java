@@ -149,8 +149,7 @@ public class UserServiceImpl implements UserService {
         UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, signoutRequest.getPassword());
 
         if (unauthenticated != null) {
-            currentUser.signout();
-            userRepository.save(currentUser);
+            userRepository.delete(currentUser);
         } else {
             throw new NotValidationPasswordException();
         }
@@ -175,14 +174,6 @@ public class UserServiceImpl implements UserService {
         return UserDto.AdminResponse.create(currentUser);
     }
 
-    public UsernamePasswordAuthenticationToken passwordCheckLogic(User user, String password) {
-        UsernamePasswordAuthenticationToken unauthenticated = UsernamePasswordAuthenticationToken.unauthenticated(
-                user.getUsername(),
-                password
-        );
-        return unauthenticated;
-    }
-
     /*
     유저 이메일로 사용자 정보 조회
      */
@@ -199,5 +190,33 @@ public class UserServiceImpl implements UserService {
     public SliceDto<UserDto.UserAllResponse> userAllLookup() {
         Slice<User> userList = userRepository.findAllByActivatedTrueOrderByCreatedAtDesc();
         return SliceDto.create(userList.map(UserDto.UserAllResponse::create));
+    }
+
+    /*
+    비밀번호 변경
+     */
+    @Override
+    public void passwordUpdate(UserDto.updatePasswordRequest updatePasswordRequest) {
+        User currentUser = getCurrentUser(userRepository);
+        UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, updatePasswordRequest.getOldPassword());
+
+        if (unauthenticated != null) {
+            currentUser.updatePassword(updatePasswordRequest.getNewPassword());
+            userRepository.save(currentUser);
+        } else {
+            throw new NotValidationPasswordException();
+        }
+    }
+
+
+    /*
+    비밀번호 검증 로직
+     */
+    public UsernamePasswordAuthenticationToken passwordCheckLogic(User user, String password) {
+        UsernamePasswordAuthenticationToken unauthenticated = UsernamePasswordAuthenticationToken.unauthenticated(
+                user.getUsername(),
+                password
+        );
+        return unauthenticated;
     }
 }
