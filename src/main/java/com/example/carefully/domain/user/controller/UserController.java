@@ -46,7 +46,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "이미 존재하는 이메일, 주민번호, 전화번호이거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
     })
     @ApiOperation(value = "일반 유저 회원가입 신청", notes = "일반유저가 회원가입을 신청합니다.")
-    @PostMapping("/user/signup")
+    @PostMapping("/users/signup")
     public ResponseEntity userSignup(@Valid @RequestBody UserDto.UserRegisterRequest registerRequest) {
         userService.userSignup(registerRequest);
         return ResponseEntity.ok(BaseResponse.create(REGISTER_REQUEST_SUCCESS.getMessage()));
@@ -57,7 +57,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "이미 존재하는 이메일, 주민번호, 전화번호이거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
     })
     @ApiOperation(value = "어드민 회원가입 신청", notes = "어드민 회원이 회원가입을 신청합니다.")
-    @PostMapping("/admin/signup")
+    @PostMapping("/admins/signup")
     public ResponseEntity adminSignup(@Valid @RequestBody UserDto.AdminRegisterRequest registerRequest) {
         userService.adminSignup(registerRequest);
         return ResponseEntity.ok(BaseResponse.create(REGISTER_REQUEST_SUCCESS.getMessage()));
@@ -68,7 +68,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "이미 존재하는 회원이거나, 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
     })
     @ApiOperation(value = "어드민 회원가입", notes = "신청 없이 바로 어드민 회원가입이 가능합니다.")
-    @PostMapping("/admin/signup/test")
+    @PostMapping("/admins/signup/test")
     public ResponseEntity adminTestSignup(@RequestBody UserDto.AdminRegisterRequest registerRequest) {
         userService.adminSignupTest(registerRequest);
         return ResponseEntity.ok(BaseResponse.create(REGISTER_SUCCESS.getMessage()));
@@ -80,7 +80,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "일반 유저 내 정보 조회", notes = "일반 유저가 자신의 정보를 조회합니다.")
-    @GetMapping("/user/my")
+    @GetMapping("/users/my")
     @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
     public ResponseEntity<BaseResponse<UserDto.UserResponse>> getMyUserInfo(HttpServletRequest request) {
         return ResponseEntity.ok(BaseResponse.create(MY_LOOKUP_SUCCESS.getMessage(), userService.getMyUserWithAuthorities()));
@@ -92,7 +92,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "어드민 내 정보 조회", notes = "어드민 회원이 자신의 정보를 조회합니다.")
-    @GetMapping("/admin/my")
+    @GetMapping("/admins/my")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<BaseResponse<UserDto.AdminResponse>> getMyAdminInfo(HttpServletRequest request) {
         return ResponseEntity.ok(BaseResponse.create(MY_LOOKUP_SUCCESS.getMessage(), userService.getMyAdminWithAuthorities()));
@@ -104,7 +104,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "일반 유저 내 정보 수정", notes = "일반 유저의 정보를 수정합니다.")
-    @PatchMapping("/user/my")
+    @PatchMapping("/users/my")
     @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
     public ResponseEntity userUpdate(@Valid @RequestBody UserDto.UserUpdateRequest userUpdateRequest) {
         userService.userUpdate(userUpdateRequest);
@@ -117,7 +117,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "일반 유저 등급 수정", notes = "어드민이 일반회원의 등급(CLASSIC/SILVER/GOLD/PLATINUM)을 수정합니다.")
-    @PatchMapping("/user/{username}/{role}")
+    @PatchMapping("/users/{username}/{role}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity userUpdate(@PathVariable String username, @PathVariable String role) {
         userService.userRoleUpdate(username, role);
@@ -130,7 +130,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "어드민 유저 내 정보 수정", notes = "어드민 회원의 정보를 수정합니다.")
-    @PatchMapping("/admin/my")
+    @PatchMapping("/admins/my")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity adminUpdate(@Valid @RequestBody UserDto.AdminUpdateRequest adminUpdateRequest) {
         userService.adminUpdate(adminUpdateRequest);
@@ -143,9 +143,23 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "회원 탈퇴", notes = "로그인한 유저가 회원 탈퇴를 진행합니다.")
-    @PostMapping("/signout")
+    @PostMapping("/sign-out")
     public ResponseEntity signout(@Valid @RequestBody UserDto.SignoutRequest signoutRequest) {
         userService.signout(signoutRequest);
+        return ResponseEntity.ok(BaseResponse.create(SIGNOUT_SUCCESS.getMessage()));
+    }
+
+
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴에 성공하였습니다."),
+            @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다.."),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
+    })
+    @ApiOperation(value = "강제 탈퇴", notes = "어드민이 강제 회원 탈퇴를 진행합니다.")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PostMapping("/sign-out/{username}")
+    public ResponseEntity forceSignout(@PathVariable String username) {
+        userService.forceSignout(username);
         return ResponseEntity.ok(BaseResponse.create(SIGNOUT_SUCCESS.getMessage()));
     }
 
@@ -166,9 +180,22 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "회원 정보 조회", notes = "어드민이 이메일을 통해 회원의 정보를 조회합니다.")
-    @GetMapping("/user/{username}")
+    @GetMapping("/users/{username}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<BaseResponse<UserDto.UserResponse>> getUserInfo(@PathVariable String username) {
         return ResponseEntity.ok(BaseResponse.create(USER_LOOKUP_SUCCESS.getMessage(), userService.getUserWithAuthorities(username)));
+    }
+
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원 정보 수정에 성공하였습니다."),
+            @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다.."),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
+    })
+    @ApiOperation(value = "비밀번호 변경", notes = "로그인된 회원의 비밀번호를 변경합니다.")
+    @PatchMapping("/change-password")
+    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM', 'ADMIN')")
+    public ResponseEntity passwordUpdate(@Valid @RequestBody UserDto.updatePasswordRequest updatePasswordRequest) {
+        userService.passwordUpdate(updatePasswordRequest);
+        return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
     }
 }

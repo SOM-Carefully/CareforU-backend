@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.EnumType.STRING;
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -65,10 +67,14 @@ public class User extends BaseEntity {
     @Enumerated(value = STRING)
     Role role;
 
+    @OneToOne(fetch = LAZY, cascade = ALL)
+    @JoinColumn(name = "user_profile_id")
+    private UserProfile userProfile;
+
     @Builder
     public User(String username, String password, String name, String identificationNumber, String phoneNumber, Gender gender,
                 String nationality, String universityName, String major, String advisorName, Education education,
-                String address, Role role, boolean activated) {
+                String address, Role role, UserProfile userProfile, boolean activated) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -83,6 +89,7 @@ public class User extends BaseEntity {
         this.address = new Address(address);
         this.role = role;
         this.activated = activated;
+        this.userProfile = userProfile;
     }
 
     public static User userRequest(UserDto.UserRegisterRequest registerRequest) {
@@ -98,9 +105,10 @@ public class User extends BaseEntity {
                 .major(registerRequest.getMajor())
                 .advisorName(registerRequest.getAdvisorName())
                 .education(Education.valueOf((registerRequest.getEducationRequest().name())))
-                .address(registerRequest.getAddress())
+                .address(String.valueOf(new Address(registerRequest.getAddress())))
                 .activated(false)
                 .role(Role.valueOf("CLASSIC"))
+                .userProfile(new UserProfile())
                 .build();
     }
 
@@ -113,19 +121,22 @@ public class User extends BaseEntity {
                 .identificationNumber(registerRequest.getIdentificationNumber())
                 .activated(false)
                 .role(Role.valueOf("ADMIN"))
+                .userProfile(new UserProfile())
                 .build();
     }
 
-    public void updateUser(String name, String universityName, String education, String gender) {
-        this.name = name;
+    public void updateUser(String universityName, String education, String major, String advisorName, String address,
+                           String profileUrl, String nickname, String bio) {
         this.universityName = universityName;
         this.education = Education.valueOf(education);
-        this.gender = Gender.valueOf(gender);
+        this.major = major;
+        this.advisorName = advisorName;
+        this.address = new Address(address);
+        this.getUserProfile().setProfile(profileUrl, nickname, bio);
     }
 
-    public void updateAdmin(String name, String gender) {
-        this.name = name;
-        this.gender = Gender.valueOf(gender);
+    public void updateAdmin(String profileUrl, String nickname, String bio) {
+        this.getUserProfile().setProfile(profileUrl, nickname, bio);
     }
 
     public void updateUserRole(String role) {
@@ -134,7 +145,9 @@ public class User extends BaseEntity {
 
     public void signup() { this.activated = true; }
 
-    public void signout() {
-        this.activated = false;
-    }
+    public void updatePassword(String password) { this.password = password; }
+
+//    public void signout() {
+//        this.activated = false;
+//    }
 }

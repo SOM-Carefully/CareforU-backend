@@ -11,9 +11,11 @@ public interface UserService {
     void userSignup(UserDto.UserRegisterRequest registerRequest);
     void adminSignup(UserDto.AdminRegisterRequest registerRequest);
     void signout(UserDto.SignoutRequest signoutRequest);
+    void forceSignout(String username);
     void userUpdate(UserDto.UserUpdateRequest userUpdateRequest);
     void userRoleUpdate(String username, String role);
     void adminUpdate(UserDto.AdminUpdateRequest adminUpdateRequest);
+    void passwordUpdate(UserDto.updatePasswordRequest updatePasswordRequest);
 
     UserDto.UserResponse getMyUserWithAuthorities();
     UserDto.AdminResponse getMyAdminWithAuthorities();

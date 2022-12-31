@@ -25,7 +25,7 @@ public interface BookingService {
 
     void accept(Long bookingId, BookingDto.ServiceAcceptRequest serviceAcceptRequest);
 
-    void cancel(Long bookingId);
+    void cancel(Long bookingId, BookingDto.ServiceRejectRequest serviceRejectRequest);
 
     void complete(Long bookingId);
 }

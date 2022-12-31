@@ -2,6 +2,7 @@ package com.example.carefully.domain.membership.dto;
 
 import com.example.carefully.domain.membership.entity.Membership;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -26,6 +27,9 @@ public class MembershipDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class MembershipResponse {
+        @Schema(description = "회원가입 신청 고유 번호", example = "1", required = true)
+        private Long membershipId;
+
         @NotNull
         @ApiModelProperty(example = "2018-07-26T01:20:00")
         private LocalDateTime createdAt;
@@ -52,6 +56,7 @@ public class MembershipDto {
                 adminUsername = membership.getAdmin().getUsername();
             }
             return MembershipResponse.builder()
+                    .membershipId(membership.getId())
                     .createdAt(membership.getCreatedAt())
                     .stateRequest(StateRequest.valueOf(membership.getMembershipStatus().name()))
                     .requestUsername(membership.getUser().getUsername())

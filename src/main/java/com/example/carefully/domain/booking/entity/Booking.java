@@ -79,8 +79,9 @@ public abstract class Booking extends BaseEntity {
         this.adminFileUrl = serviceAcceptRequest.getAdminFileUrl();
     }
 
-    public void cancel() {
+    public void cancel(BookingDto.ServiceRejectRequest serviceRejectRequest) {
         this.bookingStatus = CANCEL;
+        this.adminContent = serviceRejectRequest.getContent();
     }
 
     public void complete() {

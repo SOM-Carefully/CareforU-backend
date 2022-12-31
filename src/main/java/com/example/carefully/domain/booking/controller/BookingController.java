@@ -29,7 +29,7 @@ public class BookingController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
-    @PostMapping("/education")
+    @PostMapping("/educations")
     public ResponseEntity educationRequestService(@RequestBody BookingDto.EducationReceiveRequest receiveRequest) {
         bookingService.educationRequest(receiveRequest);
         return ResponseEntity.ok(BaseResponse.create(REQUEST_SUCCESS.getMessage()));
@@ -42,7 +42,7 @@ public class BookingController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
-    @PostMapping("/traffic")
+    @PostMapping("/traffics")
     public ResponseEntity trafficRequestService(@RequestBody BookingDto.TrafficReceiveRequest trafficReceiveRequest) {
         bookingService.trafficRequest(trafficReceiveRequest);
         return ResponseEntity.ok(BaseResponse.create(REQUEST_SUCCESS.getMessage()));
@@ -55,7 +55,7 @@ public class BookingController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
-    @PostMapping("/dwelling")
+    @PostMapping("/dwellings")
     public ResponseEntity dwellingRequestService(@RequestBody BookingDto.DwellingReceiveRequest receiveRequest) {
         bookingService.dwellingRequest(receiveRequest);
         return ResponseEntity.ok(BaseResponse.create(REQUEST_SUCCESS.getMessage()));
@@ -68,7 +68,7 @@ public class BookingController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
-    @PostMapping("/communication")
+    @PostMapping("/communications")
     public ResponseEntity communicationRequestService(@RequestBody BookingDto.CommunicationReceiveRequest communicationReceiveRequest) {
         bookingService.communicationRequest(communicationReceiveRequest);
         return ResponseEntity.ok(BaseResponse.create(REQUEST_SUCCESS.getMessage()));
@@ -92,7 +92,7 @@ public class BookingController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "단일 서비스 상세 조회 (교육)", notes = "교육 서비스 신청 상세 내역을 조회합니다.")
-    @GetMapping("/education/{bookingId}")
+    @GetMapping("/educations/{bookingId}")
     public ResponseEntity<BaseResponse<BookingDto.EducationReceiveResponse>> lookupEducationService(@PathVariable("bookingId") Long bookingId) {
         return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), bookingService.educationLookup(bookingId)));
     }
@@ -103,7 +103,7 @@ public class BookingController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "단일 서비스 상세 조회 (교통)", notes = "교통 서비스 신청 상세 내역을 조회합니다.")
-    @GetMapping("/traffic/{bookingId}")
+    @GetMapping("/traffics/{bookingId}")
     public ResponseEntity<BaseResponse<BookingDto.TrafficReceiveResponse>> lookupTrafficService(@PathVariable("bookingId") Long bookingId) {
         return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), bookingService.trafficLookup(bookingId)));
     }
@@ -114,7 +114,7 @@ public class BookingController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "단일 서비스 상세 조회 (주거)", notes = "주거 서비스 신청 상세 내역을 조회합니다.")
-    @GetMapping("/dwelling/{bookingId}")
+    @GetMapping("/dwellings/{bookingId}")
     public ResponseEntity<BaseResponse<BookingDto.DwellingReceiveResponse>> lookupDwellingService(@PathVariable("bookingId") Long bookingId) {
         return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), bookingService.dwellingLookup(bookingId)));
     }
@@ -125,7 +125,7 @@ public class BookingController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "단일 서비스 상세 조회 (통신)", notes = "통신 서비스 신청 상세 내역을 조회합니다.")
-    @GetMapping("/communication/{bookingId}")
+    @GetMapping("/communications/{bookingId}")
     public ResponseEntity<BaseResponse<BookingDto.CommunicationReceiveResponse>> lookupCommunicationService(@PathVariable("bookingId") Long bookingId) {
         return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), bookingService.communicationLookup(bookingId)));
     }
@@ -163,8 +163,8 @@ public class BookingController {
     @ApiOperation(value = "서비스 취소", notes = "서비스 취소 API")
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping("/cancel/{bookingId}")
-    public ResponseEntity cancelService(@PathVariable("bookingId") Long bookingId) {
-        bookingService.cancel(bookingId);
+    public ResponseEntity cancelService(@PathVariable("bookingId") Long bookingId, @RequestBody BookingDto.ServiceRejectRequest serviceRejectRequest) {
+        bookingService.cancel(bookingId, serviceRejectRequest);
         return ResponseEntity.ok(BaseResponse.create(CANCEL_SUCCESS.getMessage()));
     }
 

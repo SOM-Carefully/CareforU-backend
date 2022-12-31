@@ -113,8 +113,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void userUpdate(UserDto.UserUpdateRequest userUpdateRequest) {
         User currentUser = getCurrentUser(userRepository);
-        currentUser.updateUser(userUpdateRequest.getName(), userUpdateRequest.getUniversityName(),
-                userUpdateRequest.getEducationRequest().name(), userUpdateRequest.getGenderRequest().name());
+        currentUser.updateUser(userUpdateRequest.getUniversityName(),
+                userUpdateRequest.getEducationRequest().name(),
+                userUpdateRequest.getMajor(), userUpdateRequest.getAdvisorName(), userUpdateRequest.getAddress(),
+                userUpdateRequest.getProfileUrl(), userUpdateRequest.getNickname(), userUpdateRequest.getBio());
         userRepository.save(currentUser);
     }
 
@@ -122,7 +124,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void adminUpdate(UserDto.AdminUpdateRequest adminUpdateRequest) {
         User currentUser = getCurrentUser(userRepository);
-        currentUser.updateAdmin(adminUpdateRequest.getName(), adminUpdateRequest.getGenderRequest().name());
+        currentUser.updateAdmin(adminUpdateRequest.getProfileUrl(), adminUpdateRequest.getNickname(), adminUpdateRequest.getBio());
         userRepository.save(currentUser);
     }
 
@@ -147,11 +149,20 @@ public class UserServiceImpl implements UserService {
         UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, signoutRequest.getPassword());
 
         if (unauthenticated != null) {
-            currentUser.signout();
-            userRepository.save(currentUser);
+            userRepository.delete(currentUser);
         } else {
             throw new NotValidationPasswordException();
         }
+    }
+
+    /*
+    강제 회원 탈퇴
+    */
+    @Override
+    @Transactional
+    public void forceSignout(String username) {
+        User user = userRepository.findOneWithAuthoritiesByUsername(username).orElseThrow(NotFoundUserException::new);
+        userRepository.delete(user);
     }
 
     /*
@@ -173,14 +184,6 @@ public class UserServiceImpl implements UserService {
         return UserDto.AdminResponse.create(currentUser);
     }
 
-    public UsernamePasswordAuthenticationToken passwordCheckLogic(User user, String password) {
-        UsernamePasswordAuthenticationToken unauthenticated = UsernamePasswordAuthenticationToken.unauthenticated(
-                user.getUsername(),
-                password
-        );
-        return unauthenticated;
-    }
-
     /*
     유저 이메일로 사용자 정보 조회
      */
@@ -197,5 +200,33 @@ public class UserServiceImpl implements UserService {
     public SliceDto<UserDto.UserAllResponse> userAllLookup() {
         Slice<User> userList = userRepository.findAllByActivatedTrueOrderByCreatedAtDesc();
         return SliceDto.create(userList.map(UserDto.UserAllResponse::create));
+    }
+
+    /*
+    비밀번호 변경
+     */
+    @Override
+    public void passwordUpdate(UserDto.updatePasswordRequest updatePasswordRequest) {
+        User currentUser = getCurrentUser(userRepository);
+        UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, updatePasswordRequest.getOldPassword());
+
+        if (unauthenticated != null) {
+            currentUser.updatePassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
+            userRepository.save(currentUser);
+        } else {
+            throw new NotValidationPasswordException();
+        }
+    }
+
+
+    /*
+    비밀번호 검증 로직
+     */
+    public UsernamePasswordAuthenticationToken passwordCheckLogic(User user, String password) {
+        UsernamePasswordAuthenticationToken unauthenticated = UsernamePasswordAuthenticationToken.unauthenticated(
+                user.getUsername(),
+                password
+        );
+        return unauthenticated;
     }
 }

@@ -17,7 +17,7 @@ import static com.example.carefully.domain.membership.dto.MembershipResponseMess
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/membership")
+@RequestMapping("/api/v1/memberships")
 @Api(tags = {"회원가입 신청 관련 API"})
 public class MembershipController {
     private final MembershipServiceImpl membershipService;
