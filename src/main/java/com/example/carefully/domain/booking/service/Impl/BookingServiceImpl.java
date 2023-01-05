@@ -4,7 +4,7 @@ import com.example.carefully.domain.booking.entity.*;
 import com.example.carefully.domain.booking.dto.BookingDto;
 import com.example.carefully.domain.booking.exception.NotValidationBookingId;
 import com.example.carefully.domain.booking.exception.NotValidationServiceAdmin;
-import com.example.carefully.domain.booking.repository.BookingRepository;
+import com.example.carefully.domain.booking.repository.*;
 import com.example.carefully.domain.booking.service.BookingService;
 import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.domain.user.repository.UserRepository;
@@ -22,6 +22,10 @@ import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
+    private final EducationRepository educationRepository;
+    private final CommunicationRepository communicationRepository;
+    private final TrafficRepository trafficRepository;
+    private final DwellingRepository dwellingRepository;
 
     /*
     서비스 신청
@@ -74,28 +78,28 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(readOnly = true)
     public BookingDto.EducationReceiveResponse educationLookup (Long bookingId) {
-        Education booking = (Education) bookingRepository.getReferenceById(bookingId);
+        Education booking = educationRepository.getReferenceById(bookingId);
         return BookingDto.EducationReceiveResponse.create(booking);
     }
 
     @Override
     @Transactional(readOnly = true)
     public BookingDto.CommunicationReceiveResponse communicationLookup (Long bookingId) {
-        Communication booking = (Communication) bookingRepository.getReferenceById(bookingId);
+        Communication booking = communicationRepository.getReferenceById(bookingId);
         return BookingDto.CommunicationReceiveResponse.create(booking);
     }
 
     @Override
     @Transactional(readOnly = true)
     public BookingDto.TrafficReceiveResponse trafficLookup (Long bookingId) {
-        Traffic booking = (Traffic) bookingRepository.getReferenceById(bookingId);
+        Traffic booking = trafficRepository.getReferenceById(bookingId);
         return BookingDto.TrafficReceiveResponse.create(booking);
     }
 
     @Override
     @Transactional(readOnly = true)
     public BookingDto.DwellingReceiveResponse dwellingLookup (Long bookingId) {
-        Dwelling booking = (Dwelling) bookingRepository.getReferenceById(bookingId);
+        Dwelling booking = dwellingRepository.getReferenceById(bookingId);
         return BookingDto.DwellingReceiveResponse.create(booking);
     }
 

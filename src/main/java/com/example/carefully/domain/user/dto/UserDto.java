@@ -1,5 +1,6 @@
 package com.example.carefully.domain.user.dto;
 
+import com.example.carefully.domain.user.entity.Address;
 import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.domain.user.entity.UserProfile;
 import io.swagger.annotations.ApiModelProperty;
@@ -102,7 +103,7 @@ public class UserDto {
 
         @NotNull(message = "주소를 입력해 주세요.")
         @Schema(description = "주소", example = "서울시 어딘가...", required = true)
-        private String address;
+        private Address address;
 
         @ApiModelProperty(example = "회원가입 신청합니다!")
         private String content;
@@ -171,8 +172,7 @@ public class UserDto {
 
         @NotNull(message = "주민번호를 입력해 주세요.")
         @Pattern(regexp = "^([0-9]{6})-([0-9]{7})$", message = "주민번호 형식이 유효하지 않습니다.")
-        @Schema(description = "전화번호", example = "010-1234-5678", required = true)
-        @ApiModelProperty(example = "123456-1234567")
+        @Schema(description = "주민번호", example = "123456-1234567", required = true)
         private String identificationNumber;
 
         @NotNull(message = "전화번호를 입력해 주세요.")

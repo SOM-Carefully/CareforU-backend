@@ -29,10 +29,10 @@ public abstract class Booking extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String userContent;
 
-    @Column(nullable = false)
+    @Column
     private String adminContent;
 
     @Column(nullable = false)

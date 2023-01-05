@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 public class BookingDto {
     @Getter
     @RequiredArgsConstructor
-    public enum StateRequest {
-        USER, OPERATION
+    public enum BusinessTypeResponse {
+        COMMUNICATION, DWELLING, TRAFFIC, EDUCATION;
     }
 
 
@@ -85,6 +85,9 @@ public class BookingDto {
         @Schema(description = "서비스 고유 번호", example = "1", required = true)
         private Long bookingId;
 
+        @Schema(description = "서비스 카테고리", example = "COMMUNICATION/DWELLING/TRAFFIC/EDUCATION", required = true)
+        private BusinessTypeResponse businessTypeResponse;
+
         @Schema(description = "서비스를 신청한 유저의 이메일", example = "test@test.com", required = true)
         private String userUsername;
 
@@ -124,6 +127,7 @@ public class BookingDto {
 
             return EducationReceiveResponse.builder()
                     .bookingId(education.getId())
+                    .businessTypeResponse(BusinessTypeResponse.valueOf(education.getBusinessType().name()))
                     .userUsername(education.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .degreeRequest(DegreeRequest.valueOf(education.getDegree().name()))
@@ -171,6 +175,9 @@ public class BookingDto {
         @Schema(description = "서비스 고유 번호", example = "1", required = true)
         private Long bookingId;
 
+        @Schema(description = "서비스 카테고리", example = "COMMUNICATION/DWELLING/TRAFFIC/EDUCATION", required = true)
+        private BusinessTypeResponse businessTypeResponse;
+
         @Schema(description = "서비스를 신청한 유저의 이메일", example = "test@test.com", required = true)
         private String userUsername;
 
@@ -210,6 +217,7 @@ public class BookingDto {
 
             return TrafficReceiveResponse.builder()
                     .bookingId(traffic.getId())
+                    .businessTypeResponse(BusinessTypeResponse.valueOf(traffic.getBusinessType().name()))
                     .userUsername(traffic.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .carTypeRequest(CarTypeRequest.valueOf(traffic.getCarType().name()))
@@ -261,6 +269,9 @@ public class BookingDto {
         @Schema(description = "서비스 고유 번호", example = "1", required = true)
         private Long bookingId;
 
+        @Schema(description = "서비스 카테고리", example = "COMMUNICATION/DWELLING/TRAFFIC/EDUCATION", required = true)
+        private BusinessTypeResponse businessTypeResponse;
+
         @Schema(description = "서비스를 신청한 유저의 이메일", example = "test@test.com", required = true)
         private String userUsername;
 
@@ -304,6 +315,7 @@ public class BookingDto {
 
             return DwellingReceiveResponse.builder()
                     .bookingId(dwelling.getId())
+                    .businessTypeResponse(BusinessTypeResponse.valueOf(dwelling.getBusinessType().name()))
                     .userUsername(dwelling.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .transactionMethodRequest(TransactionMethodRequest.valueOf(dwelling.getTransactionMethod().name()))
@@ -352,6 +364,9 @@ public class BookingDto {
         @Schema(description = "서비스 고유 번호", example = "1", required = true)
         private Long bookingId;
 
+        @Schema(description = "서비스 카테고리", example = "COMMUNICATION/DWELLING/TRAFFIC/EDUCATION", required = true)
+        private BusinessTypeResponse businessTypeResponse;
+
         @Schema(description = "서비스를 신청한 유저의 이메일", example = "test@test.com", required = true)
         private String userUsername;
 
@@ -391,6 +406,7 @@ public class BookingDto {
 
             return CommunicationReceiveResponse.builder()
                     .bookingId(communication.getId())
+                    .businessTypeResponse(BusinessTypeResponse.valueOf(communication.getBusinessType().name()))
                     .userUsername(communication.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .modelName(communication.getModelName())
@@ -414,6 +430,9 @@ public class BookingDto {
         @Schema(description = "서비스 고유 번호", example = "1", required = true)
         private Long bookingId;
 
+        @Schema(description = "서비스 카테고리", example = "COMMUNICATION/DWELLING/TRAFFIC/EDUCATION", required = true)
+        private BusinessTypeResponse businessTypeResponse;
+
         @Schema(description = "서비스를 신청한 유저의 이메일", example = "test@test.com", required = true)
         private String userUsername;
 
@@ -435,6 +454,7 @@ public class BookingDto {
 
             return ServiceAllResponse.builder()
                     .bookingId(booking.getId())
+                    .businessTypeResponse(BusinessTypeResponse.valueOf(booking.getBusinessType().name()))
                     .userUsername(booking.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .bookingStatus(BookingStatusResponse.valueOf(booking.getBookingStatus().name()))

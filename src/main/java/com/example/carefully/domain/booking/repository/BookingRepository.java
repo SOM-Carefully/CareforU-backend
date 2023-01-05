@@ -1,6 +1,7 @@
 package com.example.carefully.domain.booking.repository;
 
 import com.example.carefully.domain.booking.entity.Booking;
+import com.example.carefully.domain.booking.entity.Communication;
 import com.example.carefully.domain.user.entity.User;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
