@@ -145,11 +145,11 @@ public class UserServiceImpl implements UserService {
     public void signout(UserDto.SignoutRequest signoutRequest) {
 
         User currentUser = getCurrentUser(userRepository);
-
         UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, signoutRequest.getPassword());
 
         if (unauthenticated != null) {
-            userRepository.delete(currentUser);
+            currentUser.signout();
+            userRepository.save(currentUser);
         } else {
             throw new NotValidationPasswordException();
         }
@@ -162,7 +162,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void forceSignout(String username) {
         User user = userRepository.findOneWithAuthoritiesByUsername(username).orElseThrow(NotFoundUserException::new);
-        userRepository.delete(user);
+        user.signout();
+        userRepository.save(user);
     }
 
     /*

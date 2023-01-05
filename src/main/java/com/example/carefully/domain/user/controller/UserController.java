@@ -117,9 +117,9 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "일반 유저 등급 수정", notes = "어드민이 일반회원의 등급(CLASSIC/SILVER/GOLD/PLATINUM)을 수정합니다.")
-    @PatchMapping("/users/{username}/{role}")
+    @PatchMapping("/users/{role}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity userUpdate(@PathVariable String username, @PathVariable String role) {
+    public ResponseEntity userUpdate(@RequestParam("username") String username, @PathVariable String role) {
         userService.userRoleUpdate(username, role);
         return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
     }
@@ -157,8 +157,8 @@ public class UserController {
     })
     @ApiOperation(value = "강제 탈퇴", notes = "어드민이 강제 회원 탈퇴를 진행합니다.")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @PostMapping("/sign-out/{username}")
-    public ResponseEntity forceSignout(@PathVariable String username) {
+    @PostMapping("/forced-withdrawal")
+    public ResponseEntity forceSignout(@RequestParam("username") String username) {
         userService.forceSignout(username);
         return ResponseEntity.ok(BaseResponse.create(SIGNOUT_SUCCESS.getMessage()));
     }
@@ -169,7 +169,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "모든 회원 조회", notes = "어드민이 모든 회원의 정보를 조회합니다.")
-    @PostMapping("/all")
+    @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<BaseResponse<SliceDto<UserDto.UserAllResponse>>> userAllLookuo() {
         return ResponseEntity.ok(BaseResponse.create(USER_LOOKUP_SUCCESS.getMessage(), userService.userAllLookup()));    }
@@ -180,9 +180,9 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "회원 정보 조회", notes = "어드민이 이메일을 통해 회원의 정보를 조회합니다.")
-    @GetMapping("/users/{username}")
+    @GetMapping("/users")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<BaseResponse<UserDto.UserResponse>> getUserInfo(@PathVariable String username) {
+    public ResponseEntity<BaseResponse<UserDto.UserResponse>> getUserInfo(@RequestParam("username") String username) {
         return ResponseEntity.ok(BaseResponse.create(USER_LOOKUP_SUCCESS.getMessage(), userService.getUserWithAuthorities(username)));
     }
 
