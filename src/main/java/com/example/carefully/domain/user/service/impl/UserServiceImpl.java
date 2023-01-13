@@ -1,7 +1,5 @@
 package com.example.carefully.domain.user.service.impl;
 
-import com.example.carefully.domain.booking.dto.BookingDto;
-import com.example.carefully.domain.booking.entity.Booking;
 import com.example.carefully.domain.membership.entity.Membership;
 import com.example.carefully.domain.membership.repository.MembershipRepository;
 import com.example.carefully.domain.user.dto.TokenResponse;
@@ -10,12 +8,12 @@ import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.domain.user.exception.DuplicatedUsernameException;
 import com.example.carefully.domain.user.exception.NotFoundUserException;
 import com.example.carefully.domain.user.exception.NotValidationPasswordException;
-import com.example.carefully.domain.user.exception.NotValidationRoleException;
 import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.domain.user.service.UserService;
 import com.example.carefully.global.dto.SliceDto;
 import com.example.carefully.global.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -25,12 +23,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.logging.Logger;
+
 import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 
 @Service
 @Transactional(readOnly=true)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private final Logger log = (Logger) LoggerFactory.getLogger(getClass());
 
     private final UserRepository userRepository;
     private final MembershipRepository membershipRepository;
@@ -143,16 +144,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void signout(UserDto.SignoutRequest signoutRequest) {
-
         User currentUser = getCurrentUser(userRepository);
-        UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, signoutRequest.getPassword());
-
-        if (unauthenticated != null) {
-            currentUser.signout();
-            userRepository.save(currentUser);
-        } else {
-            throw new NotValidationPasswordException();
-        }
+        currentUser = passwordCheckLogic(currentUser.getId(), signoutRequest.getPassword());
+        currentUser.signout();
+        userRepository.save(currentUser);
     }
 
     /*
@@ -209,25 +204,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public void passwordUpdate(UserDto.updatePasswordRequest updatePasswordRequest) {
         User currentUser = getCurrentUser(userRepository);
-        UsernamePasswordAuthenticationToken unauthenticated = passwordCheckLogic(currentUser, updatePasswordRequest.getOldPassword());
-
-        if (unauthenticated != null) {
-            currentUser.updatePassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
-            userRepository.save(currentUser);
-        } else {
-            throw new NotValidationPasswordException();
-        }
+        currentUser = passwordCheckLogic(currentUser.getId(), updatePasswordRequest.getOldPassword());
+        currentUser.updatePassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
+        userRepository.save(currentUser);
     }
 
 
     /*
     비밀번호 검증 로직
      */
-    public UsernamePasswordAuthenticationToken passwordCheckLogic(User user, String password) {
-        UsernamePasswordAuthenticationToken unauthenticated = UsernamePasswordAuthenticationToken.unauthenticated(
-                user.getUsername(),
-                password
-        );
-        return unauthenticated;
+    public User passwordCheckLogic(Long userId, String password) {
+        final User persistUser = userRepository.findById(userId)
+                .orElseThrow(NotFoundUserException::new);
+        if(!passwordEncoder
+                .matches(password, persistUser.getPassword())) {
+            log.info("changePassword is Not Equal Current Password");
+            throw new NotValidationPasswordException();
+        }
+        return persistUser;
     }
 }
