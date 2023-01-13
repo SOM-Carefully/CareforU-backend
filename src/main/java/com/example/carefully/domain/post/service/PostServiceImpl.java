@@ -54,8 +54,12 @@ public class PostServiceImpl implements PostService {
 
     private boolean isRankFailToCreatePost(PostRole postRole, Long categoryId) {
         Role userRole = getCurrentUser(userRepository).getRole();
+        if (postRole == PostRole.NOTICE) {
+            return true;
+        }
+
         Category category = findCategoryById(categoryId);
-        if (isNoNeedToCheckRankValidation(postRole, category)) {
+        if (isNoNeedToCheckRankValidation(category)) {
             return false;
         }
 
@@ -66,11 +70,7 @@ public class PostServiceImpl implements PostService {
         return !category.isSameRankWithUser(userRole);
     }
 
-    private boolean isNoNeedToCheckRankValidation(PostRole postRole, Category category) {
-        if (postRole == PostRole.NOTICE) {
-            return true;
-        }
-
+    private boolean isNoNeedToCheckRankValidation(Category category) {
         return !category.isAssociatedToRank();
     }
 
@@ -114,8 +114,12 @@ public class PostServiceImpl implements PostService {
 
     private boolean isRankFailToAccessPost(PostRole postRole, Long categoryId) {
         Role userRole = getCurrentUser(userRepository).getRole();
+        if (postRole == PostRole.NOTICE) {
+            return true;
+        }
+
         Category category = findCategoryById(categoryId);
-        if (isNoNeedToCheckRankValidation(postRole, category)) {
+        if (isNoNeedToCheckRankValidation(category)) {
             return false;
         }
 
