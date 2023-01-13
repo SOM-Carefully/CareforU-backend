@@ -13,7 +13,6 @@ import com.example.carefully.domain.user.service.UserService;
 import com.example.carefully.global.dto.SliceDto;
 import com.example.carefully.global.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -22,16 +21,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.logging.Logger;
-
 import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 
 @Service
 @Transactional(readOnly=true)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final Logger log = (Logger) LoggerFactory.getLogger(getClass());
 
     private final UserRepository userRepository;
     private final MembershipRepository membershipRepository;
@@ -218,7 +213,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(NotFoundUserException::new);
         if(!passwordEncoder
                 .matches(password, persistUser.getPassword())) {
-            log.info("changePassword is Not Equal Current Password");
             throw new NotValidationPasswordException();
         }
         return persistUser;
