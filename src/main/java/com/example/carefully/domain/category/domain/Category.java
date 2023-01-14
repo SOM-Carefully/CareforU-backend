@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Entity
 @Getter
@@ -33,8 +34,13 @@ public class Category {
     }
 
     public boolean isAssociatedToRank() {
-        Role categoryRole = Role.of(name);
-        return categoryRole.isPaidRole();
+        try {
+            Role categoryRole = Role.of(name);
+            return categoryRole.isPaidRole();
+        } catch (NoSuchElementException ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
 
     public boolean isSameRankWithUser(Role role) {
