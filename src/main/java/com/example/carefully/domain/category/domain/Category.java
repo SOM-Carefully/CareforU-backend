@@ -5,6 +5,7 @@ import com.example.carefully.domain.user.entity.Role;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.NoSuchElementException;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Slf4j
 public class Category {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +40,7 @@ public class Category {
             Role categoryRole = Role.of(name);
             return categoryRole.isPaidRole();
         } catch (NoSuchElementException ex) {
-            ex.printStackTrace();
+            log.info("categoryId={} name={} 유료 회원 카테고리가 아닌 자유 카테고리 요청입니다.", id, name);
             return false;
         }
     }
