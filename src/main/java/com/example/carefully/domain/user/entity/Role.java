@@ -9,11 +9,12 @@ import java.util.NoSuchElementException;
 @Getter
 @RequiredArgsConstructor
 public enum Role {
-    CLASSIC("일반회원", 0),
-    SILVER("유료회원1", 1),
-    GOLD("유료회원2", 2),
-    PLATINUM("유료회원3", 3),
-    ADMIN("관리자", 4);
+    LEVEL1("1등급", 0),
+    LEVEL2("2등급", 1),
+    LEVEL3("3등급", 2),
+    LEVEL4("4등급", 3),
+    LEVEL5("5등급", 4),
+    ADMIN("관리자", 5);
 
     private static final String PREFIX = "ROLE_";
     private final String description;
@@ -31,7 +32,7 @@ public enum Role {
     }
 
     public boolean isPaidRole() {
-        return this.equals(Role.SILVER) || this.equals(Role.GOLD) || this.equals(Role.PLATINUM);
+        return this.equals(Role.LEVEL2) || this.equals(Role.LEVEL3) || this.equals(Role.LEVEL4) || this.equals(Role.LEVEL5);
     }
 
     public boolean canAccess(int userRank) {

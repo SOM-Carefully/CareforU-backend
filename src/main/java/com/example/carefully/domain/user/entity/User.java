@@ -107,7 +107,7 @@ public class User extends BaseEntity {
                 .education(Education.valueOf((registerRequest.getEducationRequest().name())))
                 .address(registerRequest.getAddress().getDetails())
                 .activated(false)
-                .role(Role.valueOf("CLASSIC"))
+                .role(Role.valueOf("LEVEL1"))
                 .userProfile(new UserProfile())
                 .build();
     }
@@ -147,7 +147,7 @@ public class User extends BaseEntity {
 
     public void updatePassword(String password) { this.password = password; }
 
-    public void signout() {
-        this.activated = false;
-    }
+//    public void signout() {
+//        this.activated = false;
+//    }
 }

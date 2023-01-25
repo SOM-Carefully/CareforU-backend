@@ -84,6 +84,10 @@ public abstract class Booking extends BaseEntity {
         this.adminContent = serviceRejectRequest.getContent();
     }
 
+    public void ongoing() {
+        this.bookingStatus = ONGOING;
+    }
+
     public void complete() {
         this.bookingStatus = COMPLETE;
     }

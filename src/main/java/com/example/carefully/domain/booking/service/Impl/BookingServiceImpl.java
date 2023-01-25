@@ -128,14 +128,23 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
         User currentUser = getCurrentUser(userRepository);
 
-        if (booking.getAdmin() == null) {
-            booking.setAdmin(currentUser);
-            booking.accept(serviceAcceptRequest);
-            bookingRepository.save(booking);
-        } else if (checkCurrentAdmin(booking, currentUser)) {
-            booking.setNullAdmin();
-            accept(bookingId, serviceAcceptRequest);
-        }
+        booking = checkAcceptAdmin(booking, currentUser);
+        booking.accept(serviceAcceptRequest);
+        bookingRepository.save(booking);
+    }
+
+    /*
+    서비스 진행 중
+     */
+    @Override
+    @Transactional
+    public void ongoing(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
+        User currentUser = getCurrentUser(userRepository);
+
+        booking = checkAcceptAdmin(booking, currentUser);
+        booking.ongoing();
+        bookingRepository.save(booking);
     }
 
     /*
@@ -147,14 +156,9 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
         User currentUser = getCurrentUser(userRepository);
 
-        if (booking.getAdmin() == null) {
-            booking.setAdmin(currentUser);
-            booking.cancel(serviceRejectRequest);
-            bookingRepository.save(booking);
-        } else if (checkCurrentAdmin(booking, currentUser)) {
-            booking.setNullAdmin();
-            cancel(bookingId, serviceRejectRequest);
-        }
+        booking = checkAcceptAdmin(booking, currentUser);
+        booking.cancel(serviceRejectRequest);
+        bookingRepository.save(booking);
     }
 
     /*
@@ -166,14 +170,9 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
         User currentUser = getCurrentUser(userRepository);
 
-        if (booking.getAdmin() == null) {
-            booking.setAdmin(currentUser);
-            booking.complete();
-            bookingRepository.save(booking);
-        } else if (checkCurrentAdmin(booking, currentUser)) {
-            booking.setNullAdmin();
-            complete(bookingId);
-        }
+        booking = checkAcceptAdmin(booking, currentUser);
+        booking.complete();
+        bookingRepository.save(booking);
     }
 
     public boolean checkCurrentAdmin(Booking booking, User currentUser) {
@@ -182,5 +181,15 @@ public class BookingServiceImpl implements BookingService {
         } else {
             throw new NotValidationServiceAdmin();
         }
+    }
+
+    public Booking checkAcceptAdmin(Booking booking, User user) {
+        if (booking.getAdmin() == null) {
+            booking.setAdmin(user);
+        } else if (checkCurrentAdmin(booking, user)) {
+            booking.setNullAdmin();
+            checkAcceptAdmin(booking, user);
+        }
+            return booking;
     }
 }

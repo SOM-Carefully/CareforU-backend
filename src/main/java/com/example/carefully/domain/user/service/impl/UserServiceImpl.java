@@ -141,8 +141,7 @@ public class UserServiceImpl implements UserService {
     public void signout(UserDto.SignoutRequest signoutRequest) {
         User currentUser = getCurrentUser(userRepository);
         currentUser = passwordCheckLogic(currentUser.getId(), signoutRequest.getPassword());
-        currentUser.signout();
-        userRepository.save(currentUser);
+        userRepository.delete(currentUser);
     }
 
     /*
@@ -152,8 +151,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void forceSignout(String username) {
         User user = userRepository.findOneWithAuthoritiesByUsername(username).orElseThrow(NotFoundUserException::new);
-        user.signout();
-        userRepository.save(user);
+        userRepository.delete(user);
     }
 
     /*

@@ -50,6 +50,6 @@ public class Category {
     }
 
     public boolean isClassic() {
-        return name.equals(Role.CLASSIC.getDescription());
+        return name.equals(Role.LEVEL1.getDescription());
     }
 }

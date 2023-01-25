@@ -28,7 +28,7 @@ public class BookingController {
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
-    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
+    @PreAuthorize("hasAnyRole('LEVEL1','LEVEL2', 'LEVEL3', 'LEVEL4', 'LEVEL5')")
     @PostMapping("/educations")
     public ResponseEntity educationRequestService(@RequestBody BookingDto.EducationReceiveRequest receiveRequest) {
         bookingService.educationRequest(receiveRequest);
@@ -41,7 +41,7 @@ public class BookingController {
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
-    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
+    @PreAuthorize("hasAnyRole('LEVEL1','LEVEL2', 'LEVEL3', 'LEVEL4', 'LEVEL5')")
     @PostMapping("/traffics")
     public ResponseEntity trafficRequestService(@RequestBody BookingDto.TrafficReceiveRequest trafficReceiveRequest) {
         bookingService.trafficRequest(trafficReceiveRequest);
@@ -54,7 +54,7 @@ public class BookingController {
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
-    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
+    @PreAuthorize("hasAnyRole('LEVEL1','LEVEL2', 'LEVEL3', 'LEVEL4', 'LEVEL5')")
     @PostMapping("/dwellings")
     public ResponseEntity dwellingRequestService(@RequestBody BookingDto.DwellingReceiveRequest receiveRequest) {
         bookingService.dwellingRequest(receiveRequest);
@@ -67,7 +67,7 @@ public class BookingController {
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
-    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
+    @PreAuthorize("hasAnyRole('LEVEL1','LEVEL2', 'LEVEL3', 'LEVEL4', 'LEVEL5')")
     @PostMapping("/communications")
     public ResponseEntity communicationRequestService(@RequestBody BookingDto.CommunicationReceiveRequest communicationReceiveRequest) {
         bookingService.communicationRequest(communicationReceiveRequest);
@@ -79,7 +79,6 @@ public class BookingController {
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
-    @PreAuthorize("hasAnyRole('ADMIN')")
     @ApiOperation(value = "전체 서비스 신청 리스트 조회", notes = "전체 서비스 신청 리스트를 조회합니다.")
     @GetMapping("/all")
     public ResponseEntity<BaseResponse<SliceDto<BookingDto.ServiceAllResponse>>> lookupAllService() {
@@ -144,6 +143,7 @@ public class BookingController {
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "서비스 수락에 성공하였습니다."),
+            @ApiResponse(responseCode = "2000", description = "다른 운영팀 회원이 이미 처리한 서비스입니다."),
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
@@ -157,6 +157,7 @@ public class BookingController {
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "서비스 취소에 성공하였습니다."),
+            @ApiResponse(responseCode = "2000", description = "다른 운영팀 회원이 이미 처리한 서비스입니다."),
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
@@ -170,6 +171,21 @@ public class BookingController {
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "서비스 완료에 성공하였습니다."),
+            @ApiResponse(responseCode = "2000", description = "다른 운영팀 회원이 이미 처리한 서비스입니다."),
+            @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
+    })
+    @ApiOperation(value = "서비스 진행 중", notes = "서비스 진행 중 API")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PatchMapping("/complete/{bookingId}")
+    public ResponseEntity ongoingService(@PathVariable("bookingId") Long bookingId) {
+        bookingService.ongoing(bookingId);
+        return ResponseEntity.ok(BaseResponse.create(ONGOING_SUCCESS.getMessage()));
+    }
+
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "서비스 완료에 성공하였습니다."),
+            @ApiResponse(responseCode = "2000", description = "다른 운영팀 회원이 이미 처리한 서비스입니다."),
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
