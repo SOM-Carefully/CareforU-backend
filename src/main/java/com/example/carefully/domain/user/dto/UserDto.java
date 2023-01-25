@@ -406,4 +406,14 @@ public class UserDto {
                     .build();
         }
     }
+
+    @Getter
+    @Setter
+    public static class Logout {
+        @NotEmpty(message = "accessToken이 입력되지 않았습니다.")
+        private String accessToken;
+
+        @NotEmpty(message = "refreshToken이 입력되지 않았습니다.")
+        private String refreshToken;
+    }
 }

@@ -1,8 +1,6 @@
 package com.example.carefully.domain.user.controller;
 
-import com.example.carefully.domain.booking.dto.BookingDto;
 import com.example.carefully.domain.user.dto.UserDto;
-import com.example.carefully.domain.user.service.impl.UserServiceImpl;
 import com.example.carefully.global.dto.BaseResponse;
 import com.example.carefully.domain.user.dto.TokenResponse;
 import com.example.carefully.domain.user.service.UserService;
@@ -15,12 +13,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import static com.example.carefully.domain.booking.dto.BookingResponseMessage.LOOKUP_SUCCESS;
 import static com.example.carefully.domain.user.dto.UserResponseMessage.*;
 
 @RestController
@@ -36,10 +34,15 @@ public class UserController {
     })
     @ApiOperation(value = "로그인", notes = "로그인을 합니다.")
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<TokenResponse>> login(@Valid @RequestBody UserDto.LoginRequest request) {
+    public ResponseEntity<BaseResponse<TokenResponse.TokenInfo>> login(@Valid @RequestBody UserDto.LoginRequest request) {
         return ResponseEntity.ok(BaseResponse.create(LOGIN_SUCCESS.getMessage(), userService.login(request)));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@Validated UserDto.Logout logout) {
+        userService.logout(logout);
+        return ResponseEntity.ok(BaseResponse.create(LOGOUT_SUCCESS.getMessage()));
+    }
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원가입 신청에 성공하였습니다."),
@@ -197,4 +200,5 @@ public class UserController {
         userService.passwordUpdate(updatePasswordRequest);
         return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
     }
+
 }
