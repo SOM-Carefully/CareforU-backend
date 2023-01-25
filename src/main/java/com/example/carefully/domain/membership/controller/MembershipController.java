@@ -1,7 +1,9 @@
 package com.example.carefully.domain.membership.controller;
 
 import com.example.carefully.domain.membership.dto.MembershipDto;
+import com.example.carefully.domain.membership.service.MembershipService;
 import com.example.carefully.domain.membership.service.impl.MembershipServiceImpl;
+import com.example.carefully.domain.user.dto.UserDto;
 import com.example.carefully.global.dto.BaseResponse;
 import com.example.carefully.global.dto.SliceDto;
 import io.swagger.annotations.Api;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import static com.example.carefully.domain.booking.dto.BookingResponseMessage.LOOKUP_SUCCESS;
 import static com.example.carefully.domain.membership.dto.MembershipResponseMessage.*;
 
 @RestController
@@ -20,21 +23,25 @@ import static com.example.carefully.domain.membership.dto.MembershipResponseMess
 @RequestMapping("/api/v1/memberships")
 @Api(tags = {"회원가입 신청 관련 API"})
 public class MembershipController {
-    private final MembershipServiceImpl membershipService;
+    private final MembershipService membershipService;
 
     @GetMapping("/all")
     @ApiOperation(value = "회원가입 신청 전체 리스트 조회", notes = "회원가입 조회 API - 어드민 회원만 가능")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse<SliceDto<MembershipDto.MembershipResponse>>> membershipAllookup() {
         return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), membershipService.membershipAllLookup()));
     }
 
     @GetMapping
     @ApiOperation(value = "회원가입 신청 상태별 리스트 조회", notes = "회원가입 조회 API - 어드민 회원만 가능")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse<SliceDto<MembershipDto.MembershipResponse>>> membershipLookup(@RequestParam("state") String membershipStatus,
                                                                                                      @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), membershipService.membershipLookup(membershipStatus, pageable)));
+    }
+
+    @GetMapping("/{membershipId}")
+    @ApiOperation(value = "회원가입 신청 상세 조회", notes = "회원가입 상세 조회 API - 어드민 회원 및 나만 가능")
+    public ResponseEntity<BaseResponse<MembershipDto.MembershipResponse>> membershipDetailLookup(@PathVariable("membershipId") Long membershipId) {
+        return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), membershipService.lookup(membershipId)));
     }
 
     @PatchMapping("/accept/{membershipId}")

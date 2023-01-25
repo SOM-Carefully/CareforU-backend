@@ -28,7 +28,7 @@ import static com.example.carefully.domain.user.dto.UserResponseMessage.*;
 @RequestMapping("/api/v1")
 @Api(tags = {"유저 관련 API"})
 public class UserController {
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그인에 성공하였습니다."),
@@ -105,7 +105,7 @@ public class UserController {
     })
     @ApiOperation(value = "일반 유저 내 정보 수정", notes = "일반 유저의 정보를 수정합니다.")
     @PatchMapping("/users/my")
-    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
+    @PreAuthorize("hasAnyRole('LEVEL1','LEVEL2', 'LEVEL3', 'LEVEL4', 'LEVEL5')")
     public ResponseEntity userUpdate(@Valid @RequestBody UserDto.UserUpdateRequest userUpdateRequest) {
         userService.userUpdate(userUpdateRequest);
         return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
@@ -116,7 +116,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다.."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
-    @ApiOperation(value = "일반 유저 등급 수정", notes = "어드민이 일반회원의 등급(CLASSIC/SILVER/GOLD/PLATINUM)을 수정합니다.")
+    @ApiOperation(value = "일반 유저 등급 수정", notes = "어드민이 일반회원의 등급(LEVEL1/LEVEL2/LEVEL3/LEVEL3/LEVEL4)을 수정합니다.")
     @PatchMapping("/users/{role}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity userUpdate(@RequestParam("username") String username, @PathVariable String role) {
@@ -171,7 +171,7 @@ public class UserController {
     @ApiOperation(value = "모든 회원 조회", notes = "어드민이 모든 회원의 정보를 조회합니다.")
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<BaseResponse<SliceDto<UserDto.UserAllResponse>>> userAllLookuo() {
+    public ResponseEntity<BaseResponse<SliceDto<UserDto.UserAllResponse>>> userAllLookup() {
         return ResponseEntity.ok(BaseResponse.create(USER_LOOKUP_SUCCESS.getMessage(), userService.userAllLookup()));    }
 
     @ApiResponses({
@@ -193,7 +193,6 @@ public class UserController {
     })
     @ApiOperation(value = "비밀번호 변경", notes = "로그인된 회원의 비밀번호를 변경합니다.")
     @PatchMapping("/change-password")
-    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM', 'ADMIN')")
     public ResponseEntity passwordUpdate(@Valid @RequestBody UserDto.updatePasswordRequest updatePasswordRequest) {
         userService.passwordUpdate(updatePasswordRequest);
         return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));

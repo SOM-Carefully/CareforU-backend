@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.constraints.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -16,14 +17,14 @@ public class UserDto {
     @Getter
     @RequiredArgsConstructor
     public enum RoleRequest {
-        CLASSIC, SILVER, GOLD, PLATINUM;
+        LEVEL1, LEVEL2, LEVEL3, LEVEL4, LEVEL5;
     }
 
 
     @Getter
     @RequiredArgsConstructor
     public enum RoleResponse {
-        CLASSIC, SILVER, GOLD, PLATINUM, ADMIN;
+        LEVEL1, LEVEL2, LEVEL3, LEVEL4, LEVEL5, ADMIN;
     }
 
     @Getter
@@ -240,7 +241,7 @@ public class UserDto {
         @Schema(description = "유저 주소", example = "서울시 어딘가...", required = true)
         private String address;
 
-        @Schema(example = "CLASSIC/SILVER/GOLD/PLATINUM")
+        @Schema(example = "LEVEL1/LEVEL2/LEVEL3/LEVEL4/LEVEL5")
         private RoleRequest role;
 
         @Schema(description = "프로필 이미지", example = "https://picsum.photos/seed/picsum/200/300")
@@ -287,7 +288,7 @@ public class UserDto {
         @Schema(description = "어드민 전화번호", example = "010-1234-5678", required = true)
         private String phoneNumber;
 
-        @Schema(example = "CLASSIC/SILVER/GOLD/PLATINUM")
+        @Schema(example = "ADMIN")
         String role;
 
         @Schema(description = "프로필 이미지", example = "https://picsum.photos/seed/picsum/200/300")
@@ -364,7 +365,7 @@ public class UserDto {
     @NoArgsConstructor
     public static class UserRoleRequest {
         @NotNull
-        @ApiModelProperty(example = "CLASSIC/SILVER/GOLD/PLATINUM")
+        @ApiModelProperty(example = "LEVEL1/LEVEL2/LEVEL3/LEVEL4/LEVEL5")
         private RoleRequest roleRequest;
     }
 
@@ -384,12 +385,16 @@ public class UserDto {
         private String name;
 
         @NotNull
-        @ApiModelProperty(example = "CLASSIC/SILVER/GOLD/PLATINUM")
+        @ApiModelProperty(example = "LEVEL1/LEVEL2/LEVEL3/LEVEL4/LEVEL5/ADMIN")
         private RoleResponse role;
 
         @NotNull
         @ApiModelProperty(example = "010-1234-5678")
         private String phoneNumber;
+
+        @NotNull
+        @ApiModelProperty(example = "2021-01-01T00:00" )
+        private LocalDateTime createdAt;
 
         public static UserAllResponse create(User user) {
             return UserAllResponse.builder()
@@ -397,6 +402,7 @@ public class UserDto {
                     .name(user.getName())
                     .phoneNumber(user.getPhoneNumber())
                     .role(RoleResponse.valueOf(user.getRole().name()))
+                    .createdAt(user.getCreatedAt())
                     .build();
         }
     }

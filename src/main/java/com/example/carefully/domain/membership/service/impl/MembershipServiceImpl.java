@@ -1,10 +1,12 @@
 package com.example.carefully.domain.membership.service.impl;
 
+import com.example.carefully.domain.booking.entity.Booking;
 import com.example.carefully.domain.membership.dto.MembershipDto;
 import com.example.carefully.domain.membership.entity.Membership;
 import com.example.carefully.domain.membership.entity.MembershipStatus;
 import com.example.carefully.domain.membership.exception.AlreadyProcessedMembership;
 import com.example.carefully.domain.membership.exception.NotValidationMembershipAdmin;
+import com.example.carefully.domain.membership.exception.NotValidationMembershipUser;
 import com.example.carefully.domain.membership.repository.MembershipRepository;
 import com.example.carefully.domain.membership.service.MembershipService;
 import com.example.carefully.domain.user.entity.User;
@@ -52,7 +54,9 @@ public class MembershipServiceImpl implements MembershipService {
     @Override
     @Transactional(readOnly = true)
     public MembershipDto.MembershipResponse lookup(Long membershipId) {
+        User currentUser = getCurrentUser(userRepository);
         Membership membership = membershipRepository.getReferenceById(membershipId);
+        checkMembershipRequestUserAndRoleAdmin(membership, currentUser);
         return MembershipDto.MembershipResponse.create(membership);
     }
 
@@ -65,15 +69,9 @@ public class MembershipServiceImpl implements MembershipService {
         Membership membership = membershipRepository.findById(membershipId).orElseThrow();
         User currentUser = getCurrentUser(userRepository);
 
-        if (membership.getAdmin() == null) {
-            membership.setAdmin(currentUser);
-            membership.accept();
-            membershipRepository.save(membership);
-        } else if (checkCurrentAdmin(membership, currentUser)) {
-            accept(membershipId);
-        } else {
-            throw new AlreadyProcessedMembership();
-        }
+        membership = checkAcceptAdmin(membership, currentUser);
+        membership.accept();
+        membershipRepository.save(membership);
     }
 
     @Override
@@ -82,23 +80,33 @@ public class MembershipServiceImpl implements MembershipService {
         Membership membership = membershipRepository.findById(membershipId).orElseThrow();
         User currentUser = getCurrentUser(userRepository);
 
-        if (membership.getAdmin() == null) {
-            membership.setAdmin(currentUser);
-            membership.reject();
-            membershipRepository.save(membership);
-        } else if (checkCurrentAdmin(membership, currentUser)) {
-            reject(membershipId);
-        } else {
-            throw new AlreadyProcessedMembership();
-        }
+        membership = checkAcceptAdmin(membership, currentUser);
+        membership.reject();
+        membershipRepository.save(membership);
     }
 
     public boolean checkCurrentAdmin(Membership membership, User currentUser) {
         if (membership.getAdmin() == currentUser) {
-            membership.setNullAdmin();
             return true;
         } else {
             throw new NotValidationMembershipAdmin();
+        }
+    }
+
+    public Membership checkAcceptAdmin(Membership membership, User user) {
+        if (membership.getAdmin() == null) {
+            membership.setAdmin(user);
+        } else if (checkCurrentAdmin(membership, user)) {
+            membership.setNullAdmin();
+            checkAcceptAdmin(membership, user);
+        }
+        return membership;
+    }
+
+    public void checkMembershipRequestUserAndRoleAdmin(Membership membership, User currentUser) {
+        if (currentUser.getRole().getFullName().equals("ROLE_ADMIN") || membership.getUser().getUsername().equals(currentUser.getUsername())) {
+        } else {
+            throw new NotValidationMembershipUser();
         }
     }
 }

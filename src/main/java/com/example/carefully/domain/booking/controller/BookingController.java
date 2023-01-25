@@ -143,7 +143,7 @@ public class BookingController {
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "서비스 수락에 성공하였습니다."),
-            @ApiResponse(responseCode = "2000", description = "다른 운영팀 회원이 이미 처리한 서비스입니다."),
+            @ApiResponse(responseCode = "4110", description = "다른 운영팀 회원이 이미 처리한 서비스입니다."),
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
@@ -157,7 +157,7 @@ public class BookingController {
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "서비스 취소에 성공하였습니다."),
-            @ApiResponse(responseCode = "2000", description = "다른 운영팀 회원이 이미 처리한 서비스입니다."),
+            @ApiResponse(responseCode = "4110", description = "다른 운영팀 회원이 이미 처리한 서비스입니다."),
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
@@ -171,13 +171,13 @@ public class BookingController {
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "서비스 완료에 성공하였습니다."),
-            @ApiResponse(responseCode = "2000", description = "다른 운영팀 회원이 이미 처리한 서비스입니다."),
+            @ApiResponse(responseCode = "4110", description = "다른 운영팀 회원이 이미 처리한 서비스입니다."),
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
     @ApiOperation(value = "서비스 진행 중", notes = "서비스 진행 중 API")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @PatchMapping("/complete/{bookingId}")
+    @PatchMapping("/ongoing/{bookingId}")
     public ResponseEntity ongoingService(@PathVariable("bookingId") Long bookingId) {
         bookingService.ongoing(bookingId);
         return ResponseEntity.ok(BaseResponse.create(ONGOING_SUCCESS.getMessage()));
@@ -185,7 +185,7 @@ public class BookingController {
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "서비스 완료에 성공하였습니다."),
-            @ApiResponse(responseCode = "2000", description = "다른 운영팀 회원이 이미 처리한 서비스입니다."),
+            @ApiResponse(responseCode = "4110", description = "다른 운영팀 회원이 이미 처리한 서비스입니다."),
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })

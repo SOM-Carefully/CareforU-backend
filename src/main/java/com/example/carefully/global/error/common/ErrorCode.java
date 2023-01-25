@@ -39,12 +39,13 @@ public enum ErrorCode {
 
     //BOOKING
     BOOKING_NOT_FOUND(5010, "서비스 신청이 존재하지 않습니다."),
-    BOOKING_ALREADY_PROCESSED(2000, "이미 처리된 서비스입니다."),
-    BOOKING_ANOTHER_PROCESSED(2000, "다른 운영팀 회원이 이미 처리한 서비스입니다."),
+    BOOKING_ALREADY_PROCESSED(4100, "이미 처리된 서비스입니다."),
+    BOOKING_ANOTHER_PROCESSED(4110, "다른 운영팀 회원이 이미 처리한 서비스입니다."),
 
     //MEMBERSHIP
-    MEMBERSHIP_ALREADY_PROCESSED(2000, "이미 처리된 회원가입 신청입니다."),
-    MEMBERSHIP_ANOTHER_PROCESSED(2000, "다른 운영팀 회원이 이미 처리한 회원가입 신청입니다.");
+    MEMBERSHIP_ALREADY_PROCESSED(4210, "이미 처리된 회원가입 신청입니다."),
+    MEMBERSHIP_ANOTHER_PROCESSED(4220, "다른 운영팀 회원이 이미 처리한 회원가입 신청입니다."),
+    MEMBERSHIP_NOT_VALIDATE_USER(4230, "어드민 회원이 아니거나 회원가입을 신청한 유저가 아닙니다.");
 
     private final String message;
     private final int status;
