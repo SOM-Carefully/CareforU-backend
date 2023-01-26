@@ -84,7 +84,7 @@ public class UserController {
     })
     @ApiOperation(value = "일반 유저 내 정보 조회", notes = "일반 유저가 자신의 정보를 조회합니다.")
     @GetMapping("/users/my")
-    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
+    @PreAuthorize("hasAnyRole('LEVEL1','LEVEL2', 'LEVEL3', 'LEVEL4', 'LEVEL5')")
     public ResponseEntity<BaseResponse<UserDto.UserResponse>> getMyUserInfo(HttpServletRequest request) {
         return ResponseEntity.ok(BaseResponse.create(MY_LOOKUP_SUCCESS.getMessage(), userService.getMyUserWithAuthorities()));
     }
