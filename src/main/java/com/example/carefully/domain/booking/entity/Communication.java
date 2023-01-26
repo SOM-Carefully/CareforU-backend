@@ -1,7 +1,7 @@
 package com.example.carefully.domain.booking.entity;
 
 import com.example.carefully.domain.booking.dto.BookingDto;
-import com.example.carefully.domain.user.entity.User;
+import com.example.carefully.domain.bookingRequest.entity.BookingRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,18 +20,14 @@ public class Communication extends Booking {
     private boolean usim;
 
     @Builder
-    public Communication(Long id, String userContent, String adminContent, User user, User admin, BookingStatus bookingStatus, BusinessType businessType, String userFileUrl, String adminFileUrl, String modelName, boolean usim) {
-        super(id, userContent, adminContent, user, admin, bookingStatus, businessType, userFileUrl, adminFileUrl);
+    public Communication(Long id, String modelName, boolean usim) {
+        super(id);
         this.modelName = modelName;
         this.usim = usim;
     }
 
-    public static Communication communicationRequest(User user, BookingDto.CommunicationReceiveRequest communicationReceiveRequest) {
+    public static Communication communicationRequest(BookingDto.CommunicationReceiveRequest communicationReceiveRequest) {
         return Communication.builder()
-                .user(user)
-                .userContent(communicationReceiveRequest.getContent())
-                .bookingStatus(BookingStatus.valueOf("WAITING"))
-                .businessType(BusinessType.valueOf("COMMUNICATION"))
                 .modelName(communicationReceiveRequest.getModelName())
                 .usim(communicationReceiveRequest.isUsim())
                 .build();
