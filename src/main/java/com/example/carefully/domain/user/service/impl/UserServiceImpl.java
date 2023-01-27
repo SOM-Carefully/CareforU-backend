@@ -219,6 +219,7 @@ public class UserServiceImpl implements UserService {
     비밀번호 변경
      */
     @Override
+    @Transactional
     public void passwordUpdate(UserDto.updatePasswordRequest updatePasswordRequest) {
         User currentUser = getCurrentUser(userRepository);
         passwordCheckLogic(currentUser.getId(), updatePasswordRequest.getOldPassword());
