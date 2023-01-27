@@ -221,7 +221,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void passwordUpdate(UserDto.updatePasswordRequest updatePasswordRequest) {
         User currentUser = getCurrentUser(userRepository);
-        currentUser = passwordCheckLogic(currentUser.getId(), updatePasswordRequest.getOldPassword());
+        passwordCheckLogic(currentUser.getId(), updatePasswordRequest.getOldPassword());
         currentUser.updatePassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
         userRepository.save(currentUser);
     }
