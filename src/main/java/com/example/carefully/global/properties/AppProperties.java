@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 @Getter
 @RequiredArgsConstructor
 public class AppProperties {
-
     @Value("${coolsms.key}")
     private final String coolSmsKey;
 
