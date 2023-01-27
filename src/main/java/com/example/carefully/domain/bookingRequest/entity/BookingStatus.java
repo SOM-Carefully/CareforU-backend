@@ -1,4 +1,4 @@
-package com.example.carefully.domain.booking.entity;
+package com.example.carefully.domain.bookingRequest.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
