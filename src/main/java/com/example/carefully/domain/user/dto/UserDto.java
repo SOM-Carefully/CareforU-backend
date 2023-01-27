@@ -416,4 +416,19 @@ public class UserDto {
         @NotEmpty(message = "refreshToken이 입력되지 않았습니다.")
         private String refreshToken;
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class SmsCertificationRequest {
+
+        private String phone;
+        private String certificationNumber;
+
+        @Builder
+        public SmsCertificationRequest(String phone, String certificationNumber) {
+            this.phone = phone;
+            this.certificationNumber = certificationNumber;
+        }
+
+    }
 }

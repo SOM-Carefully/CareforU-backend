@@ -1,6 +1,8 @@
 package com.example.carefully.domain.user.controller;
 
 import com.example.carefully.domain.user.dto.UserDto;
+import com.example.carefully.domain.user.service.SmsService;
+import com.example.carefully.domain.user.service.impl.SmsCertificationServiceImpl;
 import com.example.carefully.global.dto.BaseResponse;
 import com.example.carefully.domain.user.dto.TokenResponse;
 import com.example.carefully.domain.user.service.UserService;
@@ -27,6 +29,7 @@ import static com.example.carefully.domain.user.dto.UserResponseMessage.*;
 @Api(tags = {"유저 관련 API"})
 public class UserController {
     private final UserService userService;
+    private final SmsService smsCertificationService;
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그인에 성공하였습니다."),
@@ -199,6 +202,32 @@ public class UserController {
     public ResponseEntity passwordUpdate(@Valid @RequestBody UserDto.updatePasswordRequest updatePasswordRequest) {
         userService.passwordUpdate(updatePasswordRequest);
         return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
+    }
+
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "메세지 전송에 성공하였습니다."),
+            @ApiResponse(responseCode = "4006", description = "메세지 전송에 실패했을 경우 발생할 수 있습니다."),
+            @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
+    })
+    @ApiOperation(value = "인증번호 발신", notes = "인증 번호를 전송합니다.")
+    @PostMapping("/sms-certification/sends")
+    public ResponseEntity sendSms(@RequestBody UserDto.SmsCertificationRequest requestDto) {
+        smsCertificationService.sendSms(requestDto.getPhone());
+        return ResponseEntity.ok(BaseResponse.create(SEND_SUCCESS.getMessage()));
+    }
+
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "본인인증에 성공하였습니다."),
+            @ApiResponse(responseCode = "4005", description = "인증번호가 일치하지 않을 경우 발생할 수 있습니다."),
+            @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
+    })
+    @ApiOperation(value = "인증번호 검증", notes = "입력한 번호와 인증번호를 검증합니다.")
+    @PostMapping("/sms-certification/confirms")
+    public ResponseEntity SmsVerification(@RequestBody UserDto.SmsCertificationRequest requestDto) {
+        smsCertificationService.verifySms(requestDto);
+        return ResponseEntity.ok(BaseResponse.create(VALIDATION_SUCCESS.getMessage()));
     }
 
 }
