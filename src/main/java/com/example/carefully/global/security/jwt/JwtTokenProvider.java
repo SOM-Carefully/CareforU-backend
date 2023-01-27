@@ -24,14 +24,10 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${jwt.authorities-key}")
-    private static String AUTHORITIES_KEY;
-    @Value("${jwt.bearer-type}")
-    private static String BEARER_TYPE;
-    @Value("${jwt.access-token-expire-time}")
-    private static long ACCESS_TOKEN_EXPIRE_TIME;
-    @Value("${jwt.refresh-token-expire-time}")
-    private static long REFRESH_TOKEN_EXPIRE_TIME;
+    private static final String AUTHORITIES_KEY = "auth";
+    private static final String BEARER_TYPE = "Bearer";
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;
 
     private final Key key;
 
