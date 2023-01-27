@@ -26,8 +26,7 @@ public class MembershipController {
     private final MembershipService membershipService;
 
     @GetMapping("/all")
-    @ApiOperation(value = "회원가입 신청 전체 리스트 조회", notes = "회원가입 조회 API - 어드민 회원만 가능")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @ApiOperation(value = "회원가입 신청 전체 리스트 조회", notes = "회원가입 조회 API")
     public ResponseEntity<BaseResponse<SliceDto<MembershipDto.MembershipResponse>>> membershipAllookup() {
         return ResponseEntity.ok(BaseResponse.create(LOOKUP_SUCCESS.getMessage(), membershipService.membershipAllLookup()));
     }
