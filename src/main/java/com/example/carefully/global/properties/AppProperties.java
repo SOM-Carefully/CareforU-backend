@@ -10,11 +10,11 @@ import org.springframework.context.annotation.Configuration;
 public class AppProperties {
 
     @Value("${coolsms.key}")
-    public static String coolSmsKey;
+    private String coolSmsKey;
 
     @Value("${coolsms.secret}")
-    public static String coolSmsSecret;
+    private String coolSmsSecret;
 
     @Value("${coolsms.phone}")
-    public static String coolSmsFromPhoneNumber;
+    private String coolSmsFromPhoneNumber;
 }
