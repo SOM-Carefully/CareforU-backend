@@ -2,6 +2,7 @@ package com.example.carefully.global.security.jwt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,8 +21,10 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String BEARER_TYPE = "Bearer ";
+    @Value("${jwt.header}")
+    private static String AUTHORIZATION_HEADER;
+    @Value("${jwt.bearer-type}")
+    private static String BEARER_TYPE;
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate redisTemplate;
