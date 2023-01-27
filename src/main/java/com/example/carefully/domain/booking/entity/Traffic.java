@@ -1,11 +1,10 @@
 package com.example.carefully.domain.booking.entity;
 
 import com.example.carefully.domain.booking.dto.BookingDto;
-import com.example.carefully.domain.user.entity.User;
+import com.example.carefully.domain.bookingRequest.entity.BookingRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -21,18 +20,14 @@ public class Traffic extends Booking {
     private String price;
 
     @Builder
-    public Traffic(Long id, String userContent, String adminContent, User user, User admin, BookingStatus bookingStatus, BusinessType businessType, String userFileUrl, String adminFileUrl, CarType carType, String price) {
-        super(id, userContent, adminContent, user, admin, bookingStatus, businessType, userFileUrl, adminFileUrl);
+    public Traffic(Long id, CarType carType, String price) {
+        super(id);
         this.carType = carType;
         this.price = price;
     }
 
-    public static Traffic trafficRequest(User user, BookingDto.TrafficReceiveRequest trafficReceiveRequest) {
+    public static Traffic trafficRequest(BookingDto.TrafficReceiveRequest trafficReceiveRequest) {
         return Traffic.builder()
-                .user(user)
-                .userContent(trafficReceiveRequest.getContent())
-                .bookingStatus(BookingStatus.valueOf("WAITING"))
-                .businessType(BusinessType.valueOf("TRAFFIC"))
                 .carType(CarType.valueOf(trafficReceiveRequest.getCarTypeRequest().name()))
                 .price(trafficReceiveRequest.getPrice())
                 .build();

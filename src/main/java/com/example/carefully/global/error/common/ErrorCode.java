@@ -20,10 +20,12 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(5000, "서버 오류입니다. "),
     METHOD_NOT_ALLOWED(4000, "요청 방식이 잘못되었습니다."),
     INVALID_SECRET_KEY(2007, "유효하지 않은 시크릿 키입니다."),
-    USER_EXIST(400, "이미 존재하는 유저입니다."),
-    USER_NOT_FOUND(400, "유저를 찾을 수 없습니다."),
-    ROLE_NOT_VALIDATE(400, "유효하지 않은 역할입니다."),
-    PASSWORD_NOT_CORRECT(400, "비밀번호가 일치하지 않습니다."),
+    USER_EXIST(4001, "이미 존재하는 유저입니다."),
+    USER_NOT_FOUND(4002, "유저를 찾을 수 없습니다."),
+    ROLE_NOT_VALIDATE(4003, "유효하지 않은 역할입니다."),
+    PASSWORD_NOT_CORRECT(4004, "비밀번호가 일치하지 않습니다."),
+    INVALID_NUMBER(4005, "인증번호가 일치하지 않습니다."),
+    NOT_SEND_NUMBER(4006, "인증번호가 정상적으로 전송되지 않았습니다."),
 
     //TODO 도메인 별로 분류해서 추가해주세요.
 
@@ -39,12 +41,13 @@ public enum ErrorCode {
 
     //BOOKING
     BOOKING_NOT_FOUND(5010, "서비스 신청이 존재하지 않습니다."),
-    BOOKING_ALREADY_PROCESSED(2000, "이미 처리된 서비스입니다."),
-    BOOKING_ANOTHER_PROCESSED(2000, "다른 운영팀 회원이 이미 처리한 서비스입니다."),
+    BOOKING_ALREADY_PROCESSED(4100, "이미 처리된 서비스입니다."),
+    BOOKING_ANOTHER_PROCESSED(4110, "다른 운영팀 회원이 이미 처리한 서비스입니다."),
 
     //MEMBERSHIP
-    MEMBERSHIP_ALREADY_PROCESSED(2000, "이미 처리된 회원가입 신청입니다."),
-    MEMBERSHIP_ANOTHER_PROCESSED(2000, "다른 운영팀 회원이 이미 처리한 회원가입 신청입니다.");
+    MEMBERSHIP_ALREADY_PROCESSED(4210, "이미 처리된 회원가입 신청입니다."),
+    MEMBERSHIP_ANOTHER_PROCESSED(4220, "다른 운영팀 회원이 이미 처리한 회원가입 신청입니다."),
+    MEMBERSHIP_NOT_VALIDATE_USER(4230, "어드민 회원이 아니거나 회원가입을 신청한 유저가 아닙니다.");
 
     private final String message;
     private final int status;

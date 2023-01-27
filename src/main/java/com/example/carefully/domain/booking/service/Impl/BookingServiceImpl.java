@@ -1,11 +1,16 @@
 package com.example.carefully.domain.booking.service.Impl;
 
-import com.example.carefully.domain.booking.entity.*;
 import com.example.carefully.domain.booking.dto.BookingDto;
 import com.example.carefully.domain.booking.exception.NotValidationBookingId;
 import com.example.carefully.domain.booking.exception.NotValidationServiceAdmin;
 import com.example.carefully.domain.booking.repository.*;
 import com.example.carefully.domain.booking.service.BookingService;
+import com.example.carefully.domain.booking.entity.Communication;
+import com.example.carefully.domain.booking.entity.Dwelling;
+import com.example.carefully.domain.booking.entity.Education;
+import com.example.carefully.domain.booking.entity.Traffic;
+import com.example.carefully.domain.bookingRequest.entity.BookingRequest;
+import com.example.carefully.domain.bookingRequest.repository.BookingRequestRepository;
 import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.global.dto.SliceDto;
@@ -20,7 +25,7 @@ import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
-    private final BookingRepository bookingRepository;
+    private final BookingRequestRepository bookingRequestRepository;
     private final UserRepository userRepository;
     private final EducationRepository educationRepository;
     private final CommunicationRepository communicationRepository;
@@ -32,34 +37,38 @@ public class BookingServiceImpl implements BookingService {
      */
     @Override
     @Transactional
-    public void educationRequest(BookingDto.EducationReceiveRequest educationReceiveRequest) {
-        User currentUser = getCurrentUser(userRepository);
-        Education booking = Education.educationRequest(currentUser, educationReceiveRequest);
-        bookingRepository.save(booking);
+    public void educationRequest(BookingDto.EducationReceiveRequest edr) {
+        Education booking = Education.educationRequest(edr);
+        User cu = getCurrentUser(userRepository);
+        BookingRequest bookingRequest = BookingRequest.educationBookingRequest(booking, cu, edr);
+        bookingRequestRepository.save(bookingRequest);
     }
 
     @Override
     @Transactional
-    public void trafficRequest(BookingDto.TrafficReceiveRequest trafficReceiveRequest) {
-        User currentUser = getCurrentUser(userRepository);
-        Traffic booking = Traffic.trafficRequest(currentUser, trafficReceiveRequest);
-        bookingRepository.save(booking);
+    public void trafficRequest(BookingDto.TrafficReceiveRequest trr) {
+        Traffic booking = Traffic.trafficRequest(trr);
+        User cu = getCurrentUser(userRepository);
+        BookingRequest bookingRequest = BookingRequest.trafficBookingRequest(booking, cu, trr);
+        bookingRequestRepository.save(bookingRequest);
     }
 
     @Override
     @Transactional
-    public void dwellingRequest(BookingDto.DwellingReceiveRequest dwellingReceiveRequest) {
+    public void dwellingRequest(BookingDto.DwellingReceiveRequest drr) {
+        Dwelling booking = Dwelling.dwellingRequest(drr);
         User currentUser = getCurrentUser(userRepository);
-        Dwelling booking = Dwelling.dwellingRequest(currentUser, dwellingReceiveRequest);
-        bookingRepository.save(booking);
+        BookingRequest bookingRequest = BookingRequest.dwellingBookingRequest(booking, currentUser, drr);
+        bookingRequestRepository.save(bookingRequest);
     }
 
     @Override
     @Transactional
-    public void communicationRequest(BookingDto.CommunicationReceiveRequest communicationReceiveRequest) {
+    public void communicationRequest(BookingDto.CommunicationReceiveRequest crr) {
         User currentUser = getCurrentUser(userRepository);
-        Communication booking = Communication.communicationRequest(currentUser, communicationReceiveRequest);
-        bookingRepository.save(booking);
+        Communication booking = Communication.communicationRequest(crr);
+        BookingRequest bookingRequest = BookingRequest.communicationBookingRequest(booking, currentUser, crr);
+        bookingRequestRepository.save(bookingRequest);
     }
 
     /*
@@ -68,7 +77,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(readOnly = true)
     public SliceDto<BookingDto.ServiceAllResponse> serviceAllLookup() {
-        Slice<Booking> bookingList = bookingRepository.findAllByOrderByCreatedAtDesc();
+        Slice<BookingRequest> bookingList = bookingRequestRepository.findAllByOrderByCreatedAtDesc();
         return SliceDto.create(bookingList.map(BookingDto.ServiceAllResponse::create));
     }
 
@@ -78,29 +87,34 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(readOnly = true)
     public BookingDto.EducationReceiveResponse educationLookup (Long bookingId) {
-        Education booking = educationRepository.getReferenceById(bookingId);
-        return BookingDto.EducationReceiveResponse.create(booking);
+        BookingRequest bookingRequest = bookingRequestRepository.getReferenceById(bookingId);
+        // 아마 같은 값이긴 할 거 같은데 혹시 몰라소..
+        Education booking = educationRepository.getReferenceById(bookingRequest.getBooking().getId());
+        return BookingDto.EducationReceiveResponse.create(bookingRequest, booking);
     }
 
     @Override
     @Transactional(readOnly = true)
     public BookingDto.CommunicationReceiveResponse communicationLookup (Long bookingId) {
-        Communication booking = communicationRepository.getReferenceById(bookingId);
-        return BookingDto.CommunicationReceiveResponse.create(booking);
+        BookingRequest bookingRequest = bookingRequestRepository.getReferenceById(bookingId);
+        Communication booking = communicationRepository.getReferenceById(bookingRequest.getBooking().getId());
+        return BookingDto.CommunicationReceiveResponse.create(bookingRequest, booking);
     }
 
     @Override
     @Transactional(readOnly = true)
     public BookingDto.TrafficReceiveResponse trafficLookup (Long bookingId) {
-        Traffic booking = trafficRepository.getReferenceById(bookingId);
-        return BookingDto.TrafficReceiveResponse.create(booking);
+        BookingRequest bookingRequest = bookingRequestRepository.getReferenceById(bookingId);
+        Traffic booking = trafficRepository.getReferenceById(bookingRequest.getBooking().getId());
+        return BookingDto.TrafficReceiveResponse.create(bookingRequest, booking);
     }
 
     @Override
     @Transactional(readOnly = true)
     public BookingDto.DwellingReceiveResponse dwellingLookup (Long bookingId) {
+        BookingRequest bookingRequest = bookingRequestRepository.getReferenceById(bookingId);
         Dwelling booking = dwellingRepository.getReferenceById(bookingId);
-        return BookingDto.DwellingReceiveResponse.create(booking);
+        return BookingDto.DwellingReceiveResponse.create(bookingRequest, booking);
     }
 
     /*
@@ -112,9 +126,9 @@ public class BookingServiceImpl implements BookingService {
         User currentUser = getCurrentUser(userRepository);
 
         if (currentUser.getRole().toString().equals("ADMIN")) {
-            bookingList = bookingRepository.findAllByAdmin(currentUser).map(BookingDto.ServiceAllResponse::create);
+            bookingList = bookingRequestRepository.findAllByAdmin(currentUser).map(BookingDto.ServiceAllResponse::create);
         } else {
-            bookingList = bookingRepository.findAllByUser(currentUser).map(BookingDto.ServiceAllResponse::create);
+            bookingList = bookingRequestRepository.findAllByUser(currentUser).map(BookingDto.ServiceAllResponse::create);
         }
         return SliceDto.create(bookingList);
     }
@@ -125,17 +139,26 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public void accept(Long bookingId, BookingDto.ServiceAcceptRequest serviceAcceptRequest) {
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
+        BookingRequest bookingRequest = bookingRequestRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
         User currentUser = getCurrentUser(userRepository);
 
-        if (booking.getAdmin() == null) {
-            booking.setAdmin(currentUser);
-            booking.accept(serviceAcceptRequest);
-            bookingRepository.save(booking);
-        } else if (checkCurrentAdmin(booking, currentUser)) {
-            booking.setNullAdmin();
-            accept(bookingId, serviceAcceptRequest);
-        }
+        bookingRequest = checkAcceptAdmin(bookingRequest, currentUser);
+        bookingRequest.accept(serviceAcceptRequest);
+        bookingRequestRepository.save(bookingRequest);
+    }
+
+    /*
+    서비스 진행 중
+     */
+    @Override
+    @Transactional
+    public void ongoing(Long bookingId) {
+        BookingRequest bookingRequest = bookingRequestRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
+        User currentUser = getCurrentUser(userRepository);
+
+        bookingRequest = checkAcceptAdmin(bookingRequest, currentUser);
+        bookingRequest.ongoing();
+        bookingRequestRepository.save(bookingRequest);
     }
 
     /*
@@ -144,17 +167,12 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public void cancel(Long bookingId, BookingDto.ServiceRejectRequest serviceRejectRequest) {
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
+        BookingRequest bookingRequest = bookingRequestRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
         User currentUser = getCurrentUser(userRepository);
 
-        if (booking.getAdmin() == null) {
-            booking.setAdmin(currentUser);
-            booking.cancel(serviceRejectRequest);
-            bookingRepository.save(booking);
-        } else if (checkCurrentAdmin(booking, currentUser)) {
-            booking.setNullAdmin();
-            cancel(bookingId, serviceRejectRequest);
-        }
+        bookingRequest = checkAcceptAdmin(bookingRequest, currentUser);
+        bookingRequest.cancel(serviceRejectRequest);
+        bookingRequestRepository.save(bookingRequest);
     }
 
     /*
@@ -163,24 +181,29 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public void complete(Long bookingId) {
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
+        BookingRequest bookingRequest = bookingRequestRepository.findById(bookingId).orElseThrow(NotValidationBookingId::new);
         User currentUser = getCurrentUser(userRepository);
 
-        if (booking.getAdmin() == null) {
-            booking.setAdmin(currentUser);
-            booking.complete();
-            bookingRepository.save(booking);
-        } else if (checkCurrentAdmin(booking, currentUser)) {
-            booking.setNullAdmin();
-            complete(bookingId);
-        }
+        bookingRequest = checkAcceptAdmin(bookingRequest, currentUser);
+        bookingRequest.complete();
+        bookingRequestRepository.save(bookingRequest);
     }
 
-    public boolean checkCurrentAdmin(Booking booking, User currentUser) {
-        if (booking.getAdmin() == currentUser) {
+    public boolean checkCurrentAdmin(BookingRequest bookingRequest, User currentUser) {
+        if (bookingRequest.getAdmin() == currentUser) {
             return true;
         } else {
             throw new NotValidationServiceAdmin();
         }
+    }
+
+    public BookingRequest checkAcceptAdmin(BookingRequest bookingRequest, User user) {
+        if (bookingRequest.getAdmin() == null) {
+            bookingRequest.setAdmin(user);
+        } else if (checkCurrentAdmin(bookingRequest, user)) {
+            bookingRequest.setNullAdmin();
+            checkAcceptAdmin(bookingRequest, user);
+        }
+            return bookingRequest;
     }
 }

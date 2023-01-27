@@ -1,6 +1,12 @@
 package com.example.carefully.domain.booking.dto;
 
 import com.example.carefully.domain.booking.entity.*;
+import com.example.carefully.domain.booking.entity.Communication;
+import com.example.carefully.domain.booking.entity.Dwelling;
+import com.example.carefully.domain.booking.entity.Education;
+import com.example.carefully.domain.booking.entity.Traffic;
+import com.example.carefully.domain.booking.repository.EducationRepository;
+import com.example.carefully.domain.bookingRequest.entity.BookingRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -118,27 +124,27 @@ public class BookingDto {
         @Schema(description = "서비스 생성일자 및 시간", example = "2021-01-01T00:00")
         private LocalDateTime createdAt;
 
-        public static EducationReceiveResponse create(Education education) {
+        public static EducationReceiveResponse create(BookingRequest bookingRequest, Education education) {
             String operationUsername = null;
 
-            if (education.getAdmin() != null) {
-                operationUsername = education.getAdmin().getUsername();
+            if (bookingRequest.getAdmin() != null) {
+                operationUsername = bookingRequest.getAdmin().getUsername();
             }
 
             return EducationReceiveResponse.builder()
-                    .bookingId(education.getId())
-                    .businessTypeResponse(BusinessTypeResponse.valueOf(education.getBusinessType().name()))
-                    .userUsername(education.getUser().getUsername())
+                    .bookingId(bookingRequest.getId())
+                    .businessTypeResponse(BusinessTypeResponse.valueOf(bookingRequest.getBusinessType().name()))
+                    .userUsername(bookingRequest.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .degreeRequest(DegreeRequest.valueOf(education.getDegree().name()))
-                    .bookingStatus(BookingStatusResponse.valueOf(education.getBookingStatus().name()))
+                    .bookingStatus(BookingStatusResponse.valueOf(bookingRequest.getBookingStatus().name()))
                     .educationContentRequest(EducationContentRequest.valueOf(education.getEducationContent().name()))
-                    .userContent(education.getUserContent())
-                    .adminContent(education.getAdminContent())
-                    .userFileUrl(education.getUserFileUrl())
-                    .adminFileUrl(education.getAdminFileUrl())
-                    .bookingStatus(BookingStatusResponse.valueOf(education.getBookingStatus().name()))
-                    .createdAt(education.getCreatedAt())
+                    .userContent(bookingRequest.getUserContent())
+                    .adminContent(bookingRequest.getAdminContent())
+                    .userFileUrl(bookingRequest.getUserFileUrl())
+                    .adminFileUrl(bookingRequest.getAdminFileUrl())
+                    .bookingStatus(BookingStatusResponse.valueOf(bookingRequest.getBookingStatus().name()))
+                    .createdAt(bookingRequest.getCreatedAt())
                     .build();
         }
     }
@@ -208,26 +214,26 @@ public class BookingDto {
         @Schema(description = "서비스 생성일자 및 시간", example = "2021-01-01T00:00")
         private LocalDateTime createdAt;
 
-        public static TrafficReceiveResponse create(Traffic traffic) {
+        public static TrafficReceiveResponse create(BookingRequest bookingRequest, Traffic traffic) {
             String operationUsername = null;
 
-            if (traffic.getAdmin() != null) {
-                operationUsername = traffic.getAdmin().getUsername();
+            if (bookingRequest.getAdmin() != null) {
+                operationUsername = bookingRequest.getAdmin().getUsername();
             }
 
             return TrafficReceiveResponse.builder()
-                    .bookingId(traffic.getId())
-                    .businessTypeResponse(BusinessTypeResponse.valueOf(traffic.getBusinessType().name()))
-                    .userUsername(traffic.getUser().getUsername())
+                    .bookingId(bookingRequest.getId())
+                    .businessTypeResponse(BusinessTypeResponse.valueOf(bookingRequest.getBusinessType().name()))
+                    .userUsername(bookingRequest.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .carTypeRequest(CarTypeRequest.valueOf(traffic.getCarType().name()))
                     .price(traffic.getPrice())
-                    .userContent(traffic.getUserContent())
-                    .adminContent(traffic.getAdminContent())
-                    .userFileUrl(traffic.getUserFileUrl())
-                    .adminFileUrl(traffic.getAdminFileUrl())
-                    .bookingStatus(BookingStatusResponse.valueOf(traffic.getBookingStatus().name()))
-                    .createdAt(traffic.getCreatedAt())
+                    .userContent(bookingRequest.getUserContent())
+                    .adminContent(bookingRequest.getAdminContent())
+                    .userFileUrl(bookingRequest.getUserFileUrl())
+                    .adminFileUrl(bookingRequest.getAdminFileUrl())
+                    .bookingStatus(BookingStatusResponse.valueOf(bookingRequest.getBookingStatus().name()))
+                    .createdAt(bookingRequest.getCreatedAt())
                     .build();
         }
     }
@@ -306,27 +312,27 @@ public class BookingDto {
         @Schema(description = "서비스 생성일자 및 시간", example = "2021-01-01T00:00")
         private LocalDateTime createdAt;
 
-        public static DwellingReceiveResponse create(Dwelling dwelling) {
+        public static DwellingReceiveResponse create(BookingRequest bookingRequest, Dwelling dwelling) {
             String operationUsername = null;
 
-            if (dwelling.getAdmin() != null) {
-                operationUsername = dwelling.getAdmin().getUsername();
+            if (bookingRequest.getAdmin() != null) {
+                operationUsername = bookingRequest.getAdmin().getUsername();
             }
 
             return DwellingReceiveResponse.builder()
-                    .bookingId(dwelling.getId())
-                    .businessTypeResponse(BusinessTypeResponse.valueOf(dwelling.getBusinessType().name()))
-                    .userUsername(dwelling.getUser().getUsername())
+                    .bookingId(bookingRequest.getId())
+                    .businessTypeResponse(BusinessTypeResponse.valueOf(bookingRequest.getBusinessType().name()))
+                    .userUsername(bookingRequest.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .transactionMethodRequest(TransactionMethodRequest.valueOf(dwelling.getTransactionMethod().name()))
                     .numberOfRoomsRequest(NumberOfRoomsRequest.valueOf(dwelling.getNumberOfRooms().name()))
                     .price(dwelling.getPrice())
-                    .userContent(dwelling.getUserContent())
-                    .adminContent(dwelling.getAdminContent())
-                    .userFileUrl(dwelling.getUserFileUrl())
-                    .adminFileUrl(dwelling.getAdminFileUrl())
-                    .bookingStatus(BookingStatusResponse.valueOf(dwelling.getBookingStatus().name()))
-                    .createdAt(dwelling.getCreatedAt())
+                    .userContent(bookingRequest.getUserContent())
+                    .adminContent(bookingRequest.getAdminContent())
+                    .userFileUrl(bookingRequest.getUserFileUrl())
+                    .adminFileUrl(bookingRequest.getAdminFileUrl())
+                    .bookingStatus(BookingStatusResponse.valueOf(bookingRequest.getBookingStatus().name()))
+                    .createdAt(bookingRequest.getCreatedAt())
                     .build();
         }
     }
@@ -397,26 +403,26 @@ public class BookingDto {
         @Schema(description = "서비스 생성일자 및 시간", example = "2021-01-01T00:00")
         private LocalDateTime createdAt;
 
-        public static CommunicationReceiveResponse create(Communication communication) {
+        public static CommunicationReceiveResponse create(BookingRequest bookingRequest, Communication communication) {
             String operationUsername = null;
 
-            if (communication.getAdmin() != null) {
-                operationUsername = communication.getAdmin().getUsername();
+            if (bookingRequest.getAdmin() != null) {
+                operationUsername = bookingRequest.getAdmin().getUsername();
             }
 
             return CommunicationReceiveResponse.builder()
-                    .bookingId(communication.getId())
-                    .businessTypeResponse(BusinessTypeResponse.valueOf(communication.getBusinessType().name()))
-                    .userUsername(communication.getUser().getUsername())
+                    .bookingId(bookingRequest.getId())
+                    .businessTypeResponse(BusinessTypeResponse.valueOf(bookingRequest.getBusinessType().name()))
+                    .userUsername(bookingRequest.getUser().getUsername())
                     .operationUsername(operationUsername)
                     .modelName(communication.getModelName())
                     .usim(communication.isUsim())
-                    .userContent(communication.getUserContent())
-                    .adminContent(communication.getAdminContent())
-                    .userFileUrl(communication.getUserFileUrl())
-                    .adminFileUrl(communication.getAdminFileUrl())
-                    .bookingStatus(BookingStatusResponse.valueOf(communication.getBookingStatus().name()))
-                    .createdAt(communication.getCreatedAt())
+                    .userContent(bookingRequest.getUserContent())
+                    .adminContent(bookingRequest.getAdminContent())
+                    .userFileUrl(bookingRequest.getUserFileUrl())
+                    .adminFileUrl(bookingRequest.getAdminFileUrl())
+                    .bookingStatus(BookingStatusResponse.valueOf(bookingRequest.getBookingStatus().name()))
+                    .createdAt(bookingRequest.getCreatedAt())
                     .build();
         }
     }
@@ -445,20 +451,20 @@ public class BookingDto {
         @Schema(description = "서비스 생성일자 및 시간", example = "2021-01-01T00:00")
         private LocalDateTime createdAt;
 
-        public static ServiceAllResponse create(Booking booking) {
+        public static ServiceAllResponse create(BookingRequest bookingRequest) {
             String operationUsername = null;
 
-            if (booking.getAdmin() != null) {
-                operationUsername = booking.getAdmin().getUsername();
+            if (bookingRequest.getAdmin() != null) {
+                operationUsername = bookingRequest.getAdmin().getUsername();
             }
 
             return ServiceAllResponse.builder()
-                    .bookingId(booking.getId())
-                    .businessTypeResponse(BusinessTypeResponse.valueOf(booking.getBusinessType().name()))
-                    .userUsername(booking.getUser().getUsername())
+                    .bookingId(bookingRequest.getId())
+                    .businessTypeResponse(BusinessTypeResponse.valueOf(bookingRequest.getBusinessType().name()))
+                    .userUsername(bookingRequest.getUser().getUsername())
                     .operationUsername(operationUsername)
-                    .bookingStatus(BookingStatusResponse.valueOf(booking.getBookingStatus().name()))
-                    .createdAt(booking.getCreatedAt())
+                    .bookingStatus(BookingStatusResponse.valueOf(bookingRequest.getBookingStatus().name()))
+                    .createdAt(bookingRequest.getCreatedAt())
                     .build();
         }
     }

@@ -1,8 +1,8 @@
 package com.example.carefully.domain.user.controller;
 
-import com.example.carefully.domain.booking.dto.BookingDto;
 import com.example.carefully.domain.user.dto.UserDto;
-import com.example.carefully.domain.user.service.impl.UserServiceImpl;
+import com.example.carefully.domain.user.service.SmsService;
+import com.example.carefully.domain.user.service.impl.SmsCertificationServiceImpl;
 import com.example.carefully.global.dto.BaseResponse;
 import com.example.carefully.domain.user.dto.TokenResponse;
 import com.example.carefully.domain.user.service.UserService;
@@ -15,12 +15,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import static com.example.carefully.domain.booking.dto.BookingResponseMessage.LOOKUP_SUCCESS;
 import static com.example.carefully.domain.user.dto.UserResponseMessage.*;
 
 @RestController
@@ -28,7 +28,8 @@ import static com.example.carefully.domain.user.dto.UserResponseMessage.*;
 @RequestMapping("/api/v1")
 @Api(tags = {"유저 관련 API"})
 public class UserController {
-    private final UserServiceImpl userService;
+    private final UserService userService;
+    private final SmsService smsCertificationService;
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그인에 성공하였습니다."),
@@ -36,10 +37,15 @@ public class UserController {
     })
     @ApiOperation(value = "로그인", notes = "로그인을 합니다.")
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<TokenResponse>> login(@Valid @RequestBody UserDto.LoginRequest request) {
+    public ResponseEntity<BaseResponse<TokenResponse.TokenInfo>> login(@Valid @RequestBody UserDto.LoginRequest request) {
         return ResponseEntity.ok(BaseResponse.create(LOGIN_SUCCESS.getMessage(), userService.login(request)));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@Validated UserDto.Logout logout) {
+        userService.logout(logout);
+        return ResponseEntity.ok(BaseResponse.create(LOGOUT_SUCCESS.getMessage()));
+    }
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원가입 신청에 성공하였습니다."),
@@ -81,7 +87,7 @@ public class UserController {
     })
     @ApiOperation(value = "일반 유저 내 정보 조회", notes = "일반 유저가 자신의 정보를 조회합니다.")
     @GetMapping("/users/my")
-    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
+    @PreAuthorize("hasAnyRole('LEVEL1','LEVEL2', 'LEVEL3', 'LEVEL4', 'LEVEL5')")
     public ResponseEntity<BaseResponse<UserDto.UserResponse>> getMyUserInfo(HttpServletRequest request) {
         return ResponseEntity.ok(BaseResponse.create(MY_LOOKUP_SUCCESS.getMessage(), userService.getMyUserWithAuthorities()));
     }
@@ -105,7 +111,7 @@ public class UserController {
     })
     @ApiOperation(value = "일반 유저 내 정보 수정", notes = "일반 유저의 정보를 수정합니다.")
     @PatchMapping("/users/my")
-    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM')")
+    @PreAuthorize("hasAnyRole('LEVEL1','LEVEL2', 'LEVEL3', 'LEVEL4', 'LEVEL5')")
     public ResponseEntity userUpdate(@Valid @RequestBody UserDto.UserUpdateRequest userUpdateRequest) {
         userService.userUpdate(userUpdateRequest);
         return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
@@ -116,7 +122,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다.."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
-    @ApiOperation(value = "일반 유저 등급 수정", notes = "어드민이 일반회원의 등급(CLASSIC/SILVER/GOLD/PLATINUM)을 수정합니다.")
+    @ApiOperation(value = "일반 유저 등급 수정", notes = "어드민이 일반회원의 등급(LEVEL1/LEVEL2/LEVEL3/LEVEL3/LEVEL4)을 수정합니다.")
     @PatchMapping("/users/{role}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity userUpdate(@RequestParam("username") String username, @PathVariable String role) {
@@ -171,7 +177,7 @@ public class UserController {
     @ApiOperation(value = "모든 회원 조회", notes = "어드민이 모든 회원의 정보를 조회합니다.")
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<BaseResponse<SliceDto<UserDto.UserAllResponse>>> userAllLookuo() {
+    public ResponseEntity<BaseResponse<SliceDto<UserDto.UserAllResponse>>> userAllLookup() {
         return ResponseEntity.ok(BaseResponse.create(USER_LOOKUP_SUCCESS.getMessage(), userService.userAllLookup()));    }
 
     @ApiResponses({
@@ -193,9 +199,35 @@ public class UserController {
     })
     @ApiOperation(value = "비밀번호 변경", notes = "로그인된 회원의 비밀번호를 변경합니다.")
     @PatchMapping("/change-password")
-    @PreAuthorize("hasAnyRole('CLASSIC','SILVER', 'GOLD', 'PLATINUM', 'ADMIN')")
     public ResponseEntity passwordUpdate(@Valid @RequestBody UserDto.updatePasswordRequest updatePasswordRequest) {
         userService.passwordUpdate(updatePasswordRequest);
         return ResponseEntity.ok(BaseResponse.create(UPDATE_SUCCESS.getMessage()));
     }
+
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "메세지 전송에 성공하였습니다."),
+            @ApiResponse(responseCode = "4006", description = "메세지 전송에 실패했을 경우 발생할 수 있습니다."),
+            @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
+    })
+    @ApiOperation(value = "인증번호 발신", notes = "인증 번호를 전송합니다.")
+    @PostMapping("/sms-certification/sends")
+    public ResponseEntity sendSms(@RequestBody UserDto.SmsCertificationRequest requestDto) {
+        smsCertificationService.sendSms(requestDto.getPhone());
+        return ResponseEntity.ok(BaseResponse.create(SEND_SUCCESS.getMessage()));
+    }
+
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "본인인증에 성공하였습니다."),
+            @ApiResponse(responseCode = "4005", description = "인증번호가 일치하지 않을 경우 발생할 수 있습니다."),
+            @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다."),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
+    })
+    @ApiOperation(value = "인증번호 검증", notes = "입력한 번호와 인증번호를 검증합니다.")
+    @PostMapping("/sms-certification/confirms")
+    public ResponseEntity SmsVerification(@RequestBody UserDto.SmsCertificationRequest requestDto) {
+        smsCertificationService.verifySms(requestDto);
+        return ResponseEntity.ok(BaseResponse.create(VALIDATION_SUCCESS.getMessage()));
+    }
+
 }

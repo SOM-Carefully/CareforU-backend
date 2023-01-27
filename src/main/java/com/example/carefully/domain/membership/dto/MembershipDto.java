@@ -18,7 +18,7 @@ public class MembershipDto {
     @Getter
     @RequiredArgsConstructor
     public enum RoleRequest {
-        CLASSIC, SILVER, GOLD, PLATINUM, ADMIN;
+        LEVEL1, LEVEL2, LEVEL3, LEVEL4, LEVEL5, ADMIN;
     }
 
     @Getter
@@ -41,7 +41,7 @@ public class MembershipDto {
         @ApiModelProperty(example = "회원가입 신청한 유저 이메일")
         private String requestUsername;
 
-        @ApiModelProperty(example = "CLASSIC/SILVER/GOLD/PLATINUM/AMDIN")
+        @ApiModelProperty(example = "LEVEL1/LEVEL2/LEVEL3/LEVEL4/LEVEL5/ADMIN")
         private RoleRequest requestRole;
 
         @ApiModelProperty(example = "회원가입 신청에 대해 처리한 어드민 이메일")

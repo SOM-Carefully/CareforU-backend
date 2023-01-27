@@ -1,12 +1,12 @@
 package com.example.carefully.global.security.config;
 
 
-import com.example.carefully.global.security.jwt.JwtAccessDeniedHandler;
+import com.example.carefully.global.security.jwt.JwtAuthenticationFilter;
 import com.example.carefully.global.security.jwt.JwtSecurityConfig;
-import com.example.carefully.global.security.jwt.JwtAuthenticationEntryPoint;
-import com.example.carefully.global.security.jwt.TokenProvider;
+import com.example.carefully.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -27,10 +27,9 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final TokenProvider tokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
     private final CorsFilter corsFilter;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final RedisTemplate redisTemplate;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -68,6 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+
                 .csrf().disable()
                 .cors().configurationSource(corsConfigurationSource())
 
@@ -89,10 +89,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/v1/login").permitAll()
                 .antMatchers("/api/v1/signup").permitAll()
+                .antMatchers("/api/v1/memberships/all").permitAll()
                 .antMatchers("/test").permitAll()
 
                 .and()
-                .apply(new JwtSecurityConfig(tokenProvider));
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class);
+        ;
     }
 }
 
