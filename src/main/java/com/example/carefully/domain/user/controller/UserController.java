@@ -122,7 +122,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "로그인이 안 되어 있거나 활성회되지 않은 회원의 경우 발생할 수 있습니다.."),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저가 접근했을 경우 발생할 수 있습니다.")
     })
-    @ApiOperation(value = "일반 유저 등급 수정", notes = "어드민이 일반회원의 등급(LEVEL1/LEVEL2/LEVEL3/LEVEL3/LEVEL4)을 수정합니다.")
+    @ApiOperation(value = "일반 유저 등급 수정", notes = "어드민이 일반회원의 등급(LEVEL1/LEVEL2/LEVEL3/LEVEL3/LEVEL4/LEVEL5)을 수정합니다.")
     @PatchMapping("/users/{role}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity userUpdate(@RequestParam("username") String username, @PathVariable String role) {
