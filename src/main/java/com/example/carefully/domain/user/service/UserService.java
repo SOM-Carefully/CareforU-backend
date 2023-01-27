@@ -6,7 +6,8 @@ import com.example.carefully.global.dto.SliceDto;
 
 
 public interface UserService {
-    TokenResponse login(UserDto.LoginRequest loginRequest);
+    TokenResponse.TokenInfo login(UserDto.LoginRequest loginRequest);
+    void logout(UserDto.Logout logout);
 
     void userSignup(UserDto.UserRegisterRequest registerRequest);
     void adminSignup(UserDto.AdminRegisterRequest registerRequest);

@@ -7,20 +7,23 @@ import com.example.carefully.domain.user.dto.UserDto;
 import com.example.carefully.domain.user.entity.User;
 import com.example.carefully.domain.user.exception.DuplicatedUsernameException;
 import com.example.carefully.domain.user.exception.NotFoundUserException;
+import com.example.carefully.domain.user.exception.NotValidateToken;
 import com.example.carefully.domain.user.exception.NotValidationPasswordException;
 import com.example.carefully.domain.user.repository.UserRepository;
 import com.example.carefully.domain.user.service.UserService;
 import com.example.carefully.global.dto.SliceDto;
-import com.example.carefully.global.security.jwt.TokenProvider;
+import com.example.carefully.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.concurrent.TimeUnit;
+
 import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 
 @Service
@@ -31,7 +34,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final MembershipRepository membershipRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenProvider tokenProvider;
+    private final RedisTemplate redisTemplate;
+    private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     /*
@@ -39,17 +43,37 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public TokenResponse login(UserDto.LoginRequest loginRequest) {
+    public TokenResponse.TokenInfo login(UserDto.LoginRequest loginRequest) {
         UsernamePasswordAuthenticationToken unauthenticated = UsernamePasswordAuthenticationToken.unauthenticated(
                 loginRequest.getUsername(),
                 loginRequest.getPassword()
         );
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(unauthenticated);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenProvider.createToken(authentication);
+        TokenResponse.TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
+        redisTemplate.opsForValue()
+                .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
 
-        return new TokenResponse(jwt);
+        return TokenResponse.TokenInfo.create(tokenInfo);
+    }
+
+    /*
+    로그아웃
+     */
+    @Override
+    @Transactional
+    public void logout(UserDto.Logout logout) {
+        if (!jwtTokenProvider.validateToken(logout.getAccessToken())) {
+            throw new NotValidateToken();
+        }
+        Authentication authentication = jwtTokenProvider.getAuthentication(logout.getAccessToken());
+        if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
+            redisTemplate.delete("RT:" + authentication.getName());
+        }
+
+        Long expiration = jwtTokenProvider.getExpiration(logout.getAccessToken());
+        redisTemplate.opsForValue()
+                .set(logout.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
     }
 
     /*
@@ -141,8 +165,7 @@ public class UserServiceImpl implements UserService {
     public void signout(UserDto.SignoutRequest signoutRequest) {
         User currentUser = getCurrentUser(userRepository);
         currentUser = passwordCheckLogic(currentUser.getId(), signoutRequest.getPassword());
-        currentUser.signout();
-        userRepository.save(currentUser);
+        userRepository.delete(currentUser);
     }
 
     /*
@@ -152,8 +175,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void forceSignout(String username) {
         User user = userRepository.findOneWithAuthoritiesByUsername(username).orElseThrow(NotFoundUserException::new);
-        user.signout();
-        userRepository.save(user);
+        userRepository.delete(user);
     }
 
     /*

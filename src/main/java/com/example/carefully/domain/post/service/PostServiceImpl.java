@@ -55,7 +55,7 @@ public class PostServiceImpl implements PostService {
     private boolean isRankFailToCreatePost(PostRole postRole, Long categoryId) {
         Role userRole = getCurrentUser(userRepository).getRole();
         if (postRole == PostRole.NOTICE) {
-            return true;
+            return false;
         }
 
         Category category = findCategoryById(categoryId);
@@ -115,7 +115,7 @@ public class PostServiceImpl implements PostService {
     private boolean isRankFailToAccessPost(PostRole postRole, Long categoryId) {
         Role userRole = getCurrentUser(userRepository).getRole();
         if (postRole == PostRole.NOTICE) {
-            return true;
+            return false;
         }
 
         Category category = findCategoryById(categoryId);

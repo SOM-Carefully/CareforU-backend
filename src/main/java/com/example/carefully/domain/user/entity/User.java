@@ -1,5 +1,6 @@
 package com.example.carefully.domain.user.entity;
 
+import com.example.carefully.domain.bookingRequest.entity.BookingRequest;
 import com.example.carefully.domain.user.dto.UserDto;
 import com.example.carefully.global.entity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,10 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
@@ -17,7 +22,6 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
-@AllArgsConstructor
 @Table(name = "user_table")
 @NoArgsConstructor(access = PROTECTED)
 public class User extends BaseEntity {
@@ -71,6 +75,9 @@ public class User extends BaseEntity {
     @JoinColumn(name = "user_profile_id")
     private UserProfile userProfile;
 
+    @OneToMany(mappedBy = "user")
+    private List<BookingRequest> bookingRequestList = new ArrayList<>();
+
     @Builder
     public User(String username, String password, String name, String identificationNumber, String phoneNumber, Gender gender,
                 String nationality, String universityName, String major, String advisorName, Education education,
@@ -107,7 +114,7 @@ public class User extends BaseEntity {
                 .education(Education.valueOf((registerRequest.getEducationRequest().name())))
                 .address(registerRequest.getAddress().getDetails())
                 .activated(false)
-                .role(Role.valueOf("CLASSIC"))
+                .role(Role.valueOf("LEVEL1"))
                 .userProfile(new UserProfile())
                 .build();
     }
@@ -147,7 +154,7 @@ public class User extends BaseEntity {
 
     public void updatePassword(String password) { this.password = password; }
 
-    public void signout() {
-        this.activated = false;
-    }
+//    public void signout() {
+//        this.activated = false;
+//    }
 }
