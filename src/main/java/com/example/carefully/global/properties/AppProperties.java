@@ -2,19 +2,18 @@ package com.example.carefully.global.properties;
 
 import lombok.Getter;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 
 @Getter
-@Configuration
+@RequiredArgsConstructor
 public class AppProperties {
-
     @Value("${coolsms.key}")
-    private String coolSmsKey;
+    private final String coolSmsKey;
 
     @Value("${coolsms.secret}")
-    private String coolSmsSecret;
+    private final String coolSmsSecret;
 
     @Value("${coolsms.phone}")
-    private String coolSmsFromPhoneNumber;
+    private final String coolSmsFromPhoneNumber;
 }

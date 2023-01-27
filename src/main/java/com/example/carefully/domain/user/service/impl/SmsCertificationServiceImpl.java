@@ -5,15 +5,15 @@ import com.example.carefully.domain.user.dto.UserDto;
 import com.example.carefully.domain.user.exception.AuthenticationNumberMismatchException;
 import com.example.carefully.domain.user.exception.NotSendNumberException;
 import com.example.carefully.domain.user.service.SmsService;
-import com.example.carefully.domain.user.service.UserService;
 import com.example.carefully.global.common.coolSms.SmsMessageTemplate;
-import com.example.carefully.global.properties.AppProperties;
 import lombok.RequiredArgsConstructor;
 
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.service.DefaultMessageService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -27,7 +27,14 @@ import static com.example.carefully.global.utils.certification.RandomNumberGener
 public class SmsCertificationServiceImpl implements SmsService {
 
     private final SmsCertificationDao smsCertificationDao;
-    private final AppProperties appProperties;
+
+    // private final AppProperties appProperties;
+    @Value("${coolsms.key}")
+    private String coolSmsKey;
+    @Value("${coolsms.secret}")
+    private String coolSmsSecret;
+    @Value("${coolsms.phone}")
+    private String coolSmsFromPhoneNumber;
 
     // 인증 메세지 내용 생성
     public String makeSmsContent(String certificationNumber) {
@@ -37,7 +44,7 @@ public class SmsCertificationServiceImpl implements SmsService {
 
     public HashMap<String, String> makeParams(String to, String text) {
         HashMap<String, String> params = new HashMap<>();
-        params.put("from", appProperties.getCoolSmsFromPhoneNumber());
+        params.put("from", coolSmsFromPhoneNumber);
         params.put("type", SMS_TYPE);
         params.put("app_version", APP_VERSION);
         params.put("to", to);
@@ -47,14 +54,14 @@ public class SmsCertificationServiceImpl implements SmsService {
 
     // coolSms API를 이용하여 인증번호 발송하고, 발송 정보를 Redis에 저장
     public void sendSms(String phone) {
-        DefaultMessageService messageService = NurigoApp.INSTANCE.initialize(appProperties.getCoolSmsKey(), appProperties.getCoolSmsSecret(), "https://api.coolsms.co.kr");
+        DefaultMessageService messageService = NurigoApp.INSTANCE.initialize(coolSmsKey, coolSmsSecret, "https://api.coolsms.co.kr");
 
         Message coolsms = new Message();
         String randomNumber = makeRandomNumber();
         String content = makeSmsContent(randomNumber);
         HashMap<String, String> params = makeParams(phone, content);
 
-        coolsms.setFrom(appProperties.getCoolSmsFromPhoneNumber());
+        coolsms.setFrom(coolSmsFromPhoneNumber);
         coolsms.setTo(phone);
         coolsms.setText(content);
 
