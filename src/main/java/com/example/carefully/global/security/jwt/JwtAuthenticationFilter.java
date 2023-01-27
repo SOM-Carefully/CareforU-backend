@@ -21,10 +21,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
-    @Value("${jwt.header}")
-    private static String AUTHORIZATION_HEADER;
-    @Value("${jwt.bearer-type}")
-    private static String BEARER_TYPE;
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_TYPE = "Bearer";
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate redisTemplate;
