@@ -59,4 +59,4 @@ jobs:
       - name: Docker run
         run: |
           docker stop ${{ env.REPO }} && docker rm ${{ env.REPO }} && docker rmi ${{ env.NAME }}/${{ env.REPO }}:latest
-          docker run -d -p 80:8080 --name ${{ env.REPO }} --restart always ${{ env.NAME }}/${{ env.REPO }}:latest
+          docker run -d -p 8080:8080 --name ${{ env.REPO }} --restart always ${{ env.NAME }}/${{ env.REPO }}:latest
