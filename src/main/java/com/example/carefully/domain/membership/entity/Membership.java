@@ -13,6 +13,7 @@ import javax.persistence.*;
 import static com.example.carefully.domain.membership.entity.MembershipStatus.ACCEPT;
 import static com.example.carefully.domain.membership.entity.MembershipStatus.REJECT;
 import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -27,11 +28,11 @@ public class Membership extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = ALL)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = ALL)
     @JoinColumn(name = "admin_id")
     private User admin;
 
