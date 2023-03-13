@@ -6,11 +6,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.FORBIDDEN)
 public class AuthorityException extends BaseException {
+
     public AuthorityException(ErrorCode errorCode){
         super(errorCode);
     }
 
-    public AuthorityException(String message, ErrorCode errorCode){
-        super(message, errorCode);
+    public AuthorityException(ErrorCode errorCode, Throwable ex) {
+        super(errorCode, ex);
     }
 }
