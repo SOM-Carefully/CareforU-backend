@@ -106,7 +106,7 @@ public class BookingRequest extends BaseEntity {
         return BookingRequest.builder()
                 .booking(booking)
                 .user(user)
-                .businessType(BusinessType.valueOf("DWELLING"))
+                .businessType(BusinessType.valueOf("TRAFFIC"))
                 .userContent(receiveRequest.getContent())
                 .userFileUrl(receiveRequest.getUserFileUrl())
                 .bookingStatus(BookingStatus.valueOf("WAITING"))
