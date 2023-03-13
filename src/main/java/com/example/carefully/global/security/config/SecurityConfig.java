@@ -3,7 +3,6 @@ package com.example.carefully.global.security.config;
 
 import com.example.carefully.global.error.filter.BaseExceptionHandlerFilter;
 import com.example.carefully.global.security.jwt.JwtAuthenticationFilter;
-import com.example.carefully.global.security.jwt.JwtSecurityConfig;
 import com.example.carefully.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
+import java.util.List;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -41,9 +41,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "PATCH", "POST","GET","DELETE","PUT"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -55,6 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
         web.ignoring()
                 .antMatchers(
+                        "/api/v1/login",
+                        "/api/v1/signup",
+                        "/api/v1/memberships/all",
                         "/h2-console/**"
                         ,"/favicon.ico"
                         ,"/error"
@@ -85,13 +88,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-                .and()
-                .authorizeRequests()
-                .antMatchers("/api/v1/login").permitAll()
-                .antMatchers("/api/v1/signup").permitAll()
-                .antMatchers("/api/v1/memberships/all").permitAll()
-                .antMatchers("/test").permitAll()
 
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class)
