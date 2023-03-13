@@ -7,7 +7,7 @@ import lombok.Getter;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ErrorCode {
 
-    // USER
+    // COMMON
     REQUEST_ERROR(2000, "입력값을 확인해주세요."),
     EMPTY_JWT(2001, "JWT를 입력해주세요."),
     INVALID_JWT(2002, "유효하지 않은 JWT입니다."),
@@ -20,13 +20,17 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(5000, "서버 오류입니다. "),
     METHOD_NOT_ALLOWED(4000, "요청 방식이 잘못되었습니다."),
     INVALID_SECRET_KEY(2007, "유효하지 않은 시크릿 키입니다."),
+    TOKEN_EXPIRED(4007, "토큰 유효 시간이 만료되었습니다."),
+    TOKEN_BLACKLIST(4008, "블랙리스트에 의해 차단되어 사용할 수 없는 토큰입니다"),
+    TOKEN_EMPTY(4009, "토큰이 존재하지 않습니다."),
+
+    // USER
     USER_EXIST(4001, "이미 존재하는 유저입니다."),
     USER_NOT_FOUND(4002, "유저를 찾을 수 없습니다."),
     ROLE_NOT_VALIDATE(4003, "유효하지 않은 역할입니다."),
     PASSWORD_NOT_CORRECT(4004, "비밀번호가 일치하지 않습니다."),
     INVALID_NUMBER(4005, "인증번호가 일치하지 않습니다."),
     NOT_SEND_NUMBER(4006, "인증번호가 정상적으로 전송되지 않았습니다."),
-
     //TODO 도메인 별로 분류해서 추가해주세요.
 
     //POST
