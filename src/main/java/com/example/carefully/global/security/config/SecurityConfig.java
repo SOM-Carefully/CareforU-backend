@@ -1,6 +1,7 @@
 package com.example.carefully.global.security.config;
 
 
+import com.example.carefully.global.error.filter.BaseExceptionHandlerFilter;
 import com.example.carefully.global.security.jwt.JwtAuthenticationFilter;
 import com.example.carefully.global.security.jwt.JwtSecurityConfig;
 import com.example.carefully.global.security.jwt.JwtTokenProvider;
@@ -29,7 +30,7 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
     private final CorsFilter corsFilter;
-    private final RedisTemplate redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -93,7 +94,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/test").permitAll()
 
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new BaseExceptionHandlerFilter(), JwtAuthenticationFilter.class);
         ;
     }
 }
