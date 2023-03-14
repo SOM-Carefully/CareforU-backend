@@ -55,6 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
      *
      * @param categoryId 수정하려는 카테고리 ID
      * @param request 새롭게 수정하고 싶은 카테고리 명칭
+     * @throws CategoryEmptyException 해당 카테고리가 존재하지 않는 경우
      */
     @Override
     @Transactional

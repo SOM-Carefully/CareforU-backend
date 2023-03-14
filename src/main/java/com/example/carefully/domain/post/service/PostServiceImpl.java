@@ -41,6 +41,7 @@ public class PostServiceImpl implements PostService {
      * @param categoryId 게시판 카테고리  EX) 1등급 / 비밀 / 만남 / 토론
      * @return 생성된 게시글의 ID
      * @throws NotValidateWriteException 글을 작성할 수 있는 권한이 없는 경우
+     * @throws CategoryEmptyException 게시판 카테고리가 존재하지 않는 경우
      */
     @Override
     @Transactional
@@ -89,6 +90,7 @@ public class PostServiceImpl implements PostService {
      * @param request 수정하려는 게시글 제목 / 내용 / 이미지 경로
      * @param postId 수정하려는 게시글 ID
      * @return 수정이 완료된 게시글 ID
+     * @throws PostEmptyException 게시글이 존재하지 않는 경우
      */
     @Override
     @Transactional
@@ -102,6 +104,7 @@ public class PostServiceImpl implements PostService {
      * DB에서 해당 게시글을 삭제하고 S3 버킷에서 이미지를 삭제한다.
      *
      * @param postId 삭제하려는 게시글 ID
+     * @throws PostEmptyException 게시글이 존재하지 않는 경우
      */
     @Override
     @Transactional
@@ -116,6 +119,7 @@ public class PostServiceImpl implements PostService {
      *
      * @param postId 조회하려는 게시글 ID
      * @return 게시글 ID / 제목 / 내용 / 작성자 / 이미지 경로 / 작성 날짜 반환
+     * @throws PostEmptyException 게시글이 존재하지 않는 경우
      */
     @Override
     public PostDto.SearchResponse searchPostDetail(Long postId) {
@@ -130,7 +134,8 @@ public class PostServiceImpl implements PostService {
      * @param categoryId 조회하려는 게시판 카테고리 ID  EX) 2등급 게시판 /
      * @param pageable  한 페이지에 조회할 게시글 개수
      * @return  게시글 ID / 제목 / 내용 / 작성자 / 이미지 경로 / 작성 날짜를 페이지 정보와 함께 SliceDto 형태로 반환
-ㅇ    * @throws NotValidateAccessException 글을 조회할 수 있는 권한이 없는 경우
+     * @throws NotValidateAccessException 글을 조회할 수 있는 권한이 없는 경우
+     * @throws CategoryEmptyException 게시판 카테고리가 존재하지 않는 경우
      */
     @Override
     public SliceDto<PostDto.SearchResponse> searchPostList(String postRole,

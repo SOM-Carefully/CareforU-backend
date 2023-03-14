@@ -32,10 +32,11 @@ public class CommentServiceImpl implements CommentService {
     private final PostRepository postRepository;
 
     /**
-     * 댓글을 등록한다.
+     * 부모와 자식(대댓글)을 구분하여 저장한다.
      *
      * @param request 게시글 ID/ 부모 댓글 ID/ 댓글 내용/ 댓글 계층
      * @return 새롭게 생성된 댓글의 ID
+     * @throws PostEmptyException 존재하지 않는 글인 경우
      */
     @Override
     @Transactional
@@ -47,10 +48,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private Comment getParentOrChild(CreateRequest request) {
-        if (request.isRequestParent()) {
+        if (request.isRequestParent()) {   // 부모 댓글이면 null 저장
             return null;
         }
-        return getCommentByIdAndUser(request.getParentId());
+        return getCommentByIdAndUser(request.getParentId());  // 대댓글이면 부모 댓글에 연결
     }
 
     /**
@@ -85,6 +86,7 @@ public class CommentServiceImpl implements CommentService {
      * 댓글을 삭제한다.
      *
      * @param commentId 삭제하려는 댓글의 ID
+     * @throws CommentEmptyException 존재하지 않는 댓글인 경우
      */
     @Override
     @Transactional
