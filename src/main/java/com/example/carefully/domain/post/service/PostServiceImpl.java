@@ -131,9 +131,9 @@ public class PostServiceImpl implements PostService {
      * 조회 권한이 있는 경우 해당 카테고리에 맞는 게시판의 글 리스트를 반환한다.
      *
      * @param postRole  게시판 종류  EX) 공지 게시판 / 자유 게시판
-     * @param categoryId 조회하려는 게시판 카테고리 ID  EX) 2등급 게시판 /
+     * @param categoryId 조회하려는 게시판 카테고리 ID  EX) 2등급 게시판
      * @param pageable  한 페이지에 조회할 게시글 개수
-     * @return  게시글 ID / 제목 / 내용 / 작성자 / 이미지 경로 / 작성 날짜를 페이지 정보와 함께 SliceDto 형태로 반환
+     * @return  게시글 ID / 제목 / 내용 / 작성자 / 이미지 경로 / 작성 날짜 / 페이지 정보 반환
      * @throws NotValidateAccessException 글을 조회할 수 있는 권한이 없는 경우
      * @throws CategoryEmptyException 게시판 카테고리가 존재하지 않는 경우
      */
