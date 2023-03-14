@@ -75,6 +75,11 @@ public class Comment extends BaseEntity {
         return hierarchy == Hierarchy.PARENT;
     }
 
+    /**
+     * 자식이 없는 부모 댓글이거나 자식 댓글인지 확인한다.
+     *
+     * @return 댓글을 삭제할 수 있는 조건이면 참 반환
+     */
     public boolean canDeleteComment() {
         return isParent() && child.size() == 0 || hierarchy == Hierarchy.CHILD;
     }
