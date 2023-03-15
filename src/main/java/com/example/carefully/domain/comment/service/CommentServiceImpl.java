@@ -1,7 +1,6 @@
 package com.example.carefully.domain.comment.service;
 
 import com.example.carefully.domain.comment.domain.Comment;
-import com.example.carefully.domain.comment.dto.CommentDto;
 import com.example.carefully.domain.comment.dto.CommentDto.SearchResponse.ReplyResponse;
 import com.example.carefully.domain.comment.exception.CommentEmptyException;
 import com.example.carefully.domain.comment.repository.CommentRepository;
@@ -10,7 +9,6 @@ import com.example.carefully.domain.post.domain.Post;
 import com.example.carefully.domain.post.exception.PostEmptyException;
 import com.example.carefully.domain.post.repository.PostRepository;
 import com.example.carefully.domain.user.repository.UserRepository;
-import com.example.carefully.global.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.carefully.global.utils.UserUtils.*;
+import static com.example.carefully.domain.comment.dto.CommentDto.*;
+import static com.example.carefully.global.utils.UserUtils.getCurrentUser;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,42 +31,63 @@ public class CommentServiceImpl implements CommentService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
+    /**
+     * 부모와 자식(대댓글)을 구분하여 저장한다.
+     *
+     * @param request 게시글 ID/ 부모 댓글 ID/ 댓글 내용/ 댓글 계층
+     * @return 새롭게 생성된 댓글의 ID
+     * @throws PostEmptyException 존재하지 않는 글인 경우
+     */
     @Override
     @Transactional
-    public CommentDto.CreateResponse addComment(CommentDto.CreateRequest request) {
+    public CreateResponse addComment(CreateRequest request) {
         Post post = postRepository.findById(request.getPostId()).orElseThrow(PostEmptyException::new);
         Comment comment = commentRepository.save(request.toEntity(post, getCurrentUser(userRepository)));
         comment.addParent(getParentOrChild(request));
-        return new CommentDto.CreateResponse(comment.getId());
+        return new CreateResponse(comment.getId());
     }
 
-    private Comment getParentOrChild(CommentDto.CreateRequest request) {
-        if (request.isRequestParent()) {
+    private Comment getParentOrChild(CreateRequest request) {
+        if (request.isRequestParent()) {   // 부모 댓글이면 null 저장
             return null;
         }
-        return getCommentByIdAndUser(request.getParentId());
+        return getCommentByIdAndUser(request.getParentId());  // 대댓글이면 부모 댓글에 연결
     }
 
+    /**
+     * 게시글의 모든 댓글을 조회한다.
+     *
+     * @param postId 댓글을 조회하고 싶은 게시글 ID
+     * @return 해당 게시글의 부모 댓글과 대댓글 정보가 쌍으로 담긴 리스트
+     */
     @Override
-    public CommentDto.SearchResponse findAllCommentsByPost(Long postId) {
+    public SearchResponse findAllCommentsByPost(Long postId) {
         List<Comment> commentsByPostId = customCommentRepository.findCommentsByPostId(postId);
         Map<Long, ReplyResponse> commentMap = createCommentMap(commentsByPostId);
-        return new CommentDto.SearchResponse(new ArrayList<>(commentMap.values()));
+        return new SearchResponse(new ArrayList<>(commentMap.values()));
     }
 
     private Map<Long, ReplyResponse> createCommentMap(List<Comment> comments) {
         Map<Long, ReplyResponse> commentResultMap = new HashMap<>();
         comments.forEach(c -> {
-            ReplyResponse.CommentResponse comment = ReplyResponse.CommentResponse.of(c);
+            CommentResponse comment = CommentResponse.of(c);
             if (c.isParent()) {
                 commentResultMap.put(c.getId(), new ReplyResponse(comment));
             } else {
-                commentResultMap.get(c.getParent().getId()).getChildren().add(comment);
+                commentResultMap.get(c.getParent().getId())
+                        .getChildren()
+                        .add(comment);
             }
         });
         return commentResultMap;
     }
 
+    /**
+     * 댓글을 삭제한다.
+     *
+     * @param commentId 삭제하려는 댓글의 ID
+     * @throws CommentEmptyException 존재하지 않는 댓글인 경우
+     */
     @Override
     @Transactional
     public void deleteComment(Long commentId) {

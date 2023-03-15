@@ -33,6 +33,16 @@ public class PostServiceImpl implements PostService {
     private final CustomPostRepository customPostRepository;
     private final UserRepository userRepository;
 
+    /**
+     * 작성 권한이 존재한다면 게시글을 해당 게시판 카테고리와 연결 후에 저장한다.
+     *
+     * @param request 게시글 제목, 내용, 이미지 경로가 담긴 객체
+     * @param postRole 게시판 종류  EX) 공지 게시판 / 자유 게시판
+     * @param categoryId 게시판 카테고리  EX) 1등급 / 비밀 / 만남 / 토론
+     * @return 생성된 게시글의 ID
+     * @throws NotValidateWriteException 글을 작성할 수 있는 권한이 없는 경우
+     * @throws CategoryEmptyException 게시판 카테고리가 존재하지 않는 경우
+     */
     @Override
     @Transactional
     public PostDto.CreateResponse createNewPost(PostDto.CreateRequest request,
@@ -54,26 +64,34 @@ public class PostServiceImpl implements PostService {
 
     private boolean isRankFailToCreatePost(PostRole postRole, Long categoryId) {
         Role userRole = getCurrentUser(userRepository).getRole();
-        if (postRole == PostRole.NOTICE) {
+        if (postRole == PostRole.NOTICE) {     // 공지 게시판인 경우 작성 허용
             return false;
         }
 
         Category category = findCategoryById(categoryId);
-        if (isNoNeedToCheckRankValidation(category)) {
+        if (isNoNeedToCheckRankValidation(category)) {    // 등급에 관련된 카테고리인 경우 작성 허용
             return false;
         }
 
-        if (userRole.isPaidRole() && category.isClassic()) {
+        if (userRole.isPaidRole() && category.isClassic()) {   // 유료 등급 회원은 가장 낮은 등급의 게시판 작성 허용
             return false;
         }
 
-        return !category.isSameRankWithUser(userRole);
+        return !category.isSameRankWithUser(userRole);   // 각 회원 등급이랑 같은 등급의 게시판에만 작성 허용
     }
 
     private boolean isNoNeedToCheckRankValidation(Category category) {
         return !category.isAssociatedToRank();
     }
 
+    /**
+     * 게시글 제목과 내용을 수정한다.
+     *
+     * @param request 수정하려는 게시글 제목 / 내용 / 이미지 경로
+     * @param postId 수정하려는 게시글 ID
+     * @return 수정이 완료된 게시글 ID
+     * @throws PostEmptyException 게시글이 존재하지 않는 경우
+     */
     @Override
     @Transactional
     public PostDto.UpdateResponse updatePost(PostDto.UpdateRequest request, Long postId) {
@@ -82,6 +100,12 @@ public class PostServiceImpl implements PostService {
         return new PostDto.UpdateResponse(post.getId());
     }
 
+    /**
+     * DB에서 해당 게시글을 삭제하고 S3 버킷에서 이미지를 삭제한다.
+     *
+     * @param postId 삭제하려는 게시글 ID
+     * @throws PostEmptyException 게시글이 존재하지 않는 경우
+     */
     @Override
     @Transactional
     public void findPostAndDelete(Long postId) {
@@ -90,12 +114,29 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(post);
     }
 
+    /**
+     * 게시글 하나의 정보를 반환한다.
+     *
+     * @param postId 조회하려는 게시글 ID
+     * @return 게시글 ID / 제목 / 내용 / 작성자 / 이미지 경로 / 작성 날짜 반환
+     * @throws PostEmptyException 게시글이 존재하지 않는 경우
+     */
     @Override
     public PostDto.SearchResponse searchPostDetail(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(PostEmptyException::new);
         return PostDto.SearchResponse.create(post);
     }
 
+    /**
+     * 조회 권한이 있는 경우 해당 카테고리에 맞는 게시판의 글 리스트를 반환한다.
+     *
+     * @param postRole  게시판 종류  EX) 공지 게시판 / 자유 게시판
+     * @param categoryId 조회하려는 게시판 카테고리 ID  EX) 2등급 게시판
+     * @param pageable  한 페이지에 조회할 게시글 개수
+     * @return  게시글 ID / 제목 / 내용 / 작성자 / 이미지 경로 / 작성 날짜 / 페이지 정보 반환
+     * @throws NotValidateAccessException 글을 조회할 수 있는 권한이 없는 경우
+     * @throws CategoryEmptyException 게시판 카테고리가 존재하지 않는 경우
+     */
     @Override
     public SliceDto<PostDto.SearchResponse> searchPostList(String postRole,
                                                            Long categoryId,

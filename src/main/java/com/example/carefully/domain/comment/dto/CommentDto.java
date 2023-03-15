@@ -66,32 +66,32 @@ public class CommentDto {
             public ReplyResponse(CommentResponse parent) {
                 this.parent = parent;
             }
+        }
+    }
 
-            @Getter
-            @Builder
-            public static class CommentResponse {
-                @Schema(description = "댓글 아이디")
-                private Long commentId;
+    @Getter
+    @Builder
+    public static class CommentResponse {
+        @Schema(description = "댓글 아이디")
+        private Long commentId;
 
-                @Schema(description = "댓글 내용")
-                private String content;
+        @Schema(description = "댓글 내용")
+        private String content;
 
-                @Schema(description = "댓글 상태", example = "ALIVE/DELETED")
-                private CommentStatus status;
+        @Schema(description = "댓글 상태", example = "ALIVE/DELETED")
+        private CommentStatus status;
 
-                @Schema(description = "댓글 생성 시간")
-                @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm", timezone = "Asia/Seoul")
-                private LocalDateTime createdAt;
+        @Schema(description = "댓글 생성 시간")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm", timezone = "Asia/Seoul")
+        private LocalDateTime createdAt;
 
-                public static CommentResponse of(Comment comment) {
-                    return CommentResponse.builder()
-                            .commentId(comment.getId())
-                            .content(comment.getContent())
-                            .status(comment.getCommentStatus())
-                            .createdAt(comment.getCreatedAt())
-                            .build();
-                }
-            }
+        public static CommentResponse of(Comment comment) {
+            return CommentResponse.builder()
+                    .commentId(comment.getId())
+                    .content(comment.getContent())
+                    .status(comment.getCommentStatus())
+                    .createdAt(comment.getCreatedAt())
+                    .build();
         }
     }
 }

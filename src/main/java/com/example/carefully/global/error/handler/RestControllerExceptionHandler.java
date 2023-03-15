@@ -80,11 +80,11 @@ public class RestControllerExceptionHandler {
     }
 
     /**
-     *  커스텀 : 핸들링 하지 않는 나머지 모든 예외
+     *  커스텀 : 핸들링 하지 않는 나머지 모든 예외(체크 예외)
      */
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<ErrorResponse> handleException(Exception ex) {
+    protected ResponseEntity<String> handleException(Exception ex) {
         log.error("handleException", ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponse.create(ErrorCode.INTERNAL_SERVER_ERROR));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
 }
