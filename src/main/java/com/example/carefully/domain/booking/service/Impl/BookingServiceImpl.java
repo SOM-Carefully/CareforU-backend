@@ -113,7 +113,7 @@ public class BookingServiceImpl implements BookingService {
     @Transactional(readOnly = true)
     public BookingDto.DwellingReceiveResponse dwellingLookup (Long bookingId) {
         BookingRequest bookingRequest = bookingRequestRepository.getReferenceById(bookingId);
-        Dwelling booking = dwellingRepository.getReferenceById(bookingId);
+        Dwelling booking = dwellingRepository.getReferenceById(bookingRequest.getBooking().getId());
         return BookingDto.DwellingReceiveResponse.create(bookingRequest, booking);
     }
 
