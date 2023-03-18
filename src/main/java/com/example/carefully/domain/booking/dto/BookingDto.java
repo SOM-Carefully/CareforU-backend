@@ -382,7 +382,7 @@ public class BookingDto {
         @Schema(description = "휴대폰 기종", example = "아이폰 14 pro", required = true)
         private String modelName;
 
-        @Schema(description = "금액", example = "True/False", required = true)
+        @Schema(description = "유심 여부", example = "True/False", required = true)
         private boolean usim;
 
         @Schema(description = "서비스 신청 내용", example = "안녕하세요! 교육 서비스를 신청한.. 어쩌구..")
