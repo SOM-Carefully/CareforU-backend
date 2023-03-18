@@ -36,12 +36,23 @@ public class SmsCertificationServiceImpl implements SmsService {
     @Value("${coolsms.phone}")
     private String coolSmsFromPhoneNumber;
 
-    // 인증 메세지 내용 생성
+    /**
+     * SMS 인증 메세지 내용을 생성한다.
+     *
+     * @param certificationNumber 인증번호
+     * @return smsMessageTemplate 입력된 인증번호가 적용된 본인인증 문자 템플릿
+     */
     public String makeSmsContent(String certificationNumber) {
         SmsMessageTemplate content = new SmsMessageTemplate();
         return content.builderCertificationContent(certificationNumber);
     }
 
+    /**
+     * coolSMS API를 사용하기 위한 parameter 등록.
+     *
+     * @param to 휴대폰번호, text SMS 인증 메세지 내용
+     * @return params
+     */
     public HashMap<String, String> makeParams(String to, String text) {
         HashMap<String, String> params = new HashMap<>();
         params.put("from", coolSmsFromPhoneNumber);
@@ -52,7 +63,11 @@ public class SmsCertificationServiceImpl implements SmsService {
         return params;
     }
 
-    // coolSms API를 이용하여 인증번호 발송하고, 발송 정보를 Redis에 저장
+    /**
+     * coolSms API를 이용하여 인증번호 발송하고, 발송 정보를 Redis에 저장한다. - 발송 실패시 error
+     *
+     * @param phone 휴대폰번호
+     */
     public void sendSms(String phone) {
         DefaultMessageService messageService = NurigoApp.INSTANCE.initialize(coolSmsKey, coolSmsSecret, "https://api.coolsms.co.kr");
 
@@ -74,6 +89,11 @@ public class SmsCertificationServiceImpl implements SmsService {
         smsCertificationDao.createSmsCertification(phone, randomNumber);
     }
 
+    /**
+     * redis에 등록된 휴대폰 번호로 전송된 인증 번호가 입력된 정보와 일치하는지 검증하고 일치할 경우 redis에서 정보를 삭제한다.
+     *
+     * @param requestDto 휴대폰번호, 인증 번호
+     */
     public void verifySms(UserDto.SmsCertificationRequest requestDto) {
         if (isVerify(requestDto)) {
             throw new AuthenticationNumberMismatchException();
@@ -81,6 +101,12 @@ public class SmsCertificationServiceImpl implements SmsService {
         smsCertificationDao.removeSmsCertification(requestDto.getPhone());
     }
 
+    /**
+     * redis에 등록된 휴대폰 번호로 전송된 인증 번호가 입력된 정보와 일치하는지 검증한다. - 일치하지 않을 경우 error
+     *
+     * @param requestDto 휴대폰번호, 인증 번호
+     * @return boolean
+     */
     private boolean isVerify(UserDto.SmsCertificationRequest requestDto) {
         return !(smsCertificationDao.hasKey(requestDto.getPhone()) &&
                 smsCertificationDao.getSmsCertification(requestDto.getPhone())
