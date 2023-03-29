@@ -27,9 +27,11 @@ public class MembershipServiceImpl implements MembershipService {
     private final MembershipRepository membershipRepository;
     private final UserRepository userRepository;
 
-    /*
-    회원가입 신청 전체 리스트 조회
-    */
+    /**
+     * 전체 회원가입 신청 내역 리스트를 조회한다.
+     *
+     * @return 회원가입 신청 ID, 신청일시, 신청 상태(ACCEPT/WAITING/REJECT), 회원가입 신청한 유저 이메일, 유저 등급(LEVEL1/LEVEL2/LEVEL3/LEVEL4/LEVEL5/ADMIN), 회원가입 신청을 처리한 어드민 이메일, 회원가입시 작성한 내용
+     */
     @Override
     @Transactional(readOnly = true)
     public SliceDto<MembershipDto.MembershipResponse> membershipAllLookup() {
@@ -38,9 +40,12 @@ public class MembershipServiceImpl implements MembershipService {
     }
 
 
-    /*
-    회원가입 신청 상태별 리스트 조회
-    */
+    /**
+     * 회원가입 신청 상태별 회원 가입 신청 내역 리스트를 조회한다.
+     *
+     * @param membershipStatus 회원가입 신청 상태, pageable 페이지 정보
+     * @return MembershipResponse 정보 및 페이지 정보가 포함된 리스트 - 회원가입 신청 고유 번호, 회원가입 신청일시, 회원가입 신청 상태, 회원가입 신청한 유저 이메일, 회원가입 신청 등급, 회원가입 신청을 처리한 어드민 이메일, 회원가입시 작성한 내용
+     */
     @Override
     @Transactional(readOnly = true)
     public SliceDto<MembershipDto.MembershipResponse> membershipLookup(String membershipStatus, Pageable pageable) {
@@ -48,8 +53,12 @@ public class MembershipServiceImpl implements MembershipService {
         return SliceDto.create(membershipList.map(MembershipDto.MembershipResponse::create));
     }
 
-    /*
-    단일 회원가입 신청 조회
+    /**
+     * 회원가입 신청 내역을 상세 조회한다.
+     * 회원가입 신청한 유저와 어드민만 가능하다.
+     *
+     * @param membershipId 회원가입 신청 ID
+     * @return MembershipResponse 정보 및 페이지 정보가 포함된 리스트 - 회원가입 신청 고유 번호, 회원가입 신청일시, 회원가입 신청 상태, 회원가입 신청한 유저 이메일, 회원가입 신청 등급, 회원가입 신청을 처리한 어드민 이메일, 회원가입시 작성한 내용
      */
     @Override
     @Transactional(readOnly = true)
@@ -60,8 +69,10 @@ public class MembershipServiceImpl implements MembershipService {
         return MembershipDto.MembershipResponse.create(membership);
     }
 
-    /*
-    회원가입 승인
+    /**
+     * 어드민 회원이 회원가입 신청을 승인한다.
+     *
+     * @param membershipId 회원가입 신청 ID
      */
     @Override
     @Transactional
@@ -74,6 +85,11 @@ public class MembershipServiceImpl implements MembershipService {
         membershipRepository.save(membership);
     }
 
+    /**
+     * 어드민 회원이 회원가입 신청을 거절한다.
+     *
+     * @param membershipId 회원가입 신청 ID
+     */
     @Override
     @Transactional
     public void reject(Long membershipId) {
@@ -85,6 +101,12 @@ public class MembershipServiceImpl implements MembershipService {
         membershipRepository.save(membership);
     }
 
+    /**
+     * 회언가입 신청 상태 수정시 기존에 처리한 어드민 회원과 동일한지 확인한다.
+     *
+     * @param membership 회원가입 신청 정보, currentUser 회원가입 상태를 수정하려고 하는 유저
+     * @return 기존에 회원가입 신청을 처리한 유저와 현재 유저가 같다면 true, 아니라면 error 반환
+     */
     public boolean checkCurrentAdmin(Membership membership, User currentUser) {
         if (membership.getAdmin() == currentUser) {
             return true;
@@ -93,6 +115,14 @@ public class MembershipServiceImpl implements MembershipService {
         }
     }
 
+    /**
+     * 회원가입 신청을 처리한 어드민이 널일 경우 해당 서비스를 처리한 어드민을 현재 유저로 설정한다.
+     * 회원가입 신청을 처리한 어드민과 동일한 유저일 경우 처리한 어드민을 Null로 변경한다.
+     * 회원가입 신청 상태 변경시 checkAcceptAdmin를 호출하여 다시 현재 유저로 해당 회원가입 신청을 처리한 어드민을 현재 유저로 설정하기 위함.
+     *
+     * @param membership 처리할 회원가입 신청 정보, user 현재 유저
+     * @return membership 처리할 회원가입 신청 정보
+     */
     public Membership checkAcceptAdmin(Membership membership, User user) {
         if (membership.getAdmin() == null) {
             membership.setAdmin(user);
@@ -103,6 +133,12 @@ public class MembershipServiceImpl implements MembershipService {
         return membership;
     }
 
+    /**
+     * 접근하려는 유저가 어드민이거나 회원가입 신청한 유저인지 확인한다.
+     *
+     * @param membership 처리할 회원가입 신청 정보, user 현재 유저
+     * @return 접근하려는 유저가 어드민이거나 회원가입 신청한 유저가 아닐 경우 error
+     */
     public void checkMembershipRequestUserAndRoleAdmin(Membership membership, User currentUser) {
         if (currentUser.getRole().getFullName().equals("ROLE_ADMIN") || membership.getUser().getUsername().equals(currentUser.getUsername())) {
         } else {

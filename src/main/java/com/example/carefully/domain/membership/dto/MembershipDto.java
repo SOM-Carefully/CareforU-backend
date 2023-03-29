@@ -35,7 +35,7 @@ public class MembershipDto {
         private LocalDateTime createdAt;
 
         @NotNull
-        @ApiModelProperty(example = "TRANSLATE/DWELLING/TRAFFIC")
+        @ApiModelProperty(example = "ACCEPT/WAITING/REJECT")
         private StateRequest stateRequest;
 
         @ApiModelProperty(example = "회원가입 신청한 유저 이메일")
